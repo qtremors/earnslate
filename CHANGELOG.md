@@ -1,3 +1,25 @@
+## [0.5.0] - 2025-12-15
+
+### Fixed - Priority Bug Fixes
+
+#### Medium Bugs
+- **Budget Period Reset**: Budgets now automatically reset their `spent` amount when the period expires
+  - Added `periodStartDate` tracking to Budget type
+  - Auto-resets on app load via `checkAndResetBudgets()` 
+- **Subscription Billing Auto-Update**: `nextBilling` date now advances automatically
+  - Billing dates update on app load via `updateSubscriptionBillingDates()`
+
+#### Logic Issues
+- **Category Type Mismatch**: Fixed TransactionForm to auto-select valid category when switching between income/expense types
+
+#### UX Improvements  
+- **Styled Confirm Dialogs**: Replaced native `confirm()` with styled `useConfirm` modal in Budgets page (matches Transactions/Subscriptions)
+
+#### Code Quality
+- Fixed TypeScript type casting errors in IconPicker component
+
+---
+
 ## [0.4.0] - 2025-12-15
 
 ### Added - God-Tier Customization for All Pages
