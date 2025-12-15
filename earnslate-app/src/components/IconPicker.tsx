@@ -144,7 +144,7 @@ export default function IconPicker({ value, onChange, label }: IconPickerProps) 
     const [search, setSearch] = useState('');
 
     // Get the current icon component
-    const CurrentIcon = (LucideIcons as Record<string, React.ElementType>)[value] || LucideIcons.HelpCircle;
+    const CurrentIcon = (LucideIcons as unknown as Record<string, React.ElementType>)[value] || LucideIcons.HelpCircle;
 
     const filteredIcons = useMemo(() => {
         if (!search.trim()) return LUCIDE_ICONS;
@@ -190,7 +190,7 @@ export default function IconPicker({ value, onChange, label }: IconPickerProps) 
 
                         <div className={styles.grid}>
                             {filteredIcons.map((icon) => {
-                                const Icon = (LucideIcons as Record<string, React.ElementType>)[icon.name];
+                                const Icon = (LucideIcons as unknown as Record<string, React.ElementType>)[icon.name];
                                 if (!Icon) return null;
 
                                 return (
