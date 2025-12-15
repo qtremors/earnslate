@@ -31,6 +31,12 @@ interface AppState {
 
     // Utility
     clearAllData: () => void;
+    importData: (data: {
+        settings?: Partial<UserSettings>;
+        transactions?: Transaction[];
+        budgets?: Budget[];
+        subscriptions?: Subscription[];
+    }) => void;
 }
 
 // ===== Default Values =====
@@ -91,17 +97,77 @@ export const useAppStore = create<AppState>()(
             },
 
             updateTransaction: (id, updates) => {
+                const oldTransaction = get().transactions.find(t => t.id === id);
+
                 set((state) => ({
                     transactions: state.transactions.map(t =>
                         t.id === id ? { ...t, ...updates } : t
                     ),
                 }));
+
+                // Sync budget if amount or category changed
+                if (oldTransaction && oldTransaction.type === 'expense') {
+                    const budgets = get().budgets;
+                    const oldBudget = budgets.find(b =>
+                        b.category.toLowerCase() === oldTransaction.category.toLowerCase()
+                    );
+
+                    // Remove old amount from old budget
+                    if (oldBudget) {
+                        set((state) => ({
+                            budgets: state.budgets.map(b =>
+                                b.id === oldBudget.id
+                                    ? { ...b, spent: Math.max(0, b.spent - Math.abs(oldTransaction.amount)) }
+                                    : b
+                            ),
+                        }));
+                    }
+
+                    // Add new amount to new budget (if still expense)
+                    const newCategory = updates.category || oldTransaction.category;
+                    const newAmount = updates.amount ?? oldTransaction.amount;
+                    const newType = updates.type || oldTransaction.type;
+
+                    if (newType === 'expense') {
+                        const newBudget = get().budgets.find(b =>
+                            b.category.toLowerCase() === newCategory.toLowerCase()
+                        );
+                        if (newBudget) {
+                            set((state) => ({
+                                budgets: state.budgets.map(b =>
+                                    b.id === newBudget.id
+                                        ? { ...b, spent: b.spent + Math.abs(newAmount) }
+                                        : b
+                                ),
+                            }));
+                        }
+                    }
+                }
             },
 
             deleteTransaction: (id) => {
+                const transaction = get().transactions.find(t => t.id === id);
+
                 set((state) => ({
                     transactions: state.transactions.filter(t => t.id !== id),
                 }));
+
+                // Update budget spent if deleting an expense
+                if (transaction && transaction.type === 'expense') {
+                    const budgets = get().budgets;
+                    const matchingBudget = budgets.find(b =>
+                        b.category.toLowerCase() === transaction.category.toLowerCase()
+                    );
+                    if (matchingBudget) {
+                        set((state) => ({
+                            budgets: state.budgets.map(b =>
+                                b.id === matchingBudget.id
+                                    ? { ...b, spent: Math.max(0, b.spent - Math.abs(transaction.amount)) }
+                                    : b
+                            ),
+                        }));
+                    }
+                }
             },
 
             // ===== Budget Actions =====
@@ -180,6 +246,20 @@ export const useAppStore = create<AppState>()(
                     subscriptions: [],
                     settings: defaultSettings,
                 });
+            },
+
+            importData: (data: {
+                settings?: Partial<UserSettings>;
+                transactions?: Transaction[];
+                budgets?: Budget[];
+                subscriptions?: Subscription[];
+            }) => {
+                set((state) => ({
+                    settings: data.settings ? { ...state.settings, ...data.settings } : state.settings,
+                    transactions: data.transactions || state.transactions,
+                    budgets: data.budgets || state.budgets,
+                    subscriptions: data.subscriptions || state.subscriptions,
+                }));
             },
         }),
         {

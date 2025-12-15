@@ -2,11 +2,11 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { useAppStore } from '@/store';
 import Card from '@/components/Card';
 import Button from '@/components/Button';
 import styles from './page.module.css';
 
-// ===== Onboarding Steps =====
 const steps = [
     { id: 1, title: 'Welcome', icon: '👋' },
     { id: 2, title: 'Currency', icon: '💱' },
@@ -22,13 +22,28 @@ const currencies = [
 
 export default function OnboardingPage() {
     const router = useRouter();
+    const updateSettings = useAppStore((state) => state.updateSettings);
+    const completeOnboarding = useAppStore((state) => state.completeOnboarding);
+
     const [currentStep, setCurrentStep] = useState(1);
     const [selectedCurrency, setSelectedCurrency] = useState('INR');
 
     const handleNext = () => {
         if (currentStep < steps.length) {
+            // Save currency when moving past step 2
+            if (currentStep === 2) {
+                const currency = currencies.find(c => c.code === selectedCurrency);
+                if (currency) {
+                    updateSettings({
+                        currency: currency.code,
+                        currencySymbol: currency.symbol,
+                    });
+                }
+            }
             setCurrentStep(currentStep + 1);
         } else {
+            // Finish onboarding
+            completeOnboarding();
             router.push('/');
         }
     };

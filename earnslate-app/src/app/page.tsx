@@ -180,7 +180,7 @@ export default function Dashboard() {
                       );
                       acc.angle = endAngle;
                       return acc;
-                    }, { paths: [] as JSX.Element[], angle: 0 }).paths}
+                    }, { paths: [] as React.ReactElement[], angle: 0 }).paths}
                   </svg>
                 </div>
                 <div className={styles.legend}>

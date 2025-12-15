@@ -30,6 +30,7 @@ export default function SettingsPage() {
     const subscriptions = useAppStore((state) => state.subscriptions);
     const updateSettings = useAppStore((state) => state.updateSettings);
     const clearAllData = useAppStore((state) => state.clearAllData);
+    const importData = useAppStore((state) => state.importData);
 
     const [editModal, setEditModal] = useState<'name' | 'currency' | 'date' | 'category' | null>(null);
     const [tempValue, setTempValue] = useState('');
@@ -106,14 +107,20 @@ export default function SettingsPage() {
         reader.onload = (event) => {
             try {
                 const data = JSON.parse(event.target?.result as string);
-                if (data.settings) updateSettings(data.settings);
-                if (confirm(`Import ${data.transactions?.length || 0} transactions, ${data.budgets?.length || 0} budgets, and ${data.subscriptions?.length || 0} subscriptions?`)) {
-                    // Clear and reimport - simplified approach
+                const counts = `${data.transactions?.length || 0} transactions, ${data.budgets?.length || 0} budgets, ${data.subscriptions?.length || 0} subscriptions`;
+
+                if (confirm(`Import backup with ${counts}? This will replace current data.`)) {
+                    // Clear existing and import all data
                     clearAllData();
+                    // Use setTimeout to ensure clear completes before import
                     setTimeout(() => {
-                        if (data.settings) updateSettings(data.settings);
-                        // For full import, would need to add each item individually
-                        alert('Settings restored! Transactions/budgets/subscriptions need manual re-add for now.');
+                        importData({
+                            settings: data.settings,
+                            transactions: data.transactions || [],
+                            budgets: data.budgets || [],
+                            subscriptions: data.subscriptions || [],
+                        });
+                        alert('Data restored successfully!');
                     }, 100);
                 }
             } catch {
@@ -245,7 +252,7 @@ export default function SettingsPage() {
                 <Card className={styles.section}>
                     <CardHeader title="About" />
                     <div className={styles.aboutInfo}>
-                        <p><strong>Earnslate</strong> v0.3.0</p>
+                        <p><strong>Earnslate</strong> v0.4.0</p>
                         <p className={styles.aboutDesc}>Personal Finance Manager with God-Tier Customization</p>
                     </div>
                 </Card>

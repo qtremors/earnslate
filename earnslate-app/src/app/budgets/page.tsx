@@ -169,10 +169,10 @@ export default function BudgetsPage() {
 
                                         acc.angle = endAngle;
                                         return acc;
-                                    }, { paths: [] as JSX.Element[], angle: 0 }).paths}
+                                    }, { paths: [] as React.ReactElement[], angle: 0 }).paths}
                                 </svg>
                                 <div className={styles.donutCenter}>
-                                    <span className={styles.donutTotal}>{Math.round((totalSpent / totalBudget) * 100) || 0}%</span>
+                                    <span className={styles.donutTotal}>{totalBudget > 0 ? Math.round((totalSpent / totalBudget) * 100) : 0}%</span>
                                     <span className={styles.donutLabel}>used</span>
                                 </div>
                             </div>
