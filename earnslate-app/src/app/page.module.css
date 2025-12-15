@@ -182,6 +182,41 @@
   color: var(--text-primary);
 }
 
+/* ===== Search Box ===== */
+.searchBox {
+  position: relative;
+  display: flex;
+  align-items: center;
+  margin-bottom: var(--space-md);
+}
+
+.searchIcon {
+  position: absolute;
+  left: var(--space-sm);
+  color: var(--text-muted);
+  pointer-events: none;
+}
+
+.searchInput {
+  width: 100%;
+  padding: var(--space-sm) var(--space-sm) var(--space-sm) calc(var(--space-sm) + 24px);
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-primary);
+  border-radius: var(--radius-md);
+  font-size: var(--text-sm);
+  color: var(--text-primary);
+  transition: all var(--transition-fast);
+}
+
+.searchInput::placeholder {
+  color: var(--text-muted);
+}
+
+.searchInput:focus {
+  outline: none;
+  border-color: var(--accent-primary);
+}
+
 .transactionList {
   list-style: none;
   display: flex;

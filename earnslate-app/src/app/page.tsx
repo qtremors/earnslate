@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo } from 'react';
+import { useState, useMemo } from 'react';
 import { useAppStore } from '@/store';
 import Header from '@/components/Header';
 import Card, { CardHeader } from '@/components/Card';
@@ -16,6 +16,7 @@ import {
   Coffee,
   HelpCircle,
   AlertTriangle,
+  Search,
 } from 'lucide-react';
 import styles from './page.module.css';
 
@@ -33,6 +34,7 @@ export default function Dashboard() {
   const settings = useAppStore((state) => state.settings);
   const transactions = useAppStore((state) => state.transactions);
   const budgets = useAppStore((state) => state.budgets);
+  const [searchQuery, setSearchQuery] = useState('');
 
   const totalBalance = transactions.reduce((sum, t) => sum + t.amount, 0);
 
@@ -71,7 +73,18 @@ export default function Dashboard() {
       .sort((a, b) => b.amount - a.amount);
   }, [transactions, currentMonth, currentYear]);
 
-  const recentTransactions = transactions.slice(0, 5);
+  // Filter and get recent transactions
+  const recentTransactions = useMemo(() => {
+    let filtered = transactions;
+    if (searchQuery.trim()) {
+      const q = searchQuery.toLowerCase();
+      filtered = transactions.filter(t =>
+        t.description.toLowerCase().includes(q) ||
+        t.category.toLowerCase().includes(q)
+      );
+    }
+    return filtered.slice(0, 5);
+  }, [transactions, searchQuery]);
 
   const formatCurrency = (amount: number) => `${settings.currencySymbol}${Math.abs(amount).toLocaleString('en-IN')}`;
 
@@ -202,10 +215,23 @@ export default function Dashboard() {
               title="Recent Transactions"
               action={<a href="/transactions" className={styles.viewAll}>View All →</a>}
             />
+
+            {/* Search Input */}
+            <div className={styles.searchBox}>
+              <Search size={16} className={styles.searchIcon} />
+              <input
+                type="text"
+                placeholder="Search transactions..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className={styles.searchInput}
+              />
+            </div>
+
             {recentTransactions.length === 0 ? (
               <div className={styles.emptyState}>
-                <p>No transactions yet</p>
-                <a href="/transactions" className={styles.link}>Add your first transaction</a>
+                <p>{searchQuery ? 'No matching transactions' : 'No transactions yet'}</p>
+                {!searchQuery && <a href="/transactions" className={styles.link}>Add your first transaction</a>}
               </div>
             ) : (
               <ul className={styles.transactionList}>

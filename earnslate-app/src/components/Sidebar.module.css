@@ -93,46 +93,82 @@
     padding-top: var(--space-md);
 }
 
+/* ===== Hamburger Button ===== */
+.hamburger {
+    display: none;
+    position: fixed;
+    top: var(--space-md);
+    left: var(--space-md);
+    z-index: 200;
+    width: 44px;
+    height: 44px;
+    align-items: center;
+    justify-content: center;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-primary);
+    border-radius: var(--radius-md);
+    color: var(--text-primary);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.hamburger:hover {
+    background: var(--bg-hover);
+}
+
+/* ===== Backdrop ===== */
+.backdrop {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 99;
+}
+
 /* ===== Mobile Responsive ===== */
 @media (max-width: 768px) {
+    .hamburger {
+        display: flex;
+    }
+
+    .backdrop {
+        display: block;
+    }
+
     .sidebar {
-        width: 100%;
-        height: auto;
         position: fixed;
-        bottom: 0;
-        top: auto;
         left: 0;
-        right: 0;
-        flex-direction: row;
-        padding: var(--space-sm) var(--space-md);
-        border-right: none;
-        border-top: 1px solid var(--border-primary);
+        top: 0;
+        bottom: 0;
+        width: 280px;
+        transform: translateX(-100%);
+        transition: transform var(--transition-normal) ease;
+        z-index: 150;
+    }
+
+    .sidebar.open {
+        transform: translateX(0);
     }
 
     .logo {
-        display: none;
-    }
-
-    .nav {
-        flex: 1;
-    }
-
-    .navList {
-        flex-direction: row;
-        justify-content: space-around;
-    }
-
-    .navItem {
-        flex-direction: column;
-        padding: var(--space-sm);
-        gap: var(--space-xs);
-    }
-
-    .navLabel {
-        font-size: var(--text-xs);
+        display: flex;
     }
 
     .bottomNav {
-        display: none;
+        display: block;
+    }
+
+    .navList {
+        flex-direction: column;
+    }
+
+    .navItem {
+        flex-direction: row;
+        padding: var(--space-md);
+        gap: var(--space-md);
+    }
+
+    .navLabel {
+        font-size: var(--text-sm);
     }
 }

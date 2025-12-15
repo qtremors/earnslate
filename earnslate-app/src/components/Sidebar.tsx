@@ -1,5 +1,6 @@
 'use client';
 
+import { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import {
@@ -8,7 +9,9 @@ import {
   PieChart,
   RefreshCw,
   Settings,
-  Wallet
+  Wallet,
+  Menu,
+  X
 } from 'lucide-react';
 import styles from './Sidebar.module.css';
 
@@ -26,61 +29,83 @@ const bottomItems = [
 
 export default function Sidebar() {
   const pathname = usePathname();
+  const [isOpen, setIsOpen] = useState(false);
 
   const isActive = (href: string) => {
     if (href === '/') return pathname === '/';
     return pathname.startsWith(href);
   };
 
+  const handleNavClick = () => {
+    setIsOpen(false);
+  };
+
   return (
-    <aside className={styles.sidebar}>
-      {/* Logo */}
-      <div className={styles.logo}>
-        <div className={styles.logoIcon}>
-          <Wallet size={24} />
+    <>
+      {/* Mobile Hamburger Button */}
+      <button
+        className={styles.hamburger}
+        onClick={() => setIsOpen(!isOpen)}
+        aria-label="Toggle menu"
+      >
+        {isOpen ? <X size={24} /> : <Menu size={24} />}
+      </button>
+
+      {/* Backdrop for mobile */}
+      {isOpen && <div className={styles.backdrop} onClick={() => setIsOpen(false)} />}
+
+      <aside className={`${styles.sidebar} ${isOpen ? styles.open : ''}`}>
+        {/* Logo */}
+        <div className={styles.logo}>
+          <div className={styles.logoIcon}>
+            <Wallet size={24} />
+          </div>
+          <span className={styles.logoText}>Earnslate</span>
         </div>
-        <span className={styles.logoText}>Earnslate</span>
-      </div>
 
-      {/* Main Navigation */}
-      <nav className={styles.nav}>
-        <ul className={styles.navList}>
-          {navItems.map((item) => {
-            const Icon = item.icon;
-            return (
-              <li key={item.href}>
-                <Link
-                  href={item.href}
-                  className={`${styles.navItem} ${isActive(item.href) ? styles.active : ''}`}
-                >
-                  <Icon size={20} className={styles.navIcon} />
-                  <span className={styles.navLabel}>{item.label}</span>
-                </Link>
-              </li>
-            );
-          })}
-        </ul>
-      </nav>
+        {/* Main Navigation */}
+        <nav className={styles.nav}>
+          <ul className={styles.navList}>
+            {navItems.map((item) => {
+              const Icon = item.icon;
+              return (
+                <li key={item.href}>
+                  <Link
+                    href={item.href}
+                    className={`${styles.navItem} ${isActive(item.href) ? styles.active : ''}`}
+                    onClick={handleNavClick}
+                  >
+                    <Icon size={20} className={styles.navIcon} />
+                    <span className={styles.navLabel}>{item.label}</span>
+                  </Link>
+                </li>
+              );
+            })}
+          </ul>
+        </nav>
 
-      {/* Bottom Navigation */}
-      <div className={styles.bottomNav}>
-        <ul className={styles.navList}>
-          {bottomItems.map((item) => {
-            const Icon = item.icon;
-            return (
-              <li key={item.href}>
-                <Link
-                  href={item.href}
-                  className={`${styles.navItem} ${isActive(item.href) ? styles.active : ''}`}
-                >
-                  <Icon size={20} className={styles.navIcon} />
-                  <span className={styles.navLabel}>{item.label}</span>
-                </Link>
-              </li>
-            );
-          })}
-        </ul>
-      </div>
-    </aside>
+        {/* Bottom Navigation */}
+        <div className={styles.bottomNav}>
+          <ul className={styles.navList}>
+            {bottomItems.map((item) => {
+              const Icon = item.icon;
+              return (
+                <li key={item.href}>
+                  <Link
+                    href={item.href}
+                    className={`${styles.navItem} ${isActive(item.href) ? styles.active : ''}`}
+                    onClick={handleNavClick}
+                  >
+                    <Icon size={20} className={styles.navIcon} />
+                    <span className={styles.navLabel}>{item.label}</span>
+                  </Link>
+                </li>
+              );
+            })}
+          </ul>
+        </div>
+      </aside>
+    </>
   );
 }
+
