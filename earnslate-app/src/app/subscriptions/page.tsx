@@ -1,16 +1,25 @@
 import Header from '@/components/Header';
 import Card from '@/components/Card';
 import Button from '@/components/Button';
+import {
+    Tv,
+    Music,
+    Package,
+    Youtube,
+    Cloud,
+    Dumbbell,
+    Plus
+} from 'lucide-react';
 import styles from './page.module.css';
 
 // ===== Sample Data =====
 const subscriptions = [
-    { id: 1, name: 'Netflix', amount: 649, cycle: 'monthly', nextBilling: 'Jan 1, 2026', icon: '🎬', active: true },
-    { id: 2, name: 'Spotify', amount: 119, cycle: 'monthly', nextBilling: 'Jan 5, 2026', icon: '🎵', active: true },
-    { id: 3, name: 'Amazon Prime', amount: 1499, cycle: 'yearly', nextBilling: 'Mar 15, 2026', icon: '📦', active: true },
-    { id: 4, name: 'YouTube Premium', amount: 129, cycle: 'monthly', nextBilling: 'Jan 10, 2026', icon: '▶️', active: true },
-    { id: 5, name: 'iCloud Storage', amount: 75, cycle: 'monthly', nextBilling: 'Jan 12, 2026', icon: '☁️', active: true },
-    { id: 6, name: 'Gym Membership', amount: 1200, cycle: 'monthly', nextBilling: 'Jan 1, 2026', icon: '💪', active: false },
+    { id: 1, name: 'Netflix', amount: 649, cycle: 'monthly', nextBilling: 'Jan 1, 2026', icon: Tv, active: true },
+    { id: 2, name: 'Spotify', amount: 119, cycle: 'monthly', nextBilling: 'Jan 5, 2026', icon: Music, active: true },
+    { id: 3, name: 'Amazon Prime', amount: 1499, cycle: 'yearly', nextBilling: 'Mar 15, 2026', icon: Package, active: true },
+    { id: 4, name: 'YouTube Premium', amount: 129, cycle: 'monthly', nextBilling: 'Jan 10, 2026', icon: Youtube, active: true },
+    { id: 5, name: 'iCloud Storage', amount: 75, cycle: 'monthly', nextBilling: 'Jan 12, 2026', icon: Cloud, active: true },
+    { id: 6, name: 'Gym Membership', amount: 1200, cycle: 'monthly', nextBilling: 'Jan 1, 2026', icon: Dumbbell, active: false },
 ];
 
 export default function SubscriptionsPage() {
@@ -50,33 +59,41 @@ export default function SubscriptionsPage() {
 
                 {/* Actions */}
                 <div className={styles.actions}>
-                    <Button variant="primary">+ Add Subscription</Button>
+                    <Button variant="primary">
+                        <Plus size={18} />
+                        Add Subscription
+                    </Button>
                 </div>
 
                 {/* Subscriptions List */}
                 <div className={styles.subscriptionList}>
-                    {subscriptions.map((sub) => (
-                        <Card key={sub.id} className={`${styles.subscriptionCard} ${!sub.active ? styles.inactive : ''}`} hover>
-                            <div className={styles.subscriptionMain}>
-                                <span className={styles.subscriptionIcon}>{sub.icon}</span>
-                                <div className={styles.subscriptionInfo}>
-                                    <span className={styles.subscriptionName}>{sub.name}</span>
-                                    <span className={styles.subscriptionMeta}>
-                                        {sub.cycle === 'yearly' ? 'Yearly' : 'Monthly'} • Next: {sub.nextBilling}
-                                    </span>
+                    {subscriptions.map((sub) => {
+                        const Icon = sub.icon;
+                        return (
+                            <Card key={sub.id} className={`${styles.subscriptionCard} ${!sub.active ? styles.inactive : ''}`} hover>
+                                <div className={styles.subscriptionMain}>
+                                    <div className={styles.subscriptionIcon}>
+                                        <Icon size={20} />
+                                    </div>
+                                    <div className={styles.subscriptionInfo}>
+                                        <span className={styles.subscriptionName}>{sub.name}</span>
+                                        <span className={styles.subscriptionMeta}>
+                                            {sub.cycle === 'yearly' ? 'Yearly' : 'Monthly'} • Next: {sub.nextBilling}
+                                        </span>
+                                    </div>
                                 </div>
-                            </div>
 
-                            <div className={styles.subscriptionRight}>
-                                <span className={styles.subscriptionAmount}>{formatCurrency(sub.amount)}</span>
-                                <span className={styles.subscriptionCycle}>/{sub.cycle === 'yearly' ? 'year' : 'month'}</span>
-                            </div>
+                                <div className={styles.subscriptionRight}>
+                                    <span className={styles.subscriptionAmount}>{formatCurrency(sub.amount)}</span>
+                                    <span className={styles.subscriptionCycle}>/{sub.cycle === 'yearly' ? 'year' : 'month'}</span>
+                                </div>
 
-                            <span className={`${styles.statusBadge} ${sub.active ? styles.active : styles.paused}`}>
-                                {sub.active ? 'Active' : 'Paused'}
-                            </span>
-                        </Card>
-                    ))}
+                                <span className={`${styles.statusBadge} ${sub.active ? styles.active : styles.paused}`}>
+                                    {sub.active ? 'Active' : 'Paused'}
+                                </span>
+                            </Card>
+                        );
+                    })}
                 </div>
             </div>
         </div>

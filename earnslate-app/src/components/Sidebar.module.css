@@ -22,7 +22,14 @@
 }
 
 .logoIcon {
-    font-size: var(--text-2xl);
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--accent-primary);
+    color: var(--bg-primary);
+    border-radius: var(--radius-md);
 }
 
 .logoText {
@@ -66,13 +73,13 @@
 }
 
 .navItem.active .navIcon {
-    filter: grayscale(1) brightness(0);
+    color: inherit;
 }
 
 .navIcon {
-    font-size: var(--text-lg);
-    width: 24px;
-    text-align: center;
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
 }
 
 .navLabel {

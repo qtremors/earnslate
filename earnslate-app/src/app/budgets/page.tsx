@@ -2,16 +2,25 @@ import Header from '@/components/Header';
 import Card from '@/components/Card';
 import Button from '@/components/Button';
 import ProgressBar from '@/components/ProgressBar';
+import {
+    UtensilsCrossed,
+    Film,
+    Car,
+    ShoppingCart,
+    Dumbbell,
+    Lightbulb,
+    Plus
+} from 'lucide-react';
 import styles from './page.module.css';
 
 // ===== Sample Data =====
 const budgets = [
-    { id: 1, name: 'Food & Dining', spent: 8500, limit: 12000, icon: '🍔' },
-    { id: 2, name: 'Entertainment', spent: 3200, limit: 5000, icon: '🎬' },
-    { id: 3, name: 'Transport', spent: 4200, limit: 6000, icon: '🚗' },
-    { id: 4, name: 'Shopping', spent: 7800, limit: 8000, icon: '🛒' },
-    { id: 5, name: 'Health & Fitness', spent: 1200, limit: 3000, icon: '💪' },
-    { id: 6, name: 'Utilities', spent: 3500, limit: 4000, icon: '💡' },
+    { id: 1, name: 'Food & Dining', spent: 8500, limit: 12000, icon: UtensilsCrossed },
+    { id: 2, name: 'Entertainment', spent: 3200, limit: 5000, icon: Film },
+    { id: 3, name: 'Transport', spent: 4200, limit: 6000, icon: Car },
+    { id: 4, name: 'Shopping', spent: 7800, limit: 8000, icon: ShoppingCart },
+    { id: 5, name: 'Health & Fitness', spent: 1200, limit: 3000, icon: Dumbbell },
+    { id: 6, name: 'Utilities', spent: 3500, limit: 4000, icon: Lightbulb },
 ];
 
 export default function BudgetsPage() {
@@ -56,19 +65,25 @@ export default function BudgetsPage() {
 
                 {/* Actions */}
                 <div className={styles.actions}>
-                    <Button variant="primary">+ Create Budget</Button>
+                    <Button variant="primary">
+                        <Plus size={18} />
+                        Create Budget
+                    </Button>
                 </div>
 
                 {/* Budget Cards */}
                 <div className={styles.budgetGrid}>
                     {budgets.map((budget) => {
+                        const Icon = budget.icon;
                         const percentage = (budget.spent / budget.limit) * 100;
                         const isOverBudget = budget.spent >= budget.limit;
 
                         return (
                             <Card key={budget.id} className={styles.budgetCard} hover>
                                 <div className={styles.budgetHeader}>
-                                    <span className={styles.budgetIcon}>{budget.icon}</span>
+                                    <div className={styles.budgetIcon}>
+                                        <Icon size={20} />
+                                    </div>
                                     <span className={styles.budgetName}>{budget.name}</span>
                                 </div>
 

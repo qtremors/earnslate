@@ -1,6 +1,16 @@
 import Header from '@/components/Header';
 import Card, { CardHeader } from '@/components/Card';
 import ProgressBar from '@/components/ProgressBar';
+import {
+  Wallet,
+  TrendingUp,
+  TrendingDown,
+  ShoppingCart,
+  Briefcase,
+  Tv,
+  Zap,
+  Coffee
+} from 'lucide-react';
 import styles from './page.module.css';
 
 // ===== Sample Data (will be replaced with real data later) =====
@@ -12,16 +22,16 @@ const financialSummary = {
 };
 
 const recentTransactions = [
-  { id: 1, description: 'Groceries - BigBasket', amount: -2450, date: 'Dec 14', category: 'Food' },
-  { id: 2, description: 'Salary - December', amount: 65000, date: 'Dec 1', category: 'Income' },
-  { id: 3, description: 'Netflix Subscription', amount: -649, date: 'Dec 1', category: 'Entertainment' },
-  { id: 4, description: 'Electricity Bill', amount: -1850, date: 'Nov 28', category: 'Utilities' },
-  { id: 5, description: 'Coffee Shop', amount: -320, date: 'Nov 27', category: 'Food' },
+  { id: 1, description: 'Groceries - BigBasket', amount: -2450, date: 'Dec 14', category: 'Food', icon: ShoppingCart },
+  { id: 2, description: 'Salary - December', amount: 65000, date: 'Dec 1', category: 'Income', icon: Briefcase },
+  { id: 3, description: 'Netflix Subscription', amount: -649, date: 'Dec 1', category: 'Entertainment', icon: Tv },
+  { id: 4, description: 'Electricity Bill', amount: -1850, date: 'Nov 28', category: 'Utilities', icon: Zap },
+  { id: 5, description: 'Coffee Shop', amount: -320, date: 'Nov 27', category: 'Food', icon: Coffee },
 ];
 
 const budgets = [
   { name: 'Food & Dining', spent: 8500, limit: 12000 },
-  { name: 'Entertainment', amount: 3200, limit: 5000 },
+  { name: 'Entertainment', spent: 3200, limit: 5000 },
   { name: 'Transport', spent: 4200, limit: 6000 },
 ];
 
@@ -41,7 +51,9 @@ export default function Dashboard() {
         {/* Summary Cards */}
         <section className={styles.summarySection}>
           <Card className={styles.summaryCard} hover>
-            <div className={styles.summaryIcon}>💰</div>
+            <div className={styles.summaryIcon}>
+              <Wallet size={24} />
+            </div>
             <div className={styles.summaryInfo}>
               <span className={styles.summaryLabel}>Total Balance</span>
               <span className={styles.summaryValue}>
@@ -51,7 +63,9 @@ export default function Dashboard() {
           </Card>
 
           <Card className={styles.summaryCard} hover>
-            <div className={styles.summaryIcon}>📈</div>
+            <div className={`${styles.summaryIcon} ${styles.incomeIcon}`}>
+              <TrendingUp size={24} />
+            </div>
             <div className={styles.summaryInfo}>
               <span className={styles.summaryLabel}>Income (Dec)</span>
               <span className={`${styles.summaryValue} ${styles.income}`}>
@@ -61,7 +75,9 @@ export default function Dashboard() {
           </Card>
 
           <Card className={styles.summaryCard} hover>
-            <div className={styles.summaryIcon}>📉</div>
+            <div className={`${styles.summaryIcon} ${styles.expenseIcon}`}>
+              <TrendingDown size={24} />
+            </div>
             <div className={styles.summaryInfo}>
               <span className={styles.summaryLabel}>Expenses (Dec)</span>
               <span className={`${styles.summaryValue} ${styles.expense}`}>
@@ -80,19 +96,25 @@ export default function Dashboard() {
               action={<a href="/transactions" className={styles.viewAll}>View All →</a>}
             />
             <ul className={styles.transactionList}>
-              {recentTransactions.map((tx) => (
-                <li key={tx.id} className={styles.transactionItem}>
-                  <div className={styles.transactionInfo}>
-                    <span className={styles.transactionDesc}>{tx.description}</span>
-                    <span className={styles.transactionMeta}>
-                      {tx.category} • {tx.date}
+              {recentTransactions.map((tx) => {
+                const Icon = tx.icon;
+                return (
+                  <li key={tx.id} className={styles.transactionItem}>
+                    <div className={styles.transactionIcon}>
+                      <Icon size={18} />
+                    </div>
+                    <div className={styles.transactionInfo}>
+                      <span className={styles.transactionDesc}>{tx.description}</span>
+                      <span className={styles.transactionMeta}>
+                        {tx.category} • {tx.date}
+                      </span>
+                    </div>
+                    <span className={`${styles.transactionAmount} ${tx.amount > 0 ? styles.income : styles.expense}`}>
+                      {tx.amount > 0 ? '+' : ''}{formatCurrency(tx.amount)}
                     </span>
-                  </div>
-                  <span className={`${styles.transactionAmount} ${tx.amount > 0 ? styles.income : styles.expense}`}>
-                    {tx.amount > 0 ? '+' : ''}{formatCurrency(tx.amount)}
-                  </span>
-                </li>
-              ))}
+                  </li>
+                );
+              })}
             </ul>
           </Card>
 
@@ -103,20 +125,17 @@ export default function Dashboard() {
               action={<a href="/budgets" className={styles.viewAll}>View All →</a>}
             />
             <div className={styles.budgetList}>
-              {budgets.map((budget) => {
-                const spent = 'spent' in budget ? budget.spent : (budget as { amount?: number }).amount ?? 0;
-                return (
-                  <div key={budget.name} className={styles.budgetItem}>
-                    <div className={styles.budgetHeader}>
-                      <span className={styles.budgetName}>{budget.name}</span>
-                      <span className={styles.budgetNumbers}>
-                        {formatCurrency(spent)} / {formatCurrency(budget.limit)}
-                      </span>
-                    </div>
-                    <ProgressBar value={spent} max={budget.limit} />
+              {budgets.map((budget) => (
+                <div key={budget.name} className={styles.budgetItem}>
+                  <div className={styles.budgetHeader}>
+                    <span className={styles.budgetName}>{budget.name}</span>
+                    <span className={styles.budgetNumbers}>
+                      {formatCurrency(budget.spent)} / {formatCurrency(budget.limit)}
+                    </span>
                   </div>
-                );
-              })}
+                  <ProgressBar value={budget.spent} max={budget.limit} />
+                </div>
+              ))}
             </div>
           </Card>
         </div>
