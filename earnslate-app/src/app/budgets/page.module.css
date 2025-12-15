@@ -45,6 +45,18 @@
     margin-bottom: var(--space-lg);
 }
 
+/* ===== Empty State ===== */
+.emptyState {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-lg);
+    padding: var(--space-3xl);
+    text-align: center;
+    color: var(--text-muted);
+}
+
 /* ===== Budget Grid ===== */
 .budgetGrid {
     display: grid;
@@ -56,6 +68,45 @@
     display: flex;
     flex-direction: column;
     gap: var(--space-md);
+    position: relative;
+}
+
+.cardActions {
+    position: absolute;
+    top: var(--space-md);
+    right: var(--space-md);
+    display: flex;
+    gap: var(--space-xs);
+    opacity: 0;
+    transition: opacity var(--transition-fast);
+}
+
+.budgetCard:hover .cardActions {
+    opacity: 1;
+}
+
+.actionButton {
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--bg-tertiary);
+    border: none;
+    border-radius: var(--radius-sm);
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.actionButton:hover {
+    background: var(--bg-hover);
+    color: var(--text-primary);
+}
+
+.deleteButton:hover {
+    background: var(--error-muted);
+    color: var(--error);
 }
 
 .budgetHeader {
@@ -65,14 +116,14 @@
 }
 
 .budgetIcon {
-    font-size: var(--text-2xl);
-    width: 48px;
-    height: 48px;
+    width: 44px;
+    height: 44px;
     display: flex;
     align-items: center;
     justify-content: center;
     background: var(--bg-tertiary);
     border-radius: var(--radius-md);
+    color: var(--text-secondary);
 }
 
 .budgetName {
@@ -133,5 +184,9 @@
 
     .budgetGrid {
         grid-template-columns: 1fr;
+    }
+
+    .cardActions {
+        opacity: 1;
     }
 }

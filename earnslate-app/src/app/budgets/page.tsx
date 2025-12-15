@@ -1,7 +1,13 @@
+'use client';
+
+import { useState } from 'react';
+import { useAppStore } from '@/store';
 import Header from '@/components/Header';
 import Card from '@/components/Card';
 import Button from '@/components/Button';
+import BudgetForm from '@/components/BudgetForm';
 import ProgressBar from '@/components/ProgressBar';
+import { Plus, Trash2, Pencil } from 'lucide-react';
 import {
     UtensilsCrossed,
     Film,
@@ -9,29 +15,60 @@ import {
     ShoppingCart,
     Dumbbell,
     Lightbulb,
-    Plus
+    Home,
+    GraduationCap,
+    HelpCircle
 } from 'lucide-react';
 import styles from './page.module.css';
 
-// ===== Sample Data =====
-const budgets = [
-    { id: 1, name: 'Food & Dining', spent: 8500, limit: 12000, icon: UtensilsCrossed },
-    { id: 2, name: 'Entertainment', spent: 3200, limit: 5000, icon: Film },
-    { id: 3, name: 'Transport', spent: 4200, limit: 6000, icon: Car },
-    { id: 4, name: 'Shopping', spent: 7800, limit: 8000, icon: ShoppingCart },
-    { id: 5, name: 'Health & Fitness', spent: 1200, limit: 3000, icon: Dumbbell },
-    { id: 6, name: 'Utilities', spent: 3500, limit: 4000, icon: Lightbulb },
-];
+// Icon mapping
+const ICON_MAP: Record<string, React.ElementType> = {
+    UtensilsCrossed,
+    Film,
+    Car,
+    ShoppingCart,
+    Dumbbell,
+    Lightbulb,
+    Home,
+    GraduationCap,
+};
 
 export default function BudgetsPage() {
+    const [isFormOpen, setIsFormOpen] = useState(false);
+    const [editingId, setEditingId] = useState<string | undefined>();
+
+    const budgets = useAppStore((state) => state.budgets);
+    const deleteBudget = useAppStore((state) => state.deleteBudget);
+    const settings = useAppStore((state) => state.settings);
+
     const formatCurrency = (amount: number) => {
-        return `₹${amount.toLocaleString('en-IN')}`;
+        return `${settings.currencySymbol}${amount.toLocaleString('en-IN')}`;
     };
 
     const getRemaining = (spent: number, limit: number) => {
         const remaining = limit - spent;
         return remaining > 0 ? remaining : 0;
     };
+
+    const handleEdit = (id: string) => {
+        setEditingId(id);
+        setIsFormOpen(true);
+    };
+
+    const handleAdd = () => {
+        setEditingId(undefined);
+        setIsFormOpen(true);
+    };
+
+    const handleDelete = (id: string) => {
+        if (confirm('Are you sure you want to delete this budget?')) {
+            deleteBudget(id);
+        }
+    };
+
+    const totalBudget = budgets.reduce((sum, b) => sum + b.limit, 0);
+    const totalSpent = budgets.reduce((sum, b) => sum + b.spent, 0);
+    const totalRemaining = budgets.reduce((sum, b) => sum + getRemaining(b.spent, b.limit), 0);
 
     return (
         <div className={styles.page}>
@@ -45,19 +82,19 @@ export default function BudgetsPage() {
                 <div className={styles.summary}>
                     <Card className={styles.summaryCard}>
                         <div className={styles.summaryValue}>
-                            {formatCurrency(budgets.reduce((sum, b) => sum + b.limit, 0))}
+                            {formatCurrency(totalBudget)}
                         </div>
                         <div className={styles.summaryLabel}>Total Budget</div>
                     </Card>
                     <Card className={styles.summaryCard}>
                         <div className={styles.summaryValue}>
-                            {formatCurrency(budgets.reduce((sum, b) => sum + b.spent, 0))}
+                            {formatCurrency(totalSpent)}
                         </div>
                         <div className={styles.summaryLabel}>Total Spent</div>
                     </Card>
                     <Card className={styles.summaryCard}>
                         <div className={`${styles.summaryValue} ${styles.remaining}`}>
-                            {formatCurrency(budgets.reduce((sum, b) => sum + getRemaining(b.spent, b.limit), 0))}
+                            {formatCurrency(totalRemaining)}
                         </div>
                         <div className={styles.summaryLabel}>Remaining</div>
                     </Card>
@@ -65,49 +102,85 @@ export default function BudgetsPage() {
 
                 {/* Actions */}
                 <div className={styles.actions}>
-                    <Button variant="primary">
+                    <Button variant="primary" onClick={handleAdd}>
                         <Plus size={18} />
                         Create Budget
                     </Button>
                 </div>
 
                 {/* Budget Cards */}
-                <div className={styles.budgetGrid}>
-                    {budgets.map((budget) => {
-                        const Icon = budget.icon;
-                        const percentage = (budget.spent / budget.limit) * 100;
-                        const isOverBudget = budget.spent >= budget.limit;
+                {budgets.length === 0 ? (
+                    <Card>
+                        <div className={styles.emptyState}>
+                            <p>No budgets yet</p>
+                            <Button variant="secondary" onClick={handleAdd}>
+                                <Plus size={16} />
+                                Create your first budget
+                            </Button>
+                        </div>
+                    </Card>
+                ) : (
+                    <div className={styles.budgetGrid}>
+                        {budgets.map((budget) => {
+                            const Icon = ICON_MAP[budget.icon] || HelpCircle;
+                            const percentage = (budget.spent / budget.limit) * 100;
+                            const isOverBudget = budget.spent >= budget.limit;
 
-                        return (
-                            <Card key={budget.id} className={styles.budgetCard} hover>
-                                <div className={styles.budgetHeader}>
-                                    <div className={styles.budgetIcon}>
-                                        <Icon size={20} />
+                            return (
+                                <Card key={budget.id} className={styles.budgetCard} hover>
+                                    <div className={styles.cardActions}>
+                                        <button
+                                            className={styles.actionButton}
+                                            onClick={() => handleEdit(budget.id)}
+                                            aria-label="Edit"
+                                        >
+                                            <Pencil size={16} />
+                                        </button>
+                                        <button
+                                            className={`${styles.actionButton} ${styles.deleteButton}`}
+                                            onClick={() => handleDelete(budget.id)}
+                                            aria-label="Delete"
+                                        >
+                                            <Trash2 size={16} />
+                                        </button>
                                     </div>
-                                    <span className={styles.budgetName}>{budget.name}</span>
-                                </div>
 
-                                <div className={styles.budgetAmounts}>
-                                    <span className={styles.spent}>{formatCurrency(budget.spent)}</span>
-                                    <span className={styles.limit}>of {formatCurrency(budget.limit)}</span>
-                                </div>
+                                    <div className={styles.budgetHeader}>
+                                        <div className={styles.budgetIcon}>
+                                            <Icon size={20} />
+                                        </div>
+                                        <span className={styles.budgetName}>{budget.name}</span>
+                                    </div>
 
-                                <ProgressBar value={budget.spent} max={budget.limit} />
+                                    <div className={styles.budgetAmounts}>
+                                        <span className={styles.spent}>{formatCurrency(budget.spent)}</span>
+                                        <span className={styles.limit}>of {formatCurrency(budget.limit)}</span>
+                                    </div>
 
-                                <div className={styles.budgetFooter}>
-                                    <span className={isOverBudget ? styles.overBudget : styles.underBudget}>
-                                        {isOverBudget
-                                            ? `Over by ${formatCurrency(budget.spent - budget.limit)}`
-                                            : `${formatCurrency(getRemaining(budget.spent, budget.limit))} remaining`
-                                        }
-                                    </span>
-                                    <span className={styles.percentage}>{Math.round(percentage)}%</span>
-                                </div>
-                            </Card>
-                        );
-                    })}
-                </div>
+                                    <ProgressBar value={budget.spent} max={budget.limit} />
+
+                                    <div className={styles.budgetFooter}>
+                                        <span className={isOverBudget ? styles.overBudget : styles.underBudget}>
+                                            {isOverBudget
+                                                ? `Over by ${formatCurrency(budget.spent - budget.limit)}`
+                                                : `${formatCurrency(getRemaining(budget.spent, budget.limit))} remaining`
+                                            }
+                                        </span>
+                                        <span className={styles.percentage}>{Math.round(percentage)}%</span>
+                                    </div>
+                                </Card>
+                            );
+                        })}
+                    </div>
+                )}
             </div>
+
+            {/* Budget Form Modal */}
+            <BudgetForm
+                isOpen={isFormOpen}
+                onClose={() => setIsFormOpen(false)}
+                editId={editingId}
+            />
         </div>
     );
 }

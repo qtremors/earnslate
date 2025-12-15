@@ -1,0 +1,51 @@
+.form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-lg);
+}
+
+/* ===== Type Toggle ===== */
+.typeToggle {
+    display: flex;
+    gap: var(--space-sm);
+    padding: var(--space-xs);
+    background: var(--bg-tertiary);
+    border-radius: var(--radius-md);
+}
+
+.typeButton {
+    flex: 1;
+    padding: var(--space-md);
+    background: transparent;
+    border: none;
+    border-radius: var(--radius-sm);
+    font-family: var(--font-sans);
+    font-size: var(--text-sm);
+    font-weight: var(--font-medium);
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.typeButton:hover {
+    color: var(--text-primary);
+}
+
+.activeExpense {
+    background: var(--error-muted);
+    color: var(--error);
+}
+
+.activeIncome {
+    background: var(--success-muted);
+    color: var(--success);
+}
+
+/* ===== Actions ===== */
+.actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: var(--space-md);
+    padding-top: var(--space-md);
+    border-top: 1px solid var(--border-primary);
+}

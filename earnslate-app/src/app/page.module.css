@@ -179,6 +179,28 @@
   font-family: var(--font-mono);
 }
 
+/* ===== Empty States ===== */
+.emptyState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-md);
+  padding: var(--space-3xl);
+  text-align: center;
+  color: var(--text-muted);
+}
+
+.link {
+  color: var(--text-primary);
+  text-decoration: underline;
+  transition: opacity var(--transition-fast);
+}
+
+.link:hover {
+  opacity: 0.8;
+}
+
 /* ===== Responsive ===== */
 @media (max-width: 1024px) {
   .mainGrid {

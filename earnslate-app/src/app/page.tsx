@@ -1,3 +1,6 @@
+'use client';
+
+import { useAppStore, selectTotalBalance, selectMonthlyIncome, selectMonthlyExpenses, selectRecentTransactions } from '@/store';
 import Header from '@/components/Header';
 import Card, { CardHeader } from '@/components/Card';
 import ProgressBar from '@/components/ProgressBar';
@@ -9,42 +12,44 @@ import {
   Briefcase,
   Tv,
   Zap,
-  Coffee
+  Coffee,
+  HelpCircle,
 } from 'lucide-react';
 import styles from './page.module.css';
 
-// ===== Sample Data (will be replaced with real data later) =====
-const financialSummary = {
-  totalBalance: 45230.00,
-  monthlyIncome: 65000.00,
-  monthlyExpenses: 32450.00,
-  currency: '₹',
+// Category to icon mapping
+const CATEGORY_ICONS: Record<string, React.ElementType> = {
+  Food: Coffee,
+  Shopping: ShoppingCart,
+  Entertainment: Tv,
+  Utilities: Zap,
+  Income: Briefcase,
 };
 
-const recentTransactions = [
-  { id: 1, description: 'Groceries - BigBasket', amount: -2450, date: 'Dec 14', category: 'Food', icon: ShoppingCart },
-  { id: 2, description: 'Salary - December', amount: 65000, date: 'Dec 1', category: 'Income', icon: Briefcase },
-  { id: 3, description: 'Netflix Subscription', amount: -649, date: 'Dec 1', category: 'Entertainment', icon: Tv },
-  { id: 4, description: 'Electricity Bill', amount: -1850, date: 'Nov 28', category: 'Utilities', icon: Zap },
-  { id: 5, description: 'Coffee Shop', amount: -320, date: 'Nov 27', category: 'Food', icon: Coffee },
-];
-
-const budgets = [
-  { name: 'Food & Dining', spent: 8500, limit: 12000 },
-  { name: 'Entertainment', spent: 3200, limit: 5000 },
-  { name: 'Transport', spent: 4200, limit: 6000 },
-];
-
 export default function Dashboard() {
+  const settings = useAppStore((state) => state.settings);
+  const totalBalance = useAppStore(selectTotalBalance);
+  const monthlyIncome = useAppStore(selectMonthlyIncome);
+  const monthlyExpenses = useAppStore(selectMonthlyExpenses);
+  const recentTransactions = useAppStore((state) => selectRecentTransactions(state, 5));
+  const budgets = useAppStore((state) => state.budgets);
+
   const formatCurrency = (amount: number) => {
-    return `${financialSummary.currency}${Math.abs(amount).toLocaleString('en-IN')}`;
+    return `${settings.currencySymbol}${Math.abs(amount).toLocaleString('en-IN')}`;
+  };
+
+  const formatDate = (dateString: string) => {
+    return new Date(dateString).toLocaleDateString('en-IN', {
+      day: 'numeric',
+      month: 'short',
+    });
   };
 
   return (
     <div className={styles.dashboard}>
       <Header
         title="Dashboard"
-        subtitle="Welcome back! Here's your financial overview."
+        subtitle={`Welcome back${settings.displayName !== 'User' ? `, ${settings.displayName}` : ''}! Here's your financial overview.`}
       />
 
       <div className={styles.content}>
@@ -56,8 +61,8 @@ export default function Dashboard() {
             </div>
             <div className={styles.summaryInfo}>
               <span className={styles.summaryLabel}>Total Balance</span>
-              <span className={styles.summaryValue}>
-                {formatCurrency(financialSummary.totalBalance)}
+              <span className={`${styles.summaryValue} ${totalBalance >= 0 ? '' : styles.expense}`}>
+                {totalBalance >= 0 ? '' : '-'}{formatCurrency(totalBalance)}
               </span>
             </div>
           </Card>
@@ -67,9 +72,9 @@ export default function Dashboard() {
               <TrendingUp size={24} />
             </div>
             <div className={styles.summaryInfo}>
-              <span className={styles.summaryLabel}>Income (Dec)</span>
+              <span className={styles.summaryLabel}>Income (This Month)</span>
               <span className={`${styles.summaryValue} ${styles.income}`}>
-                +{formatCurrency(financialSummary.monthlyIncome)}
+                +{formatCurrency(monthlyIncome)}
               </span>
             </div>
           </Card>
@@ -79,9 +84,9 @@ export default function Dashboard() {
               <TrendingDown size={24} />
             </div>
             <div className={styles.summaryInfo}>
-              <span className={styles.summaryLabel}>Expenses (Dec)</span>
+              <span className={styles.summaryLabel}>Expenses (This Month)</span>
               <span className={`${styles.summaryValue} ${styles.expense}`}>
-                -{formatCurrency(financialSummary.monthlyExpenses)}
+                -{formatCurrency(monthlyExpenses)}
               </span>
             </div>
           </Card>
@@ -95,27 +100,34 @@ export default function Dashboard() {
               title="Recent Transactions"
               action={<a href="/transactions" className={styles.viewAll}>View All →</a>}
             />
-            <ul className={styles.transactionList}>
-              {recentTransactions.map((tx) => {
-                const Icon = tx.icon;
-                return (
-                  <li key={tx.id} className={styles.transactionItem}>
-                    <div className={styles.transactionIcon}>
-                      <Icon size={18} />
-                    </div>
-                    <div className={styles.transactionInfo}>
-                      <span className={styles.transactionDesc}>{tx.description}</span>
-                      <span className={styles.transactionMeta}>
-                        {tx.category} • {tx.date}
+            {recentTransactions.length === 0 ? (
+              <div className={styles.emptyState}>
+                <p>No transactions yet</p>
+                <a href="/transactions" className={styles.link}>Add your first transaction</a>
+              </div>
+            ) : (
+              <ul className={styles.transactionList}>
+                {recentTransactions.map((tx) => {
+                  const Icon = CATEGORY_ICONS[tx.category] || HelpCircle;
+                  return (
+                    <li key={tx.id} className={styles.transactionItem}>
+                      <div className={styles.transactionIcon}>
+                        <Icon size={18} />
+                      </div>
+                      <div className={styles.transactionInfo}>
+                        <span className={styles.transactionDesc}>{tx.description}</span>
+                        <span className={styles.transactionMeta}>
+                          {tx.category} • {formatDate(tx.date)}
+                        </span>
+                      </div>
+                      <span className={`${styles.transactionAmount} ${tx.amount > 0 ? styles.income : styles.expense}`}>
+                        {tx.amount > 0 ? '+' : ''}{formatCurrency(tx.amount)}
                       </span>
-                    </div>
-                    <span className={`${styles.transactionAmount} ${tx.amount > 0 ? styles.income : styles.expense}`}>
-                      {tx.amount > 0 ? '+' : ''}{formatCurrency(tx.amount)}
-                    </span>
-                  </li>
-                );
-              })}
-            </ul>
+                    </li>
+                  );
+                })}
+              </ul>
+            )}
           </Card>
 
           {/* Budget Overview */}
@@ -124,19 +136,26 @@ export default function Dashboard() {
               title="Budget Status"
               action={<a href="/budgets" className={styles.viewAll}>View All →</a>}
             />
-            <div className={styles.budgetList}>
-              {budgets.map((budget) => (
-                <div key={budget.name} className={styles.budgetItem}>
-                  <div className={styles.budgetHeader}>
-                    <span className={styles.budgetName}>{budget.name}</span>
-                    <span className={styles.budgetNumbers}>
-                      {formatCurrency(budget.spent)} / {formatCurrency(budget.limit)}
-                    </span>
+            {budgets.length === 0 ? (
+              <div className={styles.emptyState}>
+                <p>No budgets yet</p>
+                <a href="/budgets" className={styles.link}>Create your first budget</a>
+              </div>
+            ) : (
+              <div className={styles.budgetList}>
+                {budgets.slice(0, 3).map((budget) => (
+                  <div key={budget.id} className={styles.budgetItem}>
+                    <div className={styles.budgetHeader}>
+                      <span className={styles.budgetName}>{budget.name}</span>
+                      <span className={styles.budgetNumbers}>
+                        {formatCurrency(budget.spent)} / {formatCurrency(budget.limit)}
+                      </span>
+                    </div>
+                    <ProgressBar value={budget.spent} max={budget.limit} />
                   </div>
-                  <ProgressBar value={budget.spent} max={budget.limit} />
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            )}
           </Card>
         </div>
       </div>

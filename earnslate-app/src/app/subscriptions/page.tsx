@@ -1,31 +1,66 @@
+'use client';
+
+import { useState } from 'react';
+import { useAppStore } from '@/store';
 import Header from '@/components/Header';
 import Card from '@/components/Card';
 import Button from '@/components/Button';
-import { Plus } from 'lucide-react';
-// Brand icons from Simple Icons via react-icons
+import SubscriptionForm from '@/components/SubscriptionForm';
+import { Plus, Trash2, Pencil, Play, Pause } from 'lucide-react';
 import {
     SiNetflix,
     SiSpotify,
     SiAmazon,
     SiYoutube,
     SiIcloud,
+    SiApple,
 } from 'react-icons/si';
-import { Dumbbell } from 'lucide-react';
+import { Dumbbell, HelpCircle } from 'lucide-react';
 import styles from './page.module.css';
 
-// ===== Sample Data =====
-const subscriptions = [
-    { id: 1, name: 'Netflix', amount: 649, cycle: 'monthly', nextBilling: 'Jan 1, 2026', icon: SiNetflix, color: '#E50914', active: true },
-    { id: 2, name: 'Spotify', amount: 119, cycle: 'monthly', nextBilling: 'Jan 5, 2026', icon: SiSpotify, color: '#1DB954', active: true },
-    { id: 3, name: 'Amazon Prime', amount: 1499, cycle: 'yearly', nextBilling: 'Mar 15, 2026', icon: SiAmazon, color: '#FF9900', active: true },
-    { id: 4, name: 'YouTube Premium', amount: 129, cycle: 'monthly', nextBilling: 'Jan 10, 2026', icon: SiYoutube, color: '#FF0000', active: true },
-    { id: 5, name: 'iCloud Storage', amount: 75, cycle: 'monthly', nextBilling: 'Jan 12, 2026', icon: SiIcloud, color: '#3693F3', active: true },
-    { id: 6, name: 'Gym Membership', amount: 1200, cycle: 'monthly', nextBilling: 'Jan 1, 2026', icon: Dumbbell, color: null, active: false },
-];
+// Icon mapping for subscriptions
+const ICON_MAP: Record<string, React.ElementType> = {
+    netflix: SiNetflix,
+    spotify: SiSpotify,
+    amazon: SiAmazon,
+    youtube: SiYoutube,
+    icloud: SiIcloud,
+    apple: SiApple,
+    gym: Dumbbell,
+    other: HelpCircle,
+};
 
 export default function SubscriptionsPage() {
+    const [isFormOpen, setIsFormOpen] = useState(false);
+    const [editingId, setEditingId] = useState<string | undefined>();
+
+    const subscriptions = useAppStore((state) => state.subscriptions);
+    const deleteSubscription = useAppStore((state) => state.deleteSubscription);
+    const updateSubscription = useAppStore((state) => state.updateSubscription);
+    const settings = useAppStore((state) => state.settings);
+
     const formatCurrency = (amount: number) => {
-        return `₹${amount.toLocaleString('en-IN')}`;
+        return `${settings.currencySymbol}${amount.toLocaleString('en-IN')}`;
+    };
+
+    const handleEdit = (id: string) => {
+        setEditingId(id);
+        setIsFormOpen(true);
+    };
+
+    const handleAdd = () => {
+        setEditingId(undefined);
+        setIsFormOpen(true);
+    };
+
+    const handleDelete = (id: string) => {
+        if (confirm('Are you sure you want to delete this subscription?')) {
+            deleteSubscription(id);
+        }
+    };
+
+    const handleToggleActive = (id: string, currentActive: boolean) => {
+        updateSubscription(id, { active: !currentActive });
     };
 
     const activeSubscriptions = subscriptions.filter(s => s.active);
@@ -60,46 +95,86 @@ export default function SubscriptionsPage() {
 
                 {/* Actions */}
                 <div className={styles.actions}>
-                    <Button variant="primary">
+                    <Button variant="primary" onClick={handleAdd}>
                         <Plus size={18} />
                         Add Subscription
                     </Button>
                 </div>
 
                 {/* Subscriptions List */}
-                <div className={styles.subscriptionList}>
-                    {subscriptions.map((sub) => {
-                        const Icon = sub.icon;
-                        return (
-                            <Card key={sub.id} className={`${styles.subscriptionCard} ${!sub.active ? styles.inactive : ''}`} hover>
-                                <div className={styles.subscriptionMain}>
-                                    <div
-                                        className={styles.subscriptionIcon}
-                                        style={sub.color ? { background: `${sub.color}20`, color: sub.color } : undefined}
-                                    >
-                                        <Icon size={22} />
+                {subscriptions.length === 0 ? (
+                    <Card>
+                        <div className={styles.emptyState}>
+                            <p>No subscriptions yet</p>
+                            <Button variant="secondary" onClick={handleAdd}>
+                                <Plus size={16} />
+                                Add your first subscription
+                            </Button>
+                        </div>
+                    </Card>
+                ) : (
+                    <div className={styles.subscriptionList}>
+                        {subscriptions.map((sub) => {
+                            const Icon = ICON_MAP[sub.icon] || HelpCircle;
+                            return (
+                                <Card key={sub.id} className={`${styles.subscriptionCard} ${!sub.active ? styles.inactive : ''}`} hover>
+                                    <div className={styles.subscriptionMain}>
+                                        <div
+                                            className={styles.subscriptionIcon}
+                                            style={sub.color ? { background: `${sub.color}20`, color: sub.color } : undefined}
+                                        >
+                                            <Icon size={22} />
+                                        </div>
+                                        <div className={styles.subscriptionInfo}>
+                                            <span className={styles.subscriptionName}>{sub.name}</span>
+                                            <span className={styles.subscriptionMeta}>
+                                                {sub.cycle === 'yearly' ? 'Yearly' : 'Monthly'} • Next: {new Date(sub.nextBilling).toLocaleDateString()}
+                                            </span>
+                                        </div>
                                     </div>
-                                    <div className={styles.subscriptionInfo}>
-                                        <span className={styles.subscriptionName}>{sub.name}</span>
-                                        <span className={styles.subscriptionMeta}>
-                                            {sub.cycle === 'yearly' ? 'Yearly' : 'Monthly'} • Next: {sub.nextBilling}
-                                        </span>
+
+                                    <div className={styles.subscriptionRight}>
+                                        <span className={styles.subscriptionAmount}>{formatCurrency(sub.amount)}</span>
+                                        <span className={styles.subscriptionCycle}>/{sub.cycle === 'yearly' ? 'year' : 'month'}</span>
                                     </div>
-                                </div>
 
-                                <div className={styles.subscriptionRight}>
-                                    <span className={styles.subscriptionAmount}>{formatCurrency(sub.amount)}</span>
-                                    <span className={styles.subscriptionCycle}>/{sub.cycle === 'yearly' ? 'year' : 'month'}</span>
-                                </div>
-
-                                <span className={`${styles.statusBadge} ${sub.active ? styles.active : styles.paused}`}>
-                                    {sub.active ? 'Active' : 'Paused'}
-                                </span>
-                            </Card>
-                        );
-                    })}
-                </div>
+                                    <div className={styles.cardActions}>
+                                        <button
+                                            className={styles.actionButton}
+                                            onClick={() => handleToggleActive(sub.id, sub.active)}
+                                            aria-label={sub.active ? 'Pause' : 'Resume'}
+                                            title={sub.active ? 'Pause subscription' : 'Resume subscription'}
+                                        >
+                                            {sub.active ? <Pause size={16} /> : <Play size={16} />}
+                                        </button>
+                                        <button
+                                            className={styles.actionButton}
+                                            onClick={() => handleEdit(sub.id)}
+                                            aria-label="Edit"
+                                        >
+                                            <Pencil size={16} />
+                                        </button>
+                                        <button
+                                            className={`${styles.actionButton} ${styles.deleteButton}`}
+                                            onClick={() => handleDelete(sub.id)}
+                                            aria-label="Delete"
+                                        >
+                                            <Trash2 size={16} />
+                                        </button>
+                                    </div>
+                                </Card>
+                            );
+                        })}
+                    </div>
+                )}
             </div>
+
+            {/* Subscription Form Modal */}
+            <SubscriptionForm
+                isOpen={isFormOpen}
+                onClose={() => setIsFormOpen(false)}
+                editId={editingId}
+            />
         </div>
     );
 }
