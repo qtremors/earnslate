@@ -73,11 +73,48 @@ export default function TransactionForm({ isOpen, onClose, editId }: Transaction
         }
     }, [formData.type, settings.customCategories]);
 
+    // Validation state
+    const [errors, setErrors] = useState<{ description?: string; amount?: string }>({});
+
+    const validate = (): boolean => {
+        const newErrors: { description?: string; amount?: string } = {};
+
+        if (!formData.description.trim()) {
+            newErrors.description = 'Description is required';
+        }
+
+        const amount = parseFloat(formData.amount);
+        if (!formData.amount || isNaN(amount) || amount <= 0) {
+            newErrors.amount = 'Please enter a valid amount';
+        }
+
+        setErrors(newErrors);
+        return Object.keys(newErrors).length === 0;
+    };
+
+    // Clear errors when user types
+    useEffect(() => {
+        if (formData.description.trim() && errors.description) {
+            setErrors(prev => ({ ...prev, description: undefined }));
+        }
+    }, [formData.description]);
+
+    useEffect(() => {
+        const amount = parseFloat(formData.amount);
+        if (formData.amount && !isNaN(amount) && amount > 0 && errors.amount) {
+            setErrors(prev => ({ ...prev, amount: undefined }));
+        }
+    }, [formData.amount]);
+
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
 
+        if (!validate()) {
+            showToast('Please fix the errors before submitting', 'error');
+            return;
+        }
+
         const amount = parseFloat(formData.amount);
-        if (isNaN(amount) || amount <= 0) return;
 
         const transactionData = {
             description: formData.description,
@@ -130,6 +167,7 @@ export default function TransactionForm({ isOpen, onClose, editId }: Transaction
                     placeholder="e.g., Groceries, Salary, Netflix..."
                     value={formData.description}
                     onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                    error={errors.description}
                     required
                 />
 
@@ -143,6 +181,7 @@ export default function TransactionForm({ isOpen, onClose, editId }: Transaction
                         step="0.01"
                         value={formData.amount}
                         onChange={(e) => setFormData({ ...formData, amount: e.target.value })}
+                        error={errors.amount}
                         required
                     />
 
