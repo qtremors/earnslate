@@ -22,11 +22,15 @@ import {
 import styles from './page.module.css';
 
 const CATEGORY_ICONS: Record<string, React.ElementType> = {
-  Food: Coffee,
-  Shopping: ShoppingCart,
-  Entertainment: Tv,
-  Utilities: Zap,
-  Income: Briefcase,
+  'Food': Coffee,
+  'Food & Dining': Coffee,
+  'Shopping': ShoppingCart,
+  'Entertainment': Tv,
+  'Utilities': Zap,
+  'Income': Briefcase,
+  'Transport': TrendingUp,
+  'Health': HelpCircle, // Would need Heart import
+  'Other': HelpCircle,
 };
 
 export default function Dashboard() {

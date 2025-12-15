@@ -10,6 +10,8 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
     loading?: boolean;
 }
 
+const SPINNER_SIZES = { sm: 14, md: 16, lg: 20 };
+
 export default function Button({
     children,
     variant = 'primary',
@@ -20,6 +22,8 @@ export default function Button({
     disabled,
     ...props
 }: ButtonProps) {
+    const spinnerSize = SPINNER_SIZES[size];
+
     return (
         <button
             className={`
@@ -33,7 +37,7 @@ export default function Button({
             disabled={disabled || loading}
             {...props}
         >
-            {loading && <Loader2 size={16} className={styles.spinner} />}
+            {loading && <Loader2 size={spinnerSize} className={styles.spinner} />}
             <span className={loading ? styles.hiddenText : ''}>{children}</span>
         </button>
     );
