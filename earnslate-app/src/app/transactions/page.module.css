@@ -10,6 +10,69 @@
     animation: fadeIn var(--transition-normal) ease;
 }
 
+/* ===== Toolbar ===== */
+.toolbar {
+    display: flex;
+    gap: var(--space-md);
+    margin-bottom: var(--space-lg);
+    flex-wrap: wrap;
+}
+
+.searchBox {
+    position: relative;
+    flex: 1;
+    min-width: 200px;
+}
+
+.searchIcon {
+    position: absolute;
+    left: var(--space-md);
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-muted);
+}
+
+.searchInput {
+    width: 100%;
+    padding: var(--space-md);
+    padding-left: calc(var(--space-md) * 2 + 18px);
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-primary);
+    border-radius: var(--radius-md);
+    font-size: var(--text-sm);
+    color: var(--text-primary);
+    font-family: var(--font-sans);
+}
+
+.searchInput::placeholder {
+    color: var(--text-muted);
+}
+
+.searchInput:focus {
+    outline: none;
+    border-color: var(--border-hover);
+}
+
+.filters {
+    display: flex;
+    gap: var(--space-sm);
+}
+
+.filterSelect {
+    padding: var(--space-sm) var(--space-md);
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-primary);
+    border-radius: var(--radius-md);
+    font-size: var(--text-sm);
+    color: var(--text-primary);
+    cursor: pointer;
+}
+
+.filterSelect:focus {
+    outline: none;
+    border-color: var(--border-hover);
+}
+
 /* ===== Actions Bar ===== */
 .actionsBar {
     display: flex;
@@ -18,9 +81,100 @@
     margin-bottom: var(--space-lg);
 }
 
-.filters {
+.viewToggle {
+    display: flex;
+    gap: var(--space-xs);
+    background: var(--bg-tertiary);
+    padding: var(--space-xs);
+    border-radius: var(--radius-md);
+}
+
+.viewButton {
+    padding: var(--space-sm);
+    background: transparent;
+    border: none;
+    border-radius: var(--radius-sm);
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.viewButton:hover {
+    color: var(--text-primary);
+}
+
+.viewButton.active {
+    background: var(--bg-inverted);
+    color: var(--text-inverted);
+}
+
+.actionButtons {
     display: flex;
     gap: var(--space-sm);
+}
+
+/* ===== Chart View ===== */
+.chartContainer {
+    display: flex;
+    gap: var(--space-xl);
+    padding: var(--space-lg);
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.pieChart {
+    width: 200px;
+    height: 200px;
+    flex-shrink: 0;
+}
+
+.pie {
+    width: 100%;
+    height: 100%;
+}
+
+.legend {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+    min-width: 200px;
+}
+
+.legendItem {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+}
+
+.legendColor {
+    width: 12px;
+    height: 12px;
+    border-radius: var(--radius-sm);
+    flex-shrink: 0;
+}
+
+.legendLabel {
+    flex: 1;
+    font-size: var(--text-sm);
+    color: var(--text-primary);
+}
+
+.legendValue {
+    font-size: var(--text-sm);
+    font-weight: var(--font-semibold);
+    color: var(--text-primary);
+    font-family: var(--font-mono);
+}
+
+.legendPercent {
+    font-size: var(--text-xs);
+    color: var(--text-muted);
+    min-width: 40px;
+    text-align: right;
 }
 
 /* ===== Table ===== */
@@ -137,13 +291,21 @@
         padding: var(--space-md);
     }
 
+    .toolbar {
+        flex-direction: column;
+    }
+
     .actionsBar {
         flex-direction: column;
         gap: var(--space-md);
         align-items: stretch;
     }
 
-    .filters {
-        justify-content: center;
+    .actionButtons {
+        justify-content: flex-end;
+    }
+
+    .chartContainer {
+        flex-direction: column;
     }
 }

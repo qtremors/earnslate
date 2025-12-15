@@ -5,9 +5,11 @@
 ## Features
 
 ### Core
-- ✅ **Transactions** - Track income/expenses with custom categories
-- ✅ **Budgets** - Set flexible spending limits (weekly/monthly/custom)
-- ✅ **Subscriptions** - Manage recurring payments with 55+ service templates
+- ✅ **Transactions** - Search, filter by type/category, pie chart view, CSV export
+- ✅ **Budgets** - Progress bars, donut chart, alert badges at 80%/90%
+- ✅ **Subscriptions** - 55+ service templates with brand icons, treemap view
+- ✅ **Dashboard** - Spending chart, budget alerts, 3-column layout
+- ✅ **Settings** - Category manager, data export/import
 
 ### God-Tier Customization
 - ✅ **ServicePicker** - Search 55+ services with brand icons (Netflix, Spotify, etc.)

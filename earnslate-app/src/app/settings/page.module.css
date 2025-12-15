@@ -50,6 +50,67 @@
     color: var(--text-muted);
 }
 
+/* ===== Categories ===== */
+.categoryList {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-sm);
+    margin-bottom: var(--space-md);
+}
+
+.categoryItem {
+    display: flex;
+    align-items: center;
+    gap: var(--space-xs);
+    padding: var(--space-xs) var(--space-sm);
+    background: var(--bg-tertiary);
+    border-radius: var(--radius-md);
+    font-size: var(--text-sm);
+    color: var(--text-primary);
+}
+
+.deleteCategory {
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    padding: 2px;
+    display: flex;
+    align-items: center;
+    border-radius: var(--radius-sm);
+    transition: all var(--transition-fast);
+}
+
+.deleteCategory:hover {
+    color: var(--error);
+    background: var(--error-muted);
+}
+
+.addCategory {
+    display: flex;
+    gap: var(--space-sm);
+}
+
+.categoryInput {
+    flex: 1;
+    padding: var(--space-sm) var(--space-md);
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-primary);
+    border-radius: var(--radius-md);
+    font-size: var(--text-sm);
+    color: var(--text-primary);
+    font-family: var(--font-sans);
+}
+
+.categoryInput:focus {
+    outline: none;
+    border-color: var(--border-hover);
+}
+
+.categoryInput::placeholder {
+    color: var(--text-muted);
+}
+
 /* ===== About ===== */
 .aboutInfo {
     text-align: center;
@@ -75,5 +136,9 @@
         flex-direction: column;
         align-items: flex-start;
         gap: var(--space-sm);
+    }
+
+    .addCategory {
+        flex-direction: column;
     }
 }

@@ -1,5 +1,6 @@
 'use client';
 
+import { useMemo } from 'react';
 import { useAppStore } from '@/store';
 import Header from '@/components/Header';
 import Card, { CardHeader } from '@/components/Card';
@@ -14,10 +15,10 @@ import {
   Zap,
   Coffee,
   HelpCircle,
+  AlertTriangle,
 } from 'lucide-react';
 import styles from './page.module.css';
 
-// Category to icon mapping
 const CATEGORY_ICONS: Record<string, React.ElementType> = {
   Food: Coffee,
   Shopping: ShoppingCart,
@@ -26,13 +27,13 @@ const CATEGORY_ICONS: Record<string, React.ElementType> = {
   Income: Briefcase,
 };
 
+const CHART_COLORS = ['#E50914', '#1DB954', '#FF9900', '#3693F3', '#8B5CF6', '#10B981', '#F59E0B', '#EF4444'];
+
 export default function Dashboard() {
-  // Get individual state slices to avoid re-render loops
   const settings = useAppStore((state) => state.settings);
   const transactions = useAppStore((state) => state.transactions);
   const budgets = useAppStore((state) => state.budgets);
 
-  // Compute values from state (not in selectors to avoid infinite loop)
   const totalBalance = transactions.reduce((sum, t) => sum + t.amount, 0);
 
   const now = new Date();
@@ -42,33 +43,44 @@ export default function Dashboard() {
   const monthlyIncome = transactions
     .filter(t => {
       const date = new Date(t.date);
-      return t.type === 'income' &&
-        date.getMonth() === currentMonth &&
-        date.getFullYear() === currentYear;
+      return t.type === 'income' && date.getMonth() === currentMonth && date.getFullYear() === currentYear;
     })
     .reduce((sum, t) => sum + t.amount, 0);
 
   const monthlyExpenses = transactions
     .filter(t => {
       const date = new Date(t.date);
-      return t.type === 'expense' &&
-        date.getMonth() === currentMonth &&
-        date.getFullYear() === currentYear;
+      return t.type === 'expense' && date.getMonth() === currentMonth && date.getFullYear() === currentYear;
     })
     .reduce((sum, t) => sum + Math.abs(t.amount), 0);
 
+  // Spending by category for pie chart
+  const spendingByCategory = useMemo(() => {
+    const categoryTotals: Record<string, number> = {};
+    transactions
+      .filter(t => {
+        const date = new Date(t.date);
+        return t.type === 'expense' && date.getMonth() === currentMonth && date.getFullYear() === currentYear;
+      })
+      .forEach(t => {
+        categoryTotals[t.category] = (categoryTotals[t.category] || 0) + Math.abs(t.amount);
+      });
+
+    return Object.entries(categoryTotals)
+      .map(([category, amount], i) => ({ category, amount, color: CHART_COLORS[i % CHART_COLORS.length] }))
+      .sort((a, b) => b.amount - a.amount);
+  }, [transactions, currentMonth, currentYear]);
+
   const recentTransactions = transactions.slice(0, 5);
 
-  const formatCurrency = (amount: number) => {
-    return `${settings.currencySymbol}${Math.abs(amount).toLocaleString('en-IN')}`;
-  };
+  const formatCurrency = (amount: number) => `${settings.currencySymbol}${Math.abs(amount).toLocaleString('en-IN')}`;
 
   const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('en-IN', {
-      day: 'numeric',
-      month: 'short',
-    });
+    return new Date(dateString).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' });
   };
+
+  // Budget alerts (over 80%)
+  const budgetAlerts = budgets.filter(b => (b.spent / b.limit) >= 0.8);
 
   return (
     <div className={styles.dashboard}>
@@ -78,6 +90,22 @@ export default function Dashboard() {
       />
 
       <div className={styles.content}>
+        {/* Budget Alerts */}
+        {budgetAlerts.length > 0 && (
+          <div className={styles.alerts}>
+            {budgetAlerts.map(b => {
+              const pct = Math.round((b.spent / b.limit) * 100);
+              const isOver = pct >= 100;
+              return (
+                <div key={b.id} className={`${styles.alert} ${isOver ? styles.alertDanger : styles.alertWarning}`}>
+                  <AlertTriangle size={16} />
+                  <span>{b.name}: {pct}% {isOver ? 'over budget!' : 'of budget used'}</span>
+                </div>
+              );
+            })}
+          </div>
+        )}
+
         {/* Summary Cards */}
         <section className={styles.summarySection}>
           <Card className={styles.summaryCard} hover>
@@ -98,9 +126,7 @@ export default function Dashboard() {
             </div>
             <div className={styles.summaryInfo}>
               <span className={styles.summaryLabel}>Income (This Month)</span>
-              <span className={`${styles.summaryValue} ${styles.income}`}>
-                +{formatCurrency(monthlyIncome)}
-              </span>
+              <span className={`${styles.summaryValue} ${styles.income}`}>+{formatCurrency(monthlyIncome)}</span>
             </div>
           </Card>
 
@@ -110,15 +136,66 @@ export default function Dashboard() {
             </div>
             <div className={styles.summaryInfo}>
               <span className={styles.summaryLabel}>Expenses (This Month)</span>
-              <span className={`${styles.summaryValue} ${styles.expense}`}>
-                -{formatCurrency(monthlyExpenses)}
-              </span>
+              <span className={`${styles.summaryValue} ${styles.expense}`}>-{formatCurrency(monthlyExpenses)}</span>
             </div>
           </Card>
         </section>
 
         {/* Main Content Grid */}
         <div className={styles.mainGrid}>
+          {/* Spending Breakdown */}
+          <Card className={styles.chartCard}>
+            <CardHeader title="Spending by Category" />
+            {spendingByCategory.length === 0 ? (
+              <div className={styles.emptyState}>
+                <p>No expenses this month</p>
+              </div>
+            ) : (
+              <div className={styles.chartContainer}>
+                <div className={styles.pieChart}>
+                  <svg viewBox="0 0 100 100" className={styles.pie}>
+                    {spendingByCategory.reduce((acc, d) => {
+                      const startAngle = acc.angle;
+                      const sliceAngle = (d.amount / monthlyExpenses) * 360;
+                      const endAngle = startAngle + sliceAngle;
+
+                      const startRad = (startAngle - 90) * Math.PI / 180;
+                      const endRad = (endAngle - 90) * Math.PI / 180;
+
+                      const x1 = 50 + 40 * Math.cos(startRad);
+                      const y1 = 50 + 40 * Math.sin(startRad);
+                      const x2 = 50 + 40 * Math.cos(endRad);
+                      const y2 = 50 + 40 * Math.sin(endRad);
+
+                      const largeArc = sliceAngle > 180 ? 1 : 0;
+
+                      acc.paths.push(
+                        <path
+                          key={d.category}
+                          d={`M 50 50 L ${x1} ${y1} A 40 40 0 ${largeArc} 1 ${x2} ${y2} Z`}
+                          fill={d.color}
+                          stroke="var(--bg-primary)"
+                          strokeWidth="0.5"
+                        />
+                      );
+                      acc.angle = endAngle;
+                      return acc;
+                    }, { paths: [] as JSX.Element[], angle: 0 }).paths}
+                  </svg>
+                </div>
+                <div className={styles.legend}>
+                  {spendingByCategory.slice(0, 5).map(d => (
+                    <div key={d.category} className={styles.legendItem}>
+                      <div className={styles.legendColor} style={{ backgroundColor: d.color }} />
+                      <span className={styles.legendLabel}>{d.category}</span>
+                      <span className={styles.legendValue}>{formatCurrency(d.amount)}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </Card>
+
           {/* Recent Transactions */}
           <Card className={styles.transactionsCard}>
             <CardHeader
@@ -141,9 +218,7 @@ export default function Dashboard() {
                       </div>
                       <div className={styles.transactionInfo}>
                         <span className={styles.transactionDesc}>{tx.description}</span>
-                        <span className={styles.transactionMeta}>
-                          {tx.category} • {formatDate(tx.date)}
-                        </span>
+                        <span className={styles.transactionMeta}>{tx.category} • {formatDate(tx.date)}</span>
                       </div>
                       <span className={`${styles.transactionAmount} ${tx.amount > 0 ? styles.income : styles.expense}`}>
                         {tx.amount > 0 ? '+' : ''}{formatCurrency(tx.amount)}
@@ -168,17 +243,20 @@ export default function Dashboard() {
               </div>
             ) : (
               <div className={styles.budgetList}>
-                {budgets.slice(0, 3).map((budget) => (
-                  <div key={budget.id} className={styles.budgetItem}>
-                    <div className={styles.budgetHeader}>
-                      <span className={styles.budgetName}>{budget.name}</span>
-                      <span className={styles.budgetNumbers}>
-                        {formatCurrency(budget.spent)} / {formatCurrency(budget.limit)}
-                      </span>
+                {budgets.slice(0, 3).map((budget) => {
+                  const pct = (budget.spent / budget.limit) * 100;
+                  return (
+                    <div key={budget.id} className={styles.budgetItem}>
+                      <div className={styles.budgetHeader}>
+                        <span className={styles.budgetName}>{budget.name}</span>
+                        <span className={`${styles.budgetNumbers} ${pct >= 100 ? styles.expense : pct >= 80 ? styles.warning : ''}`}>
+                          {formatCurrency(budget.spent)} / {formatCurrency(budget.limit)}
+                        </span>
+                      </div>
+                      <ProgressBar value={budget.spent} max={budget.limit} />
                     </div>
-                    <ProgressBar value={budget.spent} max={budget.limit} />
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             )}
           </Card>

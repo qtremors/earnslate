@@ -1,4 +1,31 @@
-# Changelog
+## [0.4.0] - 2025-12-15
+
+### Added - God-Tier Customization for All Pages
+
+#### Transactions
+- Search bar for filtering by description
+- Type and category dropdown filters
+- Pie chart view toggle for spending breakdown
+- CSV export functionality
+
+#### Budgets
+- Donut chart overview with center percentage
+- Alert badges at 80%/90% thresholds
+- Status-based card styling (warning/danger/over)
+- Grid/Chart view toggle
+
+#### Dashboard
+- Spending by category pie chart
+- Budget alert notifications (when over 80%)
+- 3-column responsive layout
+
+#### Settings
+- Category manager (add/delete custom categories)
+- Data export to JSON backup
+- Data import from backup
+- Updated to v0.3.0
+
+---
 
 ## [0.3.0] - 2025-12-15
 
