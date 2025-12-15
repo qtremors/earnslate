@@ -2,6 +2,7 @@
 
 import { useState, useMemo } from 'react';
 import { useAppStore } from '@/store';
+import { useConfirm } from '@/hooks/useConfirm';
 import Header from '@/components/Header';
 import Card, { CardHeader } from '@/components/Card';
 import Button from '@/components/Button';
@@ -23,6 +24,7 @@ export default function TransactionsPage() {
     const transactions = useAppStore((state) => state.transactions);
     const deleteTransaction = useAppStore((state) => state.deleteTransaction);
     const settings = useAppStore((state) => state.settings);
+    const { confirm, ConfirmDialog } = useConfirm();
 
     const formatCurrency = (amount: number) => `${settings.currencySymbol}${Math.abs(amount).toLocaleString('en-IN')}`;
 
@@ -84,10 +86,14 @@ export default function TransactionsPage() {
         setIsFormOpen(true);
     };
 
-    const handleDelete = (id: string) => {
-        if (confirm('Are you sure you want to delete this transaction?')) {
-            deleteTransaction(id);
-        }
+    const handleDelete = async (id: string) => {
+        const confirmed = await confirm({
+            title: 'Delete Transaction',
+            message: 'Are you sure you want to delete this transaction?',
+            confirmText: 'Delete',
+            variant: 'danger',
+        });
+        if (confirmed) deleteTransaction(id);
     };
 
     const handleExportCSV = () => {
@@ -298,6 +304,7 @@ export default function TransactionsPage() {
             </div>
 
             <TransactionForm isOpen={isFormOpen} onClose={() => setIsFormOpen(false)} editId={editingId} />
+            <ConfirmDialog />
         </div>
     );
 }

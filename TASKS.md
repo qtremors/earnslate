@@ -1,18 +1,22 @@
 # Earnslate Tasks
 
-## 🔴 Critical Bugs (In Progress)
-- [ ] Onboarding doesn't save currency selection
-- [ ] Delete transaction doesn't update budget spent
-- [ ] Edit transaction doesn't adjust budget spent
+## ✅ Completed - Critical Bugs
+- [x] Onboarding saves currency selection
+- [x] Delete transaction updates budget spent
+- [x] Edit transaction adjusts budget spent
+- [x] JSX namespace errors fixed
+- [x] Division by zero guard in charts
 
-## 🟠 Medium Bugs
+## ✅ Completed - Data Management
+- [x] Data import restores all data (via importData method)
+- [x] Version updated to v0.4.0
+
+## 🟠 Medium Bugs (Pending)
 - [ ] Budget period reset not implemented
 - [ ] Subscription next billing date never auto-updates
-- [ ] Data import only restores settings, not all data
 
-## 🟡 Logic Issues
+## 🟡 Logic Issues (Pending)
 - [ ] Category type mismatch when switching income/expense
-- [ ] Charts may divide by zero on empty data
 - [ ] Treemap should clarify it only shows active subs
 
 ## 🔵 Missing Features
@@ -35,12 +39,6 @@
 - [ ] Optimize store selectors to reduce re-renders
 
 ## 📝 Code Quality
-- [ ] Fix version mismatch (Settings shows v0.3.0)
 - [ ] Remove hardcoded color values
 - [ ] Fix magic numbers (30 days/month)
 - [ ] Clean up unused `email` field
-
-## ✅ Completed
-- [x] God-tier customization (v0.4.0)
-- [x] Treemap view for subscriptions
-- [x] JSX namespace errors fixed

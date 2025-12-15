@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { useAppStore, formatCycleDisplay, getMonthlyEquivalent } from '@/store';
+import { useConfirm } from '@/hooks/useConfirm';
 import Header from '@/components/Header';
 import Card from '@/components/Card';
 import Button from '@/components/Button';
@@ -23,6 +24,7 @@ export default function SubscriptionsPage() {
     const deleteSubscription = useAppStore((state) => state.deleteSubscription);
     const updateSubscription = useAppStore((state) => state.updateSubscription);
     const settings = useAppStore((state) => state.settings);
+    const { confirm, ConfirmDialog } = useConfirm();
 
     const formatCurrency = (amount: number) => {
         return `${settings.currencySymbol}${amount.toLocaleString('en-IN')}`;
@@ -38,10 +40,14 @@ export default function SubscriptionsPage() {
         setIsFormOpen(true);
     };
 
-    const handleDelete = (id: string) => {
-        if (confirm('Are you sure you want to delete this subscription?')) {
-            deleteSubscription(id);
-        }
+    const handleDelete = async (id: string) => {
+        const confirmed = await confirm({
+            title: 'Delete Subscription',
+            message: 'Are you sure you want to delete this subscription?',
+            confirmText: 'Delete',
+            variant: 'danger',
+        });
+        if (confirmed) deleteSubscription(id);
     };
 
     const handleToggleActive = (id: string, currentActive: boolean) => {
@@ -168,6 +174,7 @@ export default function SubscriptionsPage() {
             </div>
 
             <SubscriptionForm isOpen={isFormOpen} onClose={() => setIsFormOpen(false)} editId={editingId} />
+            <ConfirmDialog />
         </div>
     );
 }

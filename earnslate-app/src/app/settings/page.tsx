@@ -2,6 +2,7 @@
 
 import { useState, useRef } from 'react';
 import { useAppStore } from '@/store';
+import { useConfirm } from '@/hooks/useConfirm';
 import Header from '@/components/Header';
 import Card, { CardHeader } from '@/components/Card';
 import Button from '@/components/Button';
@@ -31,6 +32,7 @@ export default function SettingsPage() {
     const updateSettings = useAppStore((state) => state.updateSettings);
     const clearAllData = useAppStore((state) => state.clearAllData);
     const importData = useAppStore((state) => state.importData);
+    const { confirm, ConfirmDialog } = useConfirm();
 
     const [editModal, setEditModal] = useState<'name' | 'currency' | 'date' | 'category' | null>(null);
     const [tempValue, setTempValue] = useState('');
@@ -99,20 +101,25 @@ export default function SettingsPage() {
         URL.revokeObjectURL(url);
     };
 
-    const handleImportData = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleImportData = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (!file) return;
 
         const reader = new FileReader();
-        reader.onload = (event) => {
+        reader.onload = async (event) => {
             try {
                 const data = JSON.parse(event.target?.result as string);
                 const counts = `${data.transactions?.length || 0} transactions, ${data.budgets?.length || 0} budgets, ${data.subscriptions?.length || 0} subscriptions`;
 
-                if (confirm(`Import backup with ${counts}? This will replace current data.`)) {
-                    // Clear existing and import all data
+                const confirmed = await confirm({
+                    title: 'Import Backup',
+                    message: `Import backup with ${counts}? This will replace your current data.`,
+                    confirmText: 'Import',
+                    variant: 'warning',
+                });
+
+                if (confirmed) {
                     clearAllData();
-                    // Use setTimeout to ensure clear completes before import
                     setTimeout(() => {
                         importData({
                             settings: data.settings,
@@ -120,22 +127,26 @@ export default function SettingsPage() {
                             budgets: data.budgets || [],
                             subscriptions: data.subscriptions || [],
                         });
-                        alert('Data restored successfully!');
                     }, 100);
                 }
             } catch {
-                alert('Invalid backup file');
+                // Invalid file
             }
         };
         reader.readAsText(file);
         e.target.value = '';
     };
 
-    const handleClearData = () => {
-        if (confirm('Are you sure you want to delete ALL your data? This cannot be undone.')) {
-            if (confirm('This will permanently delete all transactions, budgets, and subscriptions. Are you absolutely sure?')) {
-                clearAllData();
-            }
+    const handleClearData = async () => {
+        const confirmed = await confirm({
+            title: 'Clear All Data',
+            message: 'Are you sure you want to delete ALL your data? This action cannot be undone.',
+            confirmText: 'Delete Everything',
+            variant: 'danger',
+        });
+
+        if (confirmed) {
+            clearAllData();
         }
     };
 
@@ -290,6 +301,8 @@ export default function SettingsPage() {
                     </div>
                 </form>
             </Modal>
+
+            <ConfirmDialog />
         </div>
     );
 }

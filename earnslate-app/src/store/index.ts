@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import { Transaction, Budget, Subscription, UserSettings, DEFAULT_CATEGORIES, BillingCycle } from '@/types';
+import { Transaction, Budget, Subscription, UserSettings, DEFAULT_CATEGORIES, BillingCycle, calculateNextBilling } from '@/types';
 
 // ===== Store State =====
 interface AppState {
@@ -16,14 +16,16 @@ interface AppState {
     deleteTransaction: (id: string) => void;
 
     // Budget Actions
-    addBudget: (budget: Omit<Budget, 'id' | 'createdAt' | 'spent'>) => void;
+    addBudget: (budget: Omit<Budget, 'id' | 'createdAt' | 'spent' | 'periodStartDate'>) => void;
     updateBudget: (id: string, updates: Partial<Budget>) => void;
     deleteBudget: (id: string) => void;
+    checkAndResetBudgets: () => void;
 
     // Subscription Actions
     addSubscription: (subscription: Omit<Subscription, 'id' | 'createdAt'>) => void;
     updateSubscription: (id: string, updates: Partial<Subscription>) => void;
     deleteSubscription: (id: string) => void;
+    updateSubscriptionBillingDates: () => void;
 
     // Settings Actions
     updateSettings: (updates: Partial<UserSettings>) => void;
@@ -176,6 +178,7 @@ export const useAppStore = create<AppState>()(
                     ...budget,
                     id: generateId(),
                     spent: 0,
+                    periodStartDate: new Date().toISOString().split('T')[0],
                     createdAt: getTimestamp(),
                 };
 
@@ -195,6 +198,31 @@ export const useAppStore = create<AppState>()(
             deleteBudget: (id) => {
                 set((state) => ({
                     budgets: state.budgets.filter(b => b.id !== id),
+                }));
+            },
+
+            checkAndResetBudgets: () => {
+                const now = new Date();
+                set((state) => ({
+                    budgets: state.budgets.map(budget => {
+                        // Skip if no periodStartDate (legacy budgets)
+                        if (!budget.periodStartDate) {
+                            return { ...budget, periodStartDate: now.toISOString().split('T')[0] };
+                        }
+
+                        const periodStart = new Date(budget.periodStartDate);
+                        const nextPeriodStart = calculateNextBilling(periodStart, budget.period);
+
+                        // If current date is past the next period start, reset the budget
+                        if (now >= nextPeriodStart) {
+                            return {
+                                ...budget,
+                                spent: 0,
+                                periodStartDate: now.toISOString().split('T')[0],
+                            };
+                        }
+                        return budget;
+                    }),
                 }));
             },
 
@@ -222,6 +250,28 @@ export const useAppStore = create<AppState>()(
             deleteSubscription: (id) => {
                 set((state) => ({
                     subscriptions: state.subscriptions.filter(s => s.id !== id),
+                }));
+            },
+
+            updateSubscriptionBillingDates: () => {
+                const now = new Date();
+                set((state) => ({
+                    subscriptions: state.subscriptions.map(sub => {
+                        if (!sub.active) return sub;
+
+                        let nextBilling = new Date(sub.nextBilling);
+
+                        // Keep advancing the billing date until it's in the future
+                        while (nextBilling < now) {
+                            nextBilling = calculateNextBilling(nextBilling, sub.cycle);
+                        }
+
+                        // Only update if the date changed
+                        if (nextBilling.toISOString() !== new Date(sub.nextBilling).toISOString()) {
+                            return { ...sub, nextBilling: nextBilling.toISOString().split('T')[0] };
+                        }
+                        return sub;
+                    }),
                 }));
             },
 
@@ -269,9 +319,14 @@ export const useAppStore = create<AppState>()(
     )
 );
 
-// Manual rehydration on client side
+// Manual rehydration on client side + auto-run maintenance tasks
 if (typeof window !== 'undefined') {
     useAppStore.persist.rehydrate();
+    // Run maintenance tasks after rehydration
+    setTimeout(() => {
+        useAppStore.getState().checkAndResetBudgets();
+        useAppStore.getState().updateSubscriptionBillingDates();
+    }, 100);
 }
 
 // ===== Helper to format cycle for display =====

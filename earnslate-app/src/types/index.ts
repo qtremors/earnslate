@@ -21,6 +21,7 @@ export interface Budget {
     icon: string;
     color?: string;
     period: BillingCycle; // Flexible period
+    periodStartDate: string; // When current period started (ISO date)
     createdAt: string;
 }
 
