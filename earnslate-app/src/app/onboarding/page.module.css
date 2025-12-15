@@ -1,0 +1,185 @@
+.onboarding {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: var(--space-xl);
+    background: var(--bg-primary);
+    margin-left: 0 !important;
+    /* Override layout margin */
+}
+
+/* ===== Progress ===== */
+.progress {
+    display: flex;
+    gap: var(--space-xl);
+    margin-bottom: var(--space-2xl);
+}
+
+.progressStep {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-sm);
+    opacity: 0.4;
+    transition: opacity var(--transition-normal);
+}
+
+.progressStep.active {
+    opacity: 1;
+}
+
+.progressDot {
+    width: 40px;
+    height: 40px;
+    border-radius: var(--radius-full);
+    background: var(--bg-tertiary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: var(--text-sm);
+    font-weight: var(--font-bold);
+    color: var(--text-primary);
+    transition: all var(--transition-normal);
+}
+
+.progressStep.active .progressDot {
+    background: var(--accent-primary);
+    color: var(--bg-primary);
+}
+
+.progressLabel {
+    font-size: var(--text-sm);
+    color: var(--text-muted);
+}
+
+/* ===== Card ===== */
+.card {
+    width: 100%;
+    max-width: 500px;
+    text-align: center;
+}
+
+/* ===== Step Content ===== */
+.stepContent {
+    padding: var(--space-lg) 0;
+    animation: fadeIn var(--transition-normal) ease;
+}
+
+.stepIcon {
+    font-size: 64px;
+    display: block;
+    margin-bottom: var(--space-lg);
+}
+
+.stepTitle {
+    font-size: var(--text-2xl);
+    font-weight: var(--font-bold);
+    color: var(--text-primary);
+    margin-bottom: var(--space-md);
+}
+
+.stepDescription {
+    font-size: var(--text-base);
+    color: var(--text-secondary);
+    line-height: var(--leading-relaxed);
+    max-width: 400px;
+    margin: 0 auto var(--space-xl);
+}
+
+/* ===== Currency Grid ===== */
+.currencyGrid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-md);
+    max-width: 320px;
+    margin: 0 auto;
+}
+
+.currencyOption {
+    padding: var(--space-md);
+    background: var(--bg-tertiary);
+    border: 2px solid var(--border-primary);
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-xs);
+}
+
+.currencyOption:hover {
+    border-color: var(--border-secondary);
+}
+
+.currencyOption.selected {
+    border-color: var(--accent-primary);
+    background: var(--bg-hover);
+}
+
+.currencySymbol {
+    font-size: var(--text-2xl);
+    font-weight: var(--font-bold);
+    color: var(--text-primary);
+}
+
+.currencyName {
+    font-size: var(--text-sm);
+    color: var(--text-muted);
+}
+
+/* ===== Features ===== */
+.features {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-md);
+    max-width: 360px;
+    margin: 0 auto;
+    text-align: left;
+}
+
+.feature {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    font-size: var(--text-sm);
+    color: var(--text-secondary);
+}
+
+.feature span {
+    font-size: var(--text-lg);
+}
+
+/* ===== Navigation ===== */
+.navigation {
+    display: flex;
+    align-items: center;
+    padding-top: var(--space-xl);
+    border-top: 1px solid var(--border-primary);
+    margin-top: var(--space-lg);
+}
+
+.spacer {
+    flex: 1;
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 768px) {
+    .onboarding {
+        padding: var(--space-md);
+    }
+
+    .progress {
+        gap: var(--space-lg);
+    }
+
+    .progressLabel {
+        display: none;
+    }
+
+    .features {
+        grid-template-columns: 1fr;
+    }
+}

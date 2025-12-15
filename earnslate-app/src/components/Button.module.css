@@ -1,0 +1,79 @@
+.button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-sm);
+    font-family: var(--font-sans);
+    font-weight: var(--font-medium);
+    border: none;
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* ===== Variants ===== */
+.primary {
+    background: var(--accent-primary);
+    color: var(--bg-primary);
+}
+
+.primary:hover:not(:disabled) {
+    opacity: 0.9;
+    box-shadow: var(--shadow-glow);
+}
+
+.secondary {
+    background: var(--bg-tertiary);
+    color: var(--text-primary);
+    border: 1px solid var(--border-primary);
+}
+
+.secondary:hover:not(:disabled) {
+    background: var(--bg-hover);
+    border-color: var(--border-secondary);
+}
+
+.ghost {
+    background: transparent;
+    color: var(--text-secondary);
+}
+
+.ghost:hover:not(:disabled) {
+    background: var(--bg-hover);
+    color: var(--text-primary);
+}
+
+.danger {
+    background: var(--error);
+    color: var(--text-primary);
+}
+
+.danger:hover:not(:disabled) {
+    opacity: 0.9;
+}
+
+/* ===== Sizes ===== */
+.sm {
+    padding: var(--space-sm) var(--space-md);
+    font-size: var(--text-sm);
+}
+
+.md {
+    padding: var(--space-md) var(--space-lg);
+    font-size: var(--text-base);
+}
+
+.lg {
+    padding: var(--space-md) var(--space-xl);
+    font-size: var(--text-lg);
+}
+
+/* ===== Full Width ===== */
+.fullWidth {
+    width: 100%;
+}

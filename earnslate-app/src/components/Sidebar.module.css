@@ -1,0 +1,131 @@
+.sidebar {
+    position: fixed;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: var(--sidebar-width);
+    background: var(--bg-secondary);
+    border-right: 1px solid var(--border-primary);
+    display: flex;
+    flex-direction: column;
+    padding: var(--space-lg) var(--space-md);
+    z-index: 100;
+}
+
+/* ===== Logo ===== */
+.logo {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    padding: var(--space-md);
+    margin-bottom: var(--space-xl);
+}
+
+.logoIcon {
+    font-size: var(--text-2xl);
+}
+
+.logoText {
+    font-size: var(--text-xl);
+    font-weight: var(--font-bold);
+    color: var(--text-primary);
+    letter-spacing: -0.02em;
+}
+
+/* ===== Navigation ===== */
+.nav {
+    flex: 1;
+}
+
+.navList {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xs);
+}
+
+.navItem {
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+    padding: var(--space-md);
+    border-radius: var(--radius-md);
+    color: var(--text-secondary);
+    transition: all var(--transition-fast);
+    cursor: pointer;
+}
+
+.navItem:hover {
+    background: var(--bg-hover);
+    color: var(--text-primary);
+}
+
+.navItem.active {
+    background: var(--accent-primary);
+    color: var(--bg-primary);
+}
+
+.navItem.active .navIcon {
+    filter: grayscale(1) brightness(0);
+}
+
+.navIcon {
+    font-size: var(--text-lg);
+    width: 24px;
+    text-align: center;
+}
+
+.navLabel {
+    font-size: var(--text-sm);
+    font-weight: var(--font-medium);
+}
+
+/* ===== Bottom Navigation ===== */
+.bottomNav {
+    border-top: 1px solid var(--border-primary);
+    padding-top: var(--space-md);
+}
+
+/* ===== Mobile Responsive ===== */
+@media (max-width: 768px) {
+    .sidebar {
+        width: 100%;
+        height: auto;
+        position: fixed;
+        bottom: 0;
+        top: auto;
+        left: 0;
+        right: 0;
+        flex-direction: row;
+        padding: var(--space-sm) var(--space-md);
+        border-right: none;
+        border-top: 1px solid var(--border-primary);
+    }
+
+    .logo {
+        display: none;
+    }
+
+    .nav {
+        flex: 1;
+    }
+
+    .navList {
+        flex-direction: row;
+        justify-content: space-around;
+    }
+
+    .navItem {
+        flex-direction: column;
+        padding: var(--space-sm);
+        gap: var(--space-xs);
+    }
+
+    .navLabel {
+        font-size: var(--text-xs);
+    }
+
+    .bottomNav {
+        display: none;
+    }
+}
