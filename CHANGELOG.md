@@ -1,5 +1,19 @@
 ## [0.5.0] - 2025-12-15
 
+### Added - New Features
+
+#### Toast Notifications
+- Global toast notification system with success/error/warning/info types
+- Auto-dismiss after 4 seconds with manual dismiss option
+- Integrated across all forms and delete actions
+- Slide-in animation from bottom-right
+
+#### Form Validation Feedback
+- Inline validation errors on TransactionForm
+- Visual error states with red border and message
+- Errors auto-clear when user corrects input
+- Toast notification on validation failure
+
 ### Fixed - Priority Bug Fixes
 
 #### Medium Bugs
@@ -17,6 +31,8 @@
 
 #### Code Quality
 - Fixed TypeScript type casting errors in IconPicker component
+- Removed unused `email` field from UserSettings
+- Added `DAYS_PER_MONTH` constant to replace magic number
 
 ---
 
