@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState, ReactNode } from 'react';
+import styles from './StoreProvider.module.css';
 
 interface StoreProviderProps {
     children: ReactNode;
@@ -20,25 +21,11 @@ export default function StoreProvider({ children }: StoreProviderProps) {
     if (!isClient) {
         // Return a loading skeleton that matches the expected layout
         return (
-            <div style={{
-                display: 'flex',
-                minHeight: '100vh',
-                background: '#0a0a0a',
-            }}>
+            <div className={styles.skeleton}>
                 {/* Sidebar skeleton */}
-                <div style={{
-                    width: '260px',
-                    background: '#111',
-                    borderRight: '1px solid #222',
-                }} />
+                <div className={styles.sidebarSkeleton} />
                 {/* Content skeleton */}
-                <div style={{
-                    flex: 1,
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    color: '#666',
-                }}>
+                <div className={styles.contentSkeleton}>
                     Loading...
                 </div>
             </div>

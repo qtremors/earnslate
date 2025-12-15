@@ -116,6 +116,11 @@ export default function SubscriptionTreemap({ subscriptions, currencySymbol }: S
                     <span className={styles.totalLabel}>YEARLY PROJECTION</span>
                     <span className={styles.totalAmountSecondary}>{formatAmount(totalYearly)}</span>
                 </div>
+                {subscriptions.length > processedSubs.length && (
+                    <div className={styles.infoNote}>
+                        Showing {processedSubs.length} of {subscriptions.length} active
+                    </div>
+                )}
             </div>
         </div>
     );

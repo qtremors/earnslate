@@ -189,3 +189,22 @@ export const calculateNextBilling = (lastBilling: Date, cycle: BillingCycle): Da
     }
     return next;
 };
+
+// ===== Currency Formatting =====
+export const formatCurrency = (amount: number, symbol: string = '₹'): string => {
+    return `${symbol}${Math.abs(amount).toLocaleString('en-IN')}`;
+};
+
+export const formatCurrencyCompact = (amount: number, symbol: string = '₹'): string => {
+    const abs = Math.abs(amount);
+    if (abs >= 10000000) { // 1 Crore
+        return `${symbol}${(abs / 10000000).toFixed(1)}Cr`;
+    }
+    if (abs >= 100000) { // 1 Lakh
+        return `${symbol}${(abs / 100000).toFixed(1)}L`;
+    }
+    if (abs >= 1000) { // 1K
+        return `${symbol}${(abs / 1000).toFixed(1)}K`;
+    }
+    return `${symbol}${abs.toLocaleString('en-IN')}`;
+};

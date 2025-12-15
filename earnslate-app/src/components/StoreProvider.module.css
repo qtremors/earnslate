@@ -1,0 +1,25 @@
+.skeleton {
+    display: flex;
+    min-height: 100vh;
+    background: var(--bg-primary);
+}
+
+.sidebarSkeleton {
+    width: var(--sidebar-width);
+    background: var(--bg-secondary);
+    border-right: 1px solid var(--border-primary);
+}
+
+.contentSkeleton {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-muted);
+}
+
+@media (max-width: 768px) {
+    .sidebarSkeleton {
+        display: none;
+    }
+}

@@ -176,6 +176,15 @@
     color: var(--accent);
 }
 
+.infoNote {
+    font-size: var(--text-xs);
+    color: var(--text-muted);
+    padding: var(--space-xs) var(--space-sm);
+    background: var(--bg-tertiary);
+    border-radius: var(--radius-sm);
+    align-self: center;
+}
+
 /* Empty State */
 .emptyState {
     padding: var(--space-3xl);
