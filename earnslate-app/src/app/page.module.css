@@ -134,6 +134,17 @@
   height: 100%;
 }
 
+.pieSlice {
+  cursor: pointer;
+  transition: opacity var(--transition-fast), transform var(--transition-fast);
+  transform-origin: 50% 50%;
+}
+
+.pieSlice:hover {
+  opacity: 0.85;
+  transform: scale(1.02);
+}
+
 .legend {
   flex: 1;
   display: flex;

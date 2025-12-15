@@ -181,6 +181,7 @@ export default function Dashboard() {
                       const y2 = 50 + 40 * Math.sin(endRad);
 
                       const largeArc = sliceAngle > 180 ? 1 : 0;
+                      const pct = Math.round((d.amount / monthlyExpenses) * 100);
 
                       acc.paths.push(
                         <path
@@ -189,7 +190,10 @@ export default function Dashboard() {
                           fill={d.color}
                           stroke="var(--bg-primary)"
                           strokeWidth="0.5"
-                        />
+                          className={styles.pieSlice}
+                        >
+                          <title>{d.category}: {formatCurrency(d.amount)} ({pct}%)</title>
+                        </path>
                       );
                       acc.angle = endAngle;
                       return acc;
