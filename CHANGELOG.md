@@ -1,3 +1,48 @@
+## [0.6.0] - 2025-12-15
+
+### Fixed - Critical Issues
+
+#### Race Conditions
+- **Budget-Transaction Sync**: Consolidated all state updates into single atomic `set()` call
+- **Delete Transaction**: Fixed concurrent budget deduction with atomic update
+- Both `updateTransaction` and `deleteTransaction` now update transactions and budgets together
+
+#### Data Integrity
+- **Timezone Issues**: Fixed billing date comparisons using date strings instead of Date objects
+- **Import Safety**: Removed `clearAllData()` race condition - imports now directly replace data
+- **Error Feedback**: Added toast notification for invalid JSON import files
+
+#### Version Consistency
+- Fixed export version (was 0.3.0, now dynamic APP_VERSION)
+- Fixed settings page version display (was 0.4.0, now v0.5.0)
+
+### Added - Form Validation
+
+#### BudgetForm
+- Name and limit field validation with error states
+- Error toast on validation failure
+- Auto-clear errors when user corrects input
+
+#### SubscriptionForm  
+- Name and amount field validation with error states
+- Consistent validation UX with other forms
+
+### Removed - Dead Code
+- Deleted unused `HydrationGuard.tsx` component
+- Removed unused `firstDayOfWeek` and `monthStartDay` from UserSettings
+- Removed unused `tags` field from Transaction type
+
+### Improved - Code Quality
+- Consolidated `CHART_COLORS` to shared constant in types
+- Added `formatCurrency` and `formatCurrencyCompact` utility functions
+- Replaced deprecated `onKeyPress` with `onKeyDown`
+- Replaced inline styles in `StoreProvider` with CSS module
+- Added `SPINNER_SIZES` constant for size-aware spinner in Button
+- Added more category icons to Dashboard `CATEGORY_ICONS`
+- Added active subscription count note to Treemap
+
+---
+
 ## [0.5.0] - 2025-12-15
 
 ### Added - New Features

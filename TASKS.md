@@ -15,41 +15,39 @@
 
 ## 🟡 Medium Priority
 - [x] Consolidate duplicated `chartColors` arrays to shared constant
-- [ ] Consolidate `formatCurrency` functions to shared utility
+- [x] Add shared formatCurrency and formatCurrencyCompact utilities
 - [ ] Actually use Button `loading` prop in form submissions
 - [ ] Optimize store selectors for fewer re-renders
 - [ ] Dynamic imports for icon libraries (bundle size)
 - [ ] Add accessibility ARIA labels to interactive elements
 - [ ] Replace hardcoded 'en-IN' locale with configurable setting
-- [ ] Add note to Treemap about showing active subscriptions only
+- [x] Add note to Treemap about showing active subscriptions only
 
 ## 🟢 Low Priority (Polish)
 - [x] Replace deprecated onKeyPress with onKeyDown in settings
-- [ ] Replace inline styles in StoreProvider with CSS variables
-- [ ] Adjust spinner size based on Button size prop
-- [ ] Add more category icons to Dashboard CATEGORY_ICONS
+- [x] Replace inline styles in StoreProvider with CSS variables
+- [x] Adjust spinner size based on Button size prop
+- [x] Add more category icons to Dashboard CATEGORY_ICONS
 - [ ] Consider using 30.44 for DAYS_PER_MONTH accuracy
-- [ ] Remove unused `tags` field from Transaction type - DONE (included in critical)
 
 ---
 
-## ✅ Recently Completed (v0.5.0 + v0.6.0)
-- Budget period reset (auto-resets on app load)
-- Subscription billing date auto-update
-- Category type mismatch fix
-- Toast notification system
-- Form validation feedback (all forms now)
-- Transaction search in Dashboard
-- Mobile hamburger menu
-- Loading states for buttons
-- Chart hover tooltips
-- Styled confirm dialogs (all pages)
-- Code quality improvements
-- Fixed race conditions in transaction/budget sync
-- Fixed timezone issues
-- Fixed import safety
-- Deleted dead code
-- Consolidated chart colors
+## ✅ Completed This Session (v0.6.0)
+- Fixed race conditions in transaction/budget sync (atomic updates)
+- Fixed timezone issues in billing date comparisons  
+- Fixed import safety (removed clearAllData race)
+- Deleted dead code (HydrationGuard.tsx)
+- Removed unused fields (firstDayOfWeek, monthStartDay, tags)
+- Added validation to BudgetForm and SubscriptionForm
+- Added error toast for invalid import files
+- Fixed version numbers (export + settings page)
+- Replaced deprecated onKeyPress with onKeyDown
+- Consolidated CHART_COLORS to shared constant
+- Added formatCurrency and formatCurrencyCompact utilities
+- Added info note to TreeMap for active subscription count
+- Replaced StoreProvider inline styles with CSS module
+- Added more category icons to Dashboard
+- Adjusted Button spinner size based on size prop
 
 ---
 
