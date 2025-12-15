@@ -50,8 +50,6 @@ const defaultSettings: UserSettings = {
     currency: 'INR',
     currencySymbol: '₹',
     dateFormat: 'DD/MM/YYYY',
-    firstDayOfWeek: 'monday',
-    monthStartDay: 1,
     hasCompletedOnboarding: false,
     customCategories: DEFAULT_CATEGORIES,
 };
@@ -101,77 +99,75 @@ export const useAppStore = create<AppState>()(
             },
 
             updateTransaction: (id, updates) => {
-                const oldTransaction = get().transactions.find(t => t.id === id);
+                set((state) => {
+                    const oldTransaction = state.transactions.find(t => t.id === id);
+                    if (!oldTransaction) return state;
 
-                set((state) => ({
-                    transactions: state.transactions.map(t =>
+                    // Update transaction
+                    const newTransactions = state.transactions.map(t =>
                         t.id === id ? { ...t, ...updates } : t
-                    ),
-                }));
-
-                // Sync budget if amount or category changed
-                if (oldTransaction && oldTransaction.type === 'expense') {
-                    const budgets = get().budgets;
-                    const oldBudget = budgets.find(b =>
-                        b.category.toLowerCase() === oldTransaction.category.toLowerCase()
                     );
 
-                    // Remove old amount from old budget
-                    if (oldBudget) {
-                        set((state) => ({
-                            budgets: state.budgets.map(b =>
-                                b.id === oldBudget.id
-                                    ? { ...b, spent: Math.max(0, b.spent - Math.abs(oldTransaction.amount)) }
-                                    : b
-                            ),
-                        }));
-                    }
+                    // Calculate budget adjustments atomically
+                    let newBudgets = state.budgets;
 
-                    // Add new amount to new budget (if still expense)
-                    const newCategory = updates.category || oldTransaction.category;
-                    const newAmount = updates.amount ?? oldTransaction.amount;
-                    const newType = updates.type || oldTransaction.type;
+                    if (oldTransaction.type === 'expense') {
+                        const oldBudgetId = state.budgets.find(b =>
+                            b.category.toLowerCase() === oldTransaction.category.toLowerCase()
+                        )?.id;
 
-                    if (newType === 'expense') {
-                        const newBudget = get().budgets.find(b =>
+                        const newCategory = updates.category || oldTransaction.category;
+                        const newAmount = updates.amount ?? oldTransaction.amount;
+                        const newType = updates.type || oldTransaction.type;
+
+                        const newBudgetId = state.budgets.find(b =>
                             b.category.toLowerCase() === newCategory.toLowerCase()
-                        );
-                        if (newBudget) {
-                            set((state) => ({
-                                budgets: state.budgets.map(b =>
-                                    b.id === newBudget.id
-                                        ? { ...b, spent: b.spent + Math.abs(newAmount) }
-                                        : b
-                                ),
-                            }));
-                        }
+                        )?.id;
+
+                        newBudgets = state.budgets.map(b => {
+                            let spent = b.spent;
+
+                            // Remove old amount from old budget
+                            if (b.id === oldBudgetId) {
+                                spent = Math.max(0, spent - Math.abs(oldTransaction.amount));
+                            }
+
+                            // Add new amount to new budget (if still expense)
+                            if (newType === 'expense' && b.id === newBudgetId) {
+                                spent = spent + Math.abs(newAmount);
+                            }
+
+                            return spent !== b.spent ? { ...b, spent } : b;
+                        });
                     }
-                }
+
+                    return { transactions: newTransactions, budgets: newBudgets };
+                });
             },
 
             deleteTransaction: (id) => {
-                const transaction = get().transactions.find(t => t.id === id);
+                set((state) => {
+                    const transaction = state.transactions.find(t => t.id === id);
+                    const newTransactions = state.transactions.filter(t => t.id !== id);
 
-                set((state) => ({
-                    transactions: state.transactions.filter(t => t.id !== id),
-                }));
+                    // Update budget spent if deleting an expense
+                    let newBudgets = state.budgets;
+                    if (transaction && transaction.type === 'expense') {
+                        const matchingBudgetId = state.budgets.find(b =>
+                            b.category.toLowerCase() === transaction.category.toLowerCase()
+                        )?.id;
 
-                // Update budget spent if deleting an expense
-                if (transaction && transaction.type === 'expense') {
-                    const budgets = get().budgets;
-                    const matchingBudget = budgets.find(b =>
-                        b.category.toLowerCase() === transaction.category.toLowerCase()
-                    );
-                    if (matchingBudget) {
-                        set((state) => ({
-                            budgets: state.budgets.map(b =>
-                                b.id === matchingBudget.id
+                        if (matchingBudgetId) {
+                            newBudgets = state.budgets.map(b =>
+                                b.id === matchingBudgetId
                                     ? { ...b, spent: Math.max(0, b.spent - Math.abs(transaction.amount)) }
                                     : b
-                            ),
-                        }));
+                            );
+                        }
                     }
-                }
+
+                    return { transactions: newTransactions, budgets: newBudgets };
+                });
             },
 
             // ===== Budget Actions =====
@@ -256,21 +252,23 @@ export const useAppStore = create<AppState>()(
             },
 
             updateSubscriptionBillingDates: () => {
-                const now = new Date();
+                const today = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
                 set((state) => ({
                     subscriptions: state.subscriptions.map(sub => {
                         if (!sub.active) return sub;
 
-                        let nextBilling = new Date(sub.nextBilling);
+                        let nextBilling = new Date(sub.nextBilling + 'T12:00:00'); // Noon to avoid TZ issues
+                        const originalDate = sub.nextBilling;
 
                         // Keep advancing the billing date until it's in the future
-                        while (nextBilling < now) {
+                        while (nextBilling.toISOString().split('T')[0] < today) {
                             nextBilling = calculateNextBilling(nextBilling, sub.cycle);
                         }
 
+                        const newDate = nextBilling.toISOString().split('T')[0];
                         // Only update if the date changed
-                        if (nextBilling.toISOString() !== new Date(sub.nextBilling).toISOString()) {
-                            return { ...sub, nextBilling: nextBilling.toISOString().split('T')[0] };
+                        if (newDate !== originalDate) {
+                            return { ...sub, nextBilling: newDate };
                         }
                         return sub;
                     }),

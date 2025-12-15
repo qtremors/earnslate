@@ -3,6 +3,7 @@
 import { useState, useRef } from 'react';
 import { useAppStore } from '@/store';
 import { useConfirm } from '@/hooks/useConfirm';
+import { useToast } from '@/components/Toast';
 import Header from '@/components/Header';
 import Card, { CardHeader } from '@/components/Card';
 import Button from '@/components/Button';
@@ -10,6 +11,8 @@ import Modal from '@/components/Modal';
 import Input, { Select } from '@/components/Input';
 import { Download, Upload, Plus, Trash2, Tag } from 'lucide-react';
 import styles from './page.module.css';
+
+const APP_VERSION = '0.5.0';
 
 const CURRENCIES = [
     { value: 'INR', label: '₹ Indian Rupee (INR)', symbol: '₹' },
@@ -33,6 +36,7 @@ export default function SettingsPage() {
     const clearAllData = useAppStore((state) => state.clearAllData);
     const importData = useAppStore((state) => state.importData);
     const { confirm, ConfirmDialog } = useConfirm();
+    const { showToast } = useToast();
 
     const [editModal, setEditModal] = useState<'name' | 'currency' | 'date' | 'category' | null>(null);
     const [tempValue, setTempValue] = useState('');
@@ -85,7 +89,7 @@ export default function SettingsPage() {
 
     const handleExportData = () => {
         const data = {
-            version: '0.3.0',
+            version: APP_VERSION,
             exportDate: new Date().toISOString(),
             settings,
             transactions,
@@ -119,18 +123,17 @@ export default function SettingsPage() {
                 });
 
                 if (confirmed) {
-                    clearAllData();
-                    setTimeout(() => {
-                        importData({
-                            settings: data.settings,
-                            transactions: data.transactions || [],
-                            budgets: data.budgets || [],
-                            subscriptions: data.subscriptions || [],
-                        });
-                    }, 100);
+                    // Import directly - importData handles the merge/replace
+                    importData({
+                        settings: data.settings,
+                        transactions: data.transactions || [],
+                        budgets: data.budgets || [],
+                        subscriptions: data.subscriptions || [],
+                    });
+                    showToast('Data imported successfully', 'success');
                 }
             } catch {
-                // Invalid file
+                showToast('Invalid backup file', 'error');
             }
         };
         reader.readAsText(file);
@@ -189,7 +192,7 @@ export default function SettingsPage() {
                             placeholder="New category..."
                             value={newCategory}
                             onChange={(e) => setNewCategory(e.target.value)}
-                            onKeyPress={(e) => e.key === 'Enter' && handleAddCategory()}
+                            onKeyDown={(e) => e.key === 'Enter' && handleAddCategory()}
                             className={styles.categoryInput}
                         />
                         <Button variant="secondary" size="sm" onClick={handleAddCategory}>
@@ -263,7 +266,7 @@ export default function SettingsPage() {
                 <Card className={styles.section}>
                     <CardHeader title="About" />
                     <div className={styles.aboutInfo}>
-                        <p><strong>Earnslate</strong> v0.4.0</p>
+                        <p><strong>Earnslate</strong> v{APP_VERSION}</p>
                         <p className={styles.aboutDesc}>Personal Finance Manager with God-Tier Customization</p>
                     </div>
                 </Card>

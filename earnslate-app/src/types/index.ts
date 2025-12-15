@@ -8,7 +8,6 @@ export interface Transaction {
     date: string;
     type: 'income' | 'expense';
     notes?: string;
-    tags?: string[];
     createdAt: string;
 }
 
@@ -58,8 +57,6 @@ export interface UserSettings {
     currency: string;
     currencySymbol: string;
     dateFormat: string;
-    firstDayOfWeek: 'sunday' | 'monday';
-    monthStartDay: number; // 1-28, for salary cycles
     hasCompletedOnboarding: boolean;
     customCategories: Category[];
 }
