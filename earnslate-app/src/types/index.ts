@@ -55,7 +55,6 @@ export interface Category {
 
 export interface UserSettings {
     displayName: string;
-    email: string;
     currency: string;
     currencySymbol: string;
     dateFormat: string;

@@ -41,10 +41,12 @@ interface AppState {
     }) => void;
 }
 
+// ===== Constants =====
+const DAYS_PER_MONTH = 30; // Used for billing cycle calculations
+
 // ===== Default Values =====
 const defaultSettings: UserSettings = {
     displayName: 'User',
-    email: '',
     currency: 'INR',
     currencySymbol: '₹',
     dateFormat: 'DD/MM/YYYY',
@@ -346,14 +348,13 @@ export const formatCycleDisplay = (cycle: BillingCycle): string => {
 
 // ===== Calculate monthly equivalent for sorting/totals =====
 export const getMonthlyEquivalent = (amount: number, cycle: BillingCycle): number => {
-    const daysInMonth = 30;
     switch (cycle.unit) {
         case 'hour':
-            return amount * (24 * daysInMonth) / cycle.count;
+            return amount * (24 * DAYS_PER_MONTH) / cycle.count;
         case 'day':
-            return amount * daysInMonth / cycle.count;
+            return amount * DAYS_PER_MONTH / cycle.count;
         case 'week':
-            return amount * (daysInMonth / 7) / cycle.count;
+            return amount * (DAYS_PER_MONTH / 7) / cycle.count;
         case 'month':
             return amount / cycle.count;
         case 'year':
