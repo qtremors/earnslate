@@ -170,6 +170,8 @@ export const formatCycle = (cycle: BillingCycle): string => {
 
 export const calculateNextBilling = (lastBilling: Date, cycle: BillingCycle): Date => {
     const next = new Date(lastBilling);
+    const originalDay = next.getDate();
+
     switch (cycle.unit) {
         case 'hour':
             next.setHours(next.getHours() + cycle.count);
@@ -180,12 +182,23 @@ export const calculateNextBilling = (lastBilling: Date, cycle: BillingCycle): Da
         case 'week':
             next.setDate(next.getDate() + cycle.count * 7);
             break;
-        case 'month':
+        case 'month': {
+            // Handle edge case: Jan 31 → Feb should be Feb 28/29, not Mar 3
             next.setMonth(next.getMonth() + cycle.count);
+            // If the day changed (rolled over), set to last day of target month
+            if (next.getDate() !== originalDay) {
+                next.setDate(0); // Go to last day of previous month (which is target month)
+            }
             break;
-        case 'year':
+        }
+        case 'year': {
+            // Handle leap year edge case: Feb 29 → Feb 28 in non-leap year
             next.setFullYear(next.getFullYear() + cycle.count);
+            if (next.getDate() !== originalDay) {
+                next.setDate(0);
+            }
             break;
+        }
     }
     return next;
 };

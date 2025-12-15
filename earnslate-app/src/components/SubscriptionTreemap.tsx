@@ -78,6 +78,8 @@ export default function SubscriptionTreemap({ subscriptions, currencySymbol }: S
                                 background: `linear-gradient(135deg, ${sub.color || '#666'}20 0%, ${sub.color || '#666'}40 100%)`,
                                 borderColor: `${sub.color || '#666'}30`,
                             }}
+                            role="article"
+                            aria-label={`${sub.name}: ${formatAmount(sub.amount)} ${getCycleLabel(sub.cycle)}, ${percentage}% of total`}
                         >
                             <div className={styles.itemHeader}>
                                 <div className={styles.itemIcon} style={{ color: sub.color || '#666' }}>

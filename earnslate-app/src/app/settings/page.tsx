@@ -179,7 +179,11 @@ export default function SettingsPage() {
                                 <Tag size={14} />
                                 <span>{cat.name}</span>
                                 {settings.customCategories.length > 1 && (
-                                    <button className={styles.deleteCategory} onClick={() => handleDeleteCategory(cat.id)}>
+                                    <button
+                                        className={styles.deleteCategory}
+                                        onClick={() => handleDeleteCategory(cat.id)}
+                                        aria-label={`Delete ${cat.name} category`}
+                                    >
                                         <Trash2 size={14} />
                                     </button>
                                 )}
