@@ -64,6 +64,8 @@
     display: flex;
     align-items: center;
     gap: var(--space-lg);
+    border-left: 3px solid var(--border-primary);
+    transition: border-color var(--transition-fast);
 }
 
 .subscriptionCard.inactive {
@@ -85,7 +87,11 @@
     justify-content: center;
     background: var(--bg-tertiary);
     border-radius: var(--radius-md);
-    color: var(--text-secondary);
+}
+
+.subscriptionIcon svg {
+    width: 28px;
+    height: 28px;
 }
 
 .subscriptionInfo {
@@ -103,6 +109,13 @@
 .subscriptionMeta {
     font-size: var(--text-sm);
     color: var(--text-muted);
+}
+
+.subscriptionNotes {
+    font-size: var(--text-xs);
+    color: var(--text-muted);
+    font-style: italic;
+    opacity: 0.8;
 }
 
 .subscriptionRight {

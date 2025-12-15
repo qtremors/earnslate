@@ -1,31 +1,22 @@
-# Tasks
+# Earnslate Tasks
 
-## Completed ✅
+## Completed
+- [x] Project setup (Next.js 15, TypeScript, Zustand)
+- [x] Design system (monochrome, inverted accents)
+- [x] Core pages (Dashboard, Transactions, Budgets, Subscriptions, Settings)
+- [x] CRUD operations for all entities
+- [x] Hydration fix (SSR compatibility)
+- [x] God-Tier Customization
+  - [x] ServicePicker with 55+ brand services
+  - [x] Flexible billing cycles
+  - [x] Icon picker (100+ icons)
+  - [x] Color picker
+  - [x] Notes field display
 
-- [x] Project initialization and design system
-- [x] All core pages (Dashboard, Transactions, Budgets, Subscriptions, Settings)
-- [x] Lucide icons and brand logos integration
-- [x] Zustand store with localStorage persistence
-- [x] Full CRUD for all entities
-- [x] SSR hydration fix
-
-## In Progress 🔄
-
-- [ ] Toast notification system
-- [ ] Loading/skeleton states
-
-## Backlog 📋
-
-### High Priority
-- [ ] Authentication (Supabase or NextAuth)
-- [ ] Vercel deployment
-
-### Medium Priority
-- [ ] Export data as JSON/CSV
-- [ ] Dark/light theme toggle
-- [ ] Budget reset on new month
-
-### Low Priority
-- [ ] Charts/graphs for spending trends
-- [ ] Mobile PWA support
-- [ ] Multi-currency conversion
+## Backlog
+- [ ] Custom icon uploads
+- [ ] Toast notifications
+- [ ] Data export (CSV/JSON)
+- [ ] Category management UI
+- [ ] Authentication
+- [ ] Cloud sync

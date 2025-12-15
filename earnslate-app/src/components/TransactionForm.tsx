@@ -1,11 +1,10 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useAppStore } from '@/store';
 import Modal from './Modal';
 import Input, { Select } from './Input';
 import Button from './Button';
-import { TRANSACTION_CATEGORIES } from '@/types';
 import styles from './TransactionForm.module.css';
 
 interface TransactionFormProps {
@@ -18,18 +17,43 @@ export default function TransactionForm({ isOpen, onClose, editId }: Transaction
     const addTransaction = useAppStore((state) => state.addTransaction);
     const transactions = useAppStore((state) => state.transactions);
     const updateTransaction = useAppStore((state) => state.updateTransaction);
+    const settings = useAppStore((state) => state.settings);
 
     const existingTransaction = editId
         ? transactions.find(t => t.id === editId)
         : null;
 
     const [formData, setFormData] = useState({
-        description: existingTransaction?.description || '',
-        amount: existingTransaction ? Math.abs(existingTransaction.amount).toString() : '',
-        type: existingTransaction?.type || 'expense' as 'income' | 'expense',
-        category: existingTransaction?.category || 'Other',
-        date: existingTransaction?.date || new Date().toISOString().split('T')[0],
+        description: '',
+        amount: '',
+        type: 'expense' as 'income' | 'expense',
+        category: 'Other',
+        date: new Date().toISOString().split('T')[0],
+        notes: '',
     });
+
+    // Populate form when editing
+    useEffect(() => {
+        if (existingTransaction) {
+            setFormData({
+                description: existingTransaction.description,
+                amount: Math.abs(existingTransaction.amount).toString(),
+                type: existingTransaction.type,
+                category: existingTransaction.category,
+                date: existingTransaction.date.split('T')[0],
+                notes: existingTransaction.notes || '',
+            });
+        } else if (isOpen) {
+            setFormData({
+                description: '',
+                amount: '',
+                type: 'expense',
+                category: 'Other',
+                date: new Date().toISOString().split('T')[0],
+                notes: '',
+            });
+        }
+    }, [existingTransaction, isOpen]);
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
@@ -43,6 +67,7 @@ export default function TransactionForm({ isOpen, onClose, editId }: Transaction
             type: formData.type,
             category: formData.category,
             date: formData.date,
+            notes: formData.notes || undefined,
         };
 
         if (editId) {
@@ -52,28 +77,17 @@ export default function TransactionForm({ isOpen, onClose, editId }: Transaction
         }
 
         onClose();
-        resetForm();
     };
 
-    const resetForm = () => {
-        setFormData({
-            description: '',
-            amount: '',
-            type: 'expense',
-            category: 'Other',
-            date: new Date().toISOString().split('T')[0],
-        });
-    };
-
-    const handleClose = () => {
-        onClose();
-        if (!editId) resetForm();
-    };
+    // Get categories from settings based on type
+    const categories = settings.customCategories
+        .filter(c => c.type === formData.type || c.type === 'both')
+        .map(c => ({ value: c.name, label: c.name }));
 
     return (
         <Modal
             isOpen={isOpen}
-            onClose={handleClose}
+            onClose={onClose}
             title={editId ? 'Edit Transaction' : 'Add Transaction'}
         >
             <form onSubmit={handleSubmit} className={styles.form}>
@@ -104,25 +118,27 @@ export default function TransactionForm({ isOpen, onClose, editId }: Transaction
                     required
                 />
 
-                <Input
-                    label="Amount"
-                    id="amount"
-                    type="number"
-                    placeholder="0.00"
-                    min="0"
-                    step="0.01"
-                    value={formData.amount}
-                    onChange={(e) => setFormData({ ...formData, amount: e.target.value })}
-                    required
-                />
+                <div className={styles.row}>
+                    <Input
+                        label={`Amount (${settings.currencySymbol})`}
+                        id="amount"
+                        type="number"
+                        placeholder="0.00"
+                        min="0"
+                        step="0.01"
+                        value={formData.amount}
+                        onChange={(e) => setFormData({ ...formData, amount: e.target.value })}
+                        required
+                    />
 
-                <Select
-                    label="Category"
-                    id="category"
-                    value={formData.category}
-                    onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-                    options={TRANSACTION_CATEGORIES.map(cat => ({ value: cat, label: cat }))}
-                />
+                    <Select
+                        label="Category"
+                        id="category"
+                        value={formData.category}
+                        onChange={(e) => setFormData({ ...formData, category: e.target.value })}
+                        options={categories}
+                    />
+                </div>
 
                 <Input
                     label="Date"
@@ -133,8 +149,16 @@ export default function TransactionForm({ isOpen, onClose, editId }: Transaction
                     required
                 />
 
+                <Input
+                    label="Notes (optional)"
+                    id="notes"
+                    placeholder="Additional details..."
+                    value={formData.notes}
+                    onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
+                />
+
                 <div className={styles.actions}>
-                    <Button type="button" variant="ghost" onClick={handleClose}>
+                    <Button type="button" variant="ghost" onClick={onClose}>
                         Cancel
                     </Button>
                     <Button type="submit" variant="primary">

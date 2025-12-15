@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import { Transaction, Budget, Subscription, UserSettings } from '@/types';
+import { Transaction, Budget, Subscription, UserSettings, DEFAULT_CATEGORIES, BillingCycle } from '@/types';
 
 // ===== Store State =====
 interface AppState {
@@ -41,7 +41,9 @@ const defaultSettings: UserSettings = {
     currencySymbol: '₹',
     dateFormat: 'DD/MM/YYYY',
     firstDayOfWeek: 'monday',
+    monthStartDay: 1,
     hasCompletedOnboarding: false,
+    customCategories: DEFAULT_CATEGORIES,
 };
 
 // ===== Helper Functions =====
@@ -182,7 +184,7 @@ export const useAppStore = create<AppState>()(
         }),
         {
             name: 'earnslate-storage',
-            skipHydration: true, // Important: skip automatic hydration
+            skipHydration: true,
         }
     )
 );
@@ -192,53 +194,36 @@ if (typeof window !== 'undefined') {
     useAppStore.persist.rehydrate();
 }
 
-// ===== Selectors =====
-export const selectTotalBalance = (state: AppState) => {
-    return state.transactions.reduce((sum, t) => sum + t.amount, 0);
+// ===== Helper to format cycle for display =====
+export const formatCycleDisplay = (cycle: BillingCycle): string => {
+    if (cycle.count === 1) {
+        const unitLabels: Record<string, string> = {
+            hour: 'Hourly',
+            day: 'Daily',
+            week: 'Weekly',
+            month: 'Monthly',
+            year: 'Yearly',
+        };
+        return unitLabels[cycle.unit] || 'Monthly';
+    }
+    return `Every ${cycle.count} ${cycle.unit}s`;
 };
 
-export const selectMonthlyIncome = (state: AppState) => {
-    const now = new Date();
-    const currentMonth = now.getMonth();
-    const currentYear = now.getFullYear();
-
-    return state.transactions
-        .filter(t => {
-            const date = new Date(t.date);
-            return t.type === 'income' &&
-                date.getMonth() === currentMonth &&
-                date.getFullYear() === currentYear;
-        })
-        .reduce((sum, t) => sum + t.amount, 0);
-};
-
-export const selectMonthlyExpenses = (state: AppState) => {
-    const now = new Date();
-    const currentMonth = now.getMonth();
-    const currentYear = now.getFullYear();
-
-    return state.transactions
-        .filter(t => {
-            const date = new Date(t.date);
-            return t.type === 'expense' &&
-                date.getMonth() === currentMonth &&
-                date.getFullYear() === currentYear;
-        })
-        .reduce((sum, t) => sum + Math.abs(t.amount), 0);
-};
-
-export const selectRecentTransactions = (state: AppState, limit = 5) => {
-    return state.transactions.slice(0, limit);
-};
-
-export const selectActiveSubscriptions = (state: AppState) => {
-    return state.subscriptions.filter(s => s.active);
-};
-
-export const selectMonthlySubscriptionCost = (state: AppState) => {
-    return state.subscriptions
-        .filter(s => s.active)
-        .reduce((sum, s) => {
-            return sum + (s.cycle === 'yearly' ? s.amount / 12 : s.amount);
-        }, 0);
+// ===== Calculate monthly equivalent for sorting/totals =====
+export const getMonthlyEquivalent = (amount: number, cycle: BillingCycle): number => {
+    const daysInMonth = 30;
+    switch (cycle.unit) {
+        case 'hour':
+            return amount * (24 * daysInMonth) / cycle.count;
+        case 'day':
+            return amount * daysInMonth / cycle.count;
+        case 'week':
+            return amount * (daysInMonth / 7) / cycle.count;
+        case 'month':
+            return amount / cycle.count;
+        case 'year':
+            return amount / (12 * cycle.count);
+        default:
+            return amount;
+    }
 };

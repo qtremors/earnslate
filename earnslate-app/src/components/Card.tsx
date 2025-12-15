@@ -1,4 +1,4 @@
-import { ReactNode } from 'react';
+import { ReactNode, CSSProperties } from 'react';
 import styles from './Card.module.css';
 
 interface CardProps {
@@ -6,13 +6,15 @@ interface CardProps {
     className?: string;
     hover?: boolean;
     padding?: 'sm' | 'md' | 'lg';
+    style?: CSSProperties;
 }
 
 export default function Card({
     children,
     className = '',
     hover = false,
-    padding = 'md'
+    padding = 'md',
+    style
 }: CardProps) {
     return (
         <div
@@ -22,6 +24,7 @@ export default function Card({
         ${hover ? styles.hover : ''} 
         ${className}
       `}
+            style={style}
         >
             {children}
         </div>

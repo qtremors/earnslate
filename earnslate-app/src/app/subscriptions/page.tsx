@@ -1,34 +1,15 @@
 'use client';
 
 import { useState } from 'react';
-import { useAppStore } from '@/store';
+import { useAppStore, formatCycleDisplay, getMonthlyEquivalent } from '@/store';
 import Header from '@/components/Header';
 import Card from '@/components/Card';
 import Button from '@/components/Button';
 import SubscriptionForm from '@/components/SubscriptionForm';
 import { Plus, Trash2, Pencil, Play, Pause } from 'lucide-react';
-import {
-    SiNetflix,
-    SiSpotify,
-    SiAmazon,
-    SiYoutube,
-    SiIcloud,
-    SiApple,
-} from 'react-icons/si';
-import { Dumbbell, HelpCircle } from 'lucide-react';
+import * as LucideIcons from 'lucide-react';
+import * as SimpleIcons from 'react-icons/si';
 import styles from './page.module.css';
-
-// Icon mapping for subscriptions
-const ICON_MAP: Record<string, React.ElementType> = {
-    netflix: SiNetflix,
-    spotify: SiSpotify,
-    amazon: SiAmazon,
-    youtube: SiYoutube,
-    icloud: SiIcloud,
-    apple: SiApple,
-    gym: Dumbbell,
-    other: HelpCircle,
-};
 
 export default function SubscriptionsPage() {
     const [isFormOpen, setIsFormOpen] = useState(false);
@@ -63,9 +44,21 @@ export default function SubscriptionsPage() {
         updateSubscription(id, { active: !currentActive });
     };
 
+    // Get icon component (handles both brand: prefix and lucide icons)
+    const getSubscriptionIcon = (iconName: string) => {
+        if (iconName.startsWith('brand:')) {
+            const brandIcon = iconName.replace('brand:', '');
+            const Icon = (SimpleIcons as unknown as Record<string, React.ElementType>)[brandIcon];
+            return Icon || LucideIcons.HelpCircle;
+        }
+        return (LucideIcons as unknown as Record<string, React.ElementType>)[iconName] || LucideIcons.HelpCircle;
+    };
+
     const activeSubscriptions = subscriptions.filter(s => s.active);
+
+    // Calculate monthly total using flexible cycles
     const monthlyTotal = activeSubscriptions.reduce((sum, s) => {
-        return sum + (s.cycle === 'yearly' ? s.amount / 12 : s.amount);
+        return sum + getMonthlyEquivalent(s.amount, s.cycle);
     }, 0);
     const yearlyTotal = monthlyTotal * 12;
 
@@ -115,27 +108,31 @@ export default function SubscriptionsPage() {
                 ) : (
                     <div className={styles.subscriptionList}>
                         {subscriptions.map((sub) => {
-                            const Icon = ICON_MAP[sub.icon] || HelpCircle;
+                            const Icon = getSubscriptionIcon(sub.icon);
+
                             return (
-                                <Card key={sub.id} className={`${styles.subscriptionCard} ${!sub.active ? styles.inactive : ''}`} hover>
+                                <Card
+                                    key={sub.id}
+                                    className={`${styles.subscriptionCard} ${!sub.active ? styles.inactive : ''}`}
+                                    hover
+                                    style={sub.color ? { borderLeftColor: sub.color } : undefined}
+                                >
                                     <div className={styles.subscriptionMain}>
-                                        <div
-                                            className={styles.subscriptionIcon}
-                                            style={sub.color ? { background: `${sub.color}20`, color: sub.color } : undefined}
-                                        >
+                                        <div className={styles.subscriptionIcon} style={{ color: sub.color || 'var(--text-secondary)' }}>
                                             <Icon size={22} />
                                         </div>
                                         <div className={styles.subscriptionInfo}>
                                             <span className={styles.subscriptionName}>{sub.name}</span>
                                             <span className={styles.subscriptionMeta}>
-                                                {sub.cycle === 'yearly' ? 'Yearly' : 'Monthly'} • Next: {new Date(sub.nextBilling).toLocaleDateString()}
+                                                {formatCycleDisplay(sub.cycle)} • Next: {new Date(sub.nextBilling).toLocaleDateString()}
                                             </span>
+                                            {sub.notes && <span className={styles.subscriptionNotes}>{sub.notes}</span>}
                                         </div>
                                     </div>
 
                                     <div className={styles.subscriptionRight}>
                                         <span className={styles.subscriptionAmount}>{formatCurrency(sub.amount)}</span>
-                                        <span className={styles.subscriptionCycle}>/{sub.cycle === 'yearly' ? 'year' : 'month'}</span>
+                                        <span className={styles.subscriptionCycle}>/{sub.cycle.count === 1 ? sub.cycle.unit : `${sub.cycle.count} ${sub.cycle.unit}s`}</span>
                                     </div>
 
                                     <div className={styles.cardActions}>

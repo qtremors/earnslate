@@ -1,25 +1,19 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useAppStore } from '@/store';
+import { TIME_UNITS, BillingCycle } from '@/types';
+import { ServiceTemplate } from '@/data/services';
 import Modal from './Modal';
-import Input, { Select } from './Input';
+import Input from './Input';
+import { Select } from './Input';
 import Button from './Button';
-import styles from './TransactionForm.module.css';
-
-// Available services with their brand colors
-const SUBSCRIPTION_SERVICES = [
-    { name: 'Netflix', icon: 'netflix', color: '#E50914' },
-    { name: 'Spotify', icon: 'spotify', color: '#1DB954' },
-    { name: 'Amazon Prime', icon: 'amazon', color: '#FF9900' },
-    { name: 'YouTube Premium', icon: 'youtube', color: '#FF0000' },
-    { name: 'iCloud', icon: 'icloud', color: '#3693F3' },
-    { name: 'Disney+', icon: 'disney', color: '#113CCF' },
-    { name: 'Apple Music', icon: 'apple', color: '#FA2D48' },
-    { name: 'HBO Max', icon: 'hbo', color: '#9B4DFF' },
-    { name: 'Gym Membership', icon: 'gym', color: null },
-    { name: 'Other', icon: 'other', color: null },
-];
+import IconPicker from './IconPicker';
+import ColorPicker from './ColorPicker';
+import ServicePicker from './ServicePicker';
+import * as LucideIcons from 'lucide-react';
+import * as SimpleIcons from 'react-icons/si';
+import styles from './SubscriptionForm.module.css';
 
 interface SubscriptionFormProps {
     isOpen: boolean;
@@ -27,134 +21,238 @@ interface SubscriptionFormProps {
     editId?: string;
 }
 
+type FormMode = 'picker' | 'custom' | 'edit';
+
 export default function SubscriptionForm({ isOpen, onClose, editId }: SubscriptionFormProps) {
-    const addSubscription = useAppStore((state) => state.addSubscription);
+    const [mode, setMode] = useState<FormMode>('picker');
+    const [name, setName] = useState('');
+    const [amount, setAmount] = useState('');
+    const [cycleCount, setCycleCount] = useState('1');
+    const [cycleUnit, setCycleUnit] = useState<BillingCycle['unit']>('month');
+    const [nextBilling, setNextBilling] = useState(new Date().toISOString().split('T')[0]);
+    const [icon, setIcon] = useState('Tv');
+    const [iconType, setIconType] = useState<'brand' | 'lucide'>('lucide');
+    const [color, setColor] = useState('#E50914');
+    const [notes, setNotes] = useState('');
+
     const subscriptions = useAppStore((state) => state.subscriptions);
+    const addSubscription = useAppStore((state) => state.addSubscription);
     const updateSubscription = useAppStore((state) => state.updateSubscription);
+    const settings = useAppStore((state) => state.settings);
 
-    const existingSub = editId
-        ? subscriptions.find(s => s.id === editId)
-        : null;
+    const isEditing = !!editId;
+    const existingSubscription = editId ? subscriptions.find(s => s.id === editId) : null;
 
-    const [formData, setFormData] = useState({
-        name: existingSub?.name || 'Netflix',
-        amount: existingSub?.amount.toString() || '',
-        cycle: existingSub?.cycle || 'monthly' as 'monthly' | 'yearly',
-        nextBilling: existingSub?.nextBilling || new Date().toISOString().split('T')[0],
-        active: existingSub?.active ?? true,
-    });
+    useEffect(() => {
+        if (existingSubscription) {
+            setMode('edit');
+            setName(existingSubscription.name);
+            setAmount(String(existingSubscription.amount));
+            setCycleCount(String(existingSubscription.cycle.count));
+            setCycleUnit(existingSubscription.cycle.unit);
+            setNextBilling(existingSubscription.nextBilling.split('T')[0]);
+            setIcon(existingSubscription.icon);
+            setColor(existingSubscription.color || '#E50914');
+            setNotes(existingSubscription.notes || '');
+        } else if (isOpen) {
+            setMode('picker');
+            resetForm();
+        }
+    }, [existingSubscription, isOpen]);
 
-    const selectedService = SUBSCRIPTION_SERVICES.find(s => s.name === formData.name);
+    const resetForm = () => {
+        setName('');
+        setAmount('');
+        setCycleCount('1');
+        setCycleUnit('month');
+        setNextBilling(new Date().toISOString().split('T')[0]);
+        setIcon('Tv');
+        setIconType('lucide');
+        setColor('#E50914');
+        setNotes('');
+    };
+
+    const handleServiceSelect = (service: ServiceTemplate) => {
+        setName(service.name);
+        setIcon(service.icon);
+        setIconType(service.iconType);
+        setColor(service.color);
+        if (service.suggestedAmount) {
+            setAmount(String(service.suggestedAmount));
+        }
+        if (service.suggestedCycle) {
+            setCycleCount(String(service.suggestedCycle.count));
+            setCycleUnit(service.suggestedCycle.unit);
+        }
+        setMode('custom'); // Switch to form to confirm/edit
+    };
+
+    const handleCustom = () => {
+        resetForm();
+        setMode('custom');
+    };
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
 
-        const amount = parseFloat(formData.amount);
-        if (isNaN(amount) || amount <= 0) return;
-
-        const subscriptionData = {
-            name: formData.name,
-            amount,
-            cycle: formData.cycle,
-            nextBilling: formData.nextBilling,
-            icon: selectedService?.icon || 'other',
-            color: selectedService?.color || null,
-            active: formData.active,
+        const cycle: BillingCycle = {
+            count: parseInt(cycleCount) || 1,
+            unit: cycleUnit,
         };
 
-        if (editId) {
+        // Store icon with type prefix for rendering
+        const iconValue = iconType === 'brand' ? `brand:${icon}` : icon;
+
+        const subscriptionData = {
+            name,
+            amount: parseFloat(amount),
+            cycle,
+            nextBilling,
+            icon: iconValue,
+            color,
+            notes: notes || undefined,
+            active: true,
+        };
+
+        if (isEditing && editId) {
             updateSubscription(editId, subscriptionData);
         } else {
             addSubscription(subscriptionData);
         }
 
         onClose();
-        resetForm();
     };
 
-    const resetForm = () => {
-        setFormData({
-            name: 'Netflix',
-            amount: '',
-            cycle: 'monthly',
-            nextBilling: new Date().toISOString().split('T')[0],
-            active: true,
-        });
+    const handleBack = () => {
+        setMode('picker');
     };
 
-    const handleClose = () => {
-        onClose();
-        if (!editId) resetForm();
+    // Get icon component for preview
+    const getPreviewIcon = () => {
+        if (iconType === 'brand') {
+            const Icon = (SimpleIcons as unknown as Record<string, React.ElementType>)[icon];
+            return Icon ? <Icon size={24} /> : <LucideIcons.HelpCircle size={24} />;
+        }
+        const Icon = (LucideIcons as unknown as Record<string, React.ElementType>)[icon];
+        return Icon ? <Icon size={24} /> : <LucideIcons.HelpCircle size={24} />;
     };
 
     return (
         <Modal
             isOpen={isOpen}
-            onClose={handleClose}
-            title={editId ? 'Edit Subscription' : 'Add Subscription'}
+            onClose={onClose}
+            title={
+                mode === 'picker' ? 'Choose a Service' :
+                    isEditing ? 'Edit Subscription' :
+                        'Add Subscription'
+            }
+            size={mode === 'picker' ? 'lg' : 'md'}
         >
-            <form onSubmit={handleSubmit} className={styles.form}>
-                <Select
-                    label="Service"
-                    id="name"
-                    value={formData.name}
-                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                    options={SUBSCRIPTION_SERVICES.map(s => ({ value: s.name, label: s.name }))}
+            {mode === 'picker' ? (
+                <ServicePicker
+                    onSelect={handleServiceSelect}
+                    onCustom={handleCustom}
                 />
-
-                <Input
-                    label="Amount"
-                    id="amount"
-                    type="number"
-                    placeholder="0.00"
-                    min="0"
-                    step="0.01"
-                    value={formData.amount}
-                    onChange={(e) => setFormData({ ...formData, amount: e.target.value })}
-                    required
-                />
-
-                {/* Cycle Toggle */}
-                <div>
-                    <label className={styles.label} style={{ display: 'block', marginBottom: '8px', fontSize: '14px', color: 'var(--text-secondary)' }}>
-                        Billing Cycle
-                    </label>
-                    <div className={styles.typeToggle}>
-                        <button
-                            type="button"
-                            className={`${styles.typeButton} ${formData.cycle === 'monthly' ? styles.activeIncome : ''}`}
-                            onClick={() => setFormData({ ...formData, cycle: 'monthly' })}
+            ) : (
+                <form onSubmit={handleSubmit} className={styles.form}>
+                    {/* Preview & Name */}
+                    <div className={styles.header}>
+                        <div
+                            className={styles.previewIcon}
+                            style={{ backgroundColor: `${color}20`, color: color }}
                         >
-                            Monthly
-                        </button>
-                        <button
-                            type="button"
-                            className={`${styles.typeButton} ${formData.cycle === 'yearly' ? styles.activeIncome : ''}`}
-                            onClick={() => setFormData({ ...formData, cycle: 'yearly' })}
-                        >
-                            Yearly
-                        </button>
+                            {getPreviewIcon()}
+                        </div>
+                        <Input
+                            id="name"
+                            value={name}
+                            onChange={(e) => setName(e.target.value)}
+                            placeholder="Subscription name..."
+                            required
+                            className={styles.nameInput}
+                        />
                     </div>
-                </div>
 
-                <Input
-                    label="Next Billing Date"
-                    id="nextBilling"
-                    type="date"
-                    value={formData.nextBilling}
-                    onChange={(e) => setFormData({ ...formData, nextBilling: e.target.value })}
-                    required
-                />
+                    <div className={styles.row}>
+                        <Input
+                            label={`Amount (${settings.currencySymbol})`}
+                            id="amount"
+                            type="number"
+                            value={amount}
+                            onChange={(e) => setAmount(e.target.value)}
+                            placeholder="0"
+                            required
+                        />
+                        <Input
+                            label="Next Billing"
+                            id="nextBilling"
+                            type="date"
+                            value={nextBilling}
+                            onChange={(e) => setNextBilling(e.target.value)}
+                            required
+                        />
+                    </div>
 
-                <div className={styles.actions}>
-                    <Button type="button" variant="ghost" onClick={handleClose}>
-                        Cancel
-                    </Button>
-                    <Button type="submit" variant="primary">
-                        {editId ? 'Save Changes' : 'Add Subscription'}
-                    </Button>
-                </div>
-            </form>
+                    {/* Flexible Billing Cycle */}
+                    <div className={styles.cycleSection}>
+                        <label className={styles.sectionLabel}>Billing Cycle</label>
+                        <div className={styles.cycleRow}>
+                            <span className={styles.cyclePrefix}>Every</span>
+                            <Input
+                                id="cycleCount"
+                                type="number"
+                                value={cycleCount}
+                                onChange={(e) => setCycleCount(e.target.value)}
+                                min="1"
+                                className={styles.cycleCount}
+                            />
+                            <Select
+                                id="cycleUnit"
+                                value={cycleUnit}
+                                onChange={(e) => setCycleUnit(e.target.value as BillingCycle['unit'])}
+                                options={TIME_UNITS.map(u => ({ value: u.value, label: u.label }))}
+                            />
+                        </div>
+                    </div>
+
+                    {/* Only show icon picker for custom (non-brand) subscriptions */}
+                    {iconType === 'lucide' && (
+                        <IconPicker
+                            label="Icon"
+                            value={icon}
+                            onChange={setIcon}
+                        />
+                    )}
+
+                    <ColorPicker
+                        label="Color"
+                        value={color}
+                        onChange={setColor}
+                    />
+
+                    <Input
+                        label="Notes (optional)"
+                        id="notes"
+                        value={notes}
+                        onChange={(e) => setNotes(e.target.value)}
+                        placeholder="Account details, cancel date, etc."
+                    />
+
+                    <div className={styles.actions}>
+                        {!isEditing && (
+                            <Button type="button" variant="ghost" onClick={handleBack}>
+                                ← Back
+                            </Button>
+                        )}
+                        <Button type="button" variant="ghost" onClick={onClose}>
+                            Cancel
+                        </Button>
+                        <Button type="submit" variant="primary">
+                            {isEditing ? 'Save Changes' : 'Add Subscription'}
+                        </Button>
+                    </div>
+                </form>
+            )}
         </Modal>
     );
 }

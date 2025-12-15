@@ -1,0 +1,112 @@
+.form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-lg);
+}
+
+.header {
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+}
+
+.previewIcon {
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--radius-md);
+    flex-shrink: 0;
+}
+
+.nameInput {
+    flex: 1;
+    font-size: var(--text-lg);
+    font-weight: var(--font-semibold);
+}
+
+.row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-md);
+}
+
+/* Templates */
+.templates {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    flex-wrap: wrap;
+    padding-bottom: var(--space-md);
+    border-bottom: 1px solid var(--border-primary);
+}
+
+.templateLabel {
+    font-size: var(--text-xs);
+    color: var(--text-muted);
+}
+
+.templateButton {
+    padding: var(--space-xs) var(--space-sm);
+    font-size: var(--text-xs);
+    background: transparent;
+    border: 1px solid var(--border-primary);
+    border-radius: var(--radius-full);
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.templateButton:hover {
+    border-color: var(--text-primary);
+    color: var(--text-primary);
+}
+
+/* Billing Cycle */
+.cycleSection {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+}
+
+.sectionLabel {
+    font-size: var(--text-sm);
+    font-weight: var(--font-medium);
+    color: var(--text-secondary);
+}
+
+.cycleRow {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+}
+
+.cyclePrefix {
+    font-size: var(--text-sm);
+    color: var(--text-muted);
+    white-space: nowrap;
+}
+
+.cycleCount {
+    max-width: 80px;
+}
+
+/* Actions */
+.actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: var(--space-sm);
+    padding-top: var(--space-md);
+    border-top: 1px solid var(--border-primary);
+}
+
+@media (max-width: 480px) {
+    .row {
+        grid-template-columns: 1fr;
+    }
+
+    .templates {
+        justify-content: center;
+    }
+}

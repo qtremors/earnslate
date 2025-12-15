@@ -1,0 +1,129 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xs);
+}
+
+.label {
+    font-size: var(--text-sm);
+    font-weight: var(--font-medium);
+    color: var(--text-secondary);
+}
+
+.trigger {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    padding: var(--space-sm) var(--space-md);
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border-primary);
+    border-radius: var(--radius-md);
+    color: var(--text-primary);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.trigger:hover {
+    border-color: var(--border-hover);
+}
+
+.trigger span {
+    flex: 1;
+    text-align: left;
+    font-size: var(--text-sm);
+}
+
+.chevron {
+    color: var(--text-muted);
+}
+
+.backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 99;
+}
+
+.dropdown {
+    position: absolute;
+    top: calc(100% + var(--space-xs));
+    left: 0;
+    right: 0;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-primary);
+    border-radius: var(--radius-md);
+    padding: var(--space-sm);
+    z-index: 100;
+    box-shadow: var(--shadow-lg);
+    max-height: 320px;
+    overflow-y: auto;
+}
+
+.searchBox {
+    position: relative;
+    margin-bottom: var(--space-sm);
+}
+
+.searchIcon {
+    position: absolute;
+    left: var(--space-sm);
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-muted);
+}
+
+.searchInput {
+    width: 100%;
+    padding: var(--space-sm);
+    padding-left: calc(var(--space-sm) * 2 + 16px);
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border-primary);
+    border-radius: var(--radius-sm);
+    font-size: var(--text-xs);
+    color: var(--text-primary);
+    font-family: var(--font-sans);
+}
+
+.searchInput::placeholder {
+    color: var(--text-muted);
+}
+
+.searchInput:focus {
+    outline: none;
+    border-color: var(--border-hover);
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: var(--space-xs);
+}
+
+.iconButton {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: var(--radius-sm);
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.iconButton:hover {
+    background: var(--bg-hover);
+    color: var(--text-primary);
+}
+
+.iconButton.selected {
+    background: var(--bg-inverted);
+    color: var(--text-inverted);
+    border-color: var(--bg-inverted);
+}
+
+/* Container needs relative positioning */
+.container {
+    position: relative;
+}

@@ -1,12 +1,15 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useAppStore } from '@/store';
+import { TIME_UNITS, BillingCycle } from '@/types';
 import Modal from './Modal';
-import Input, { Select } from './Input';
+import Input from './Input';
+import { Select } from './Input';
 import Button from './Button';
-import { BUDGET_ICONS } from '@/types';
-import styles from './TransactionForm.module.css';
+import IconPicker from './IconPicker';
+import ColorPicker from './ColorPicker';
+import styles from './BudgetForm.module.css';
 
 interface BudgetFormProps {
     isOpen: boolean;
@@ -15,108 +18,154 @@ interface BudgetFormProps {
 }
 
 export default function BudgetForm({ isOpen, onClose, editId }: BudgetFormProps) {
-    const addBudget = useAppStore((state) => state.addBudget);
+    const [name, setName] = useState('');
+    const [limit, setLimit] = useState('');
+    const [category, setCategory] = useState('');
+    const [icon, setIcon] = useState('UtensilsCrossed');
+    const [color, setColor] = useState('#F59E0B');
+    const [periodCount, setPeriodCount] = useState('1');
+    const [periodUnit, setPeriodUnit] = useState<BillingCycle['unit']>('month');
+
     const budgets = useAppStore((state) => state.budgets);
+    const addBudget = useAppStore((state) => state.addBudget);
     const updateBudget = useAppStore((state) => state.updateBudget);
+    const settings = useAppStore((state) => state.settings);
 
-    const existingBudget = editId
-        ? budgets.find(b => b.id === editId)
-        : null;
+    const isEditing = !!editId;
+    const existingBudget = editId ? budgets.find(b => b.id === editId) : null;
 
-    const [formData, setFormData] = useState({
-        name: existingBudget?.name || '',
-        limit: existingBudget?.limit.toString() || '',
-        category: existingBudget?.category || 'Other',
-        icon: existingBudget?.icon || 'UtensilsCrossed',
-    });
+    useEffect(() => {
+        if (existingBudget) {
+            setName(existingBudget.name);
+            setLimit(String(existingBudget.limit));
+            setCategory(existingBudget.category);
+            setIcon(existingBudget.icon);
+            setColor(existingBudget.color || '#F59E0B');
+            setPeriodCount(String(existingBudget.period?.count || 1));
+            setPeriodUnit(existingBudget.period?.unit || 'month');
+        } else {
+            setName('');
+            setLimit('');
+            setCategory('');
+            setIcon('UtensilsCrossed');
+            setColor('#F59E0B');
+            setPeriodCount('1');
+            setPeriodUnit('month');
+        }
+    }, [existingBudget, isOpen]);
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
 
-        const limit = parseFloat(formData.limit);
-        if (isNaN(limit) || limit <= 0) return;
-
-        const budgetData = {
-            name: formData.name,
-            limit,
-            category: formData.category,
-            icon: formData.icon,
+        const period: BillingCycle = {
+            count: parseInt(periodCount) || 1,
+            unit: periodUnit,
         };
 
-        if (editId) {
+        const budgetData = {
+            name,
+            limit: parseFloat(limit),
+            category: category || name,
+            icon,
+            color,
+            period,
+        };
+
+        if (isEditing && editId) {
             updateBudget(editId, budgetData);
         } else {
             addBudget(budgetData);
         }
 
         onClose();
-        resetForm();
     };
 
-    const resetForm = () => {
-        setFormData({
-            name: '',
-            limit: '',
-            category: 'Other',
-            icon: 'UtensilsCrossed',
-        });
-    };
+    // Get categories from settings
+    const categories = settings.customCategories
+        .filter(c => c.type === 'expense' || c.type === 'both')
+        .map(c => ({ value: c.name, label: c.name }));
 
-    const handleClose = () => {
-        onClose();
-        if (!editId) resetForm();
-    };
+    // Filter period units (no hourly budgets)
+    const budgetPeriodUnits = TIME_UNITS.filter(u => u.value !== 'hour');
 
     return (
         <Modal
             isOpen={isOpen}
-            onClose={handleClose}
-            title={editId ? 'Edit Budget' : 'Create Budget'}
+            onClose={onClose}
+            title={isEditing ? 'Edit Budget' : 'Create Budget'}
+            size="md"
         >
             <form onSubmit={handleSubmit} className={styles.form}>
                 <Input
                     label="Budget Name"
                     id="name"
-                    placeholder="e.g., Food & Dining, Entertainment..."
-                    value={formData.name}
-                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    placeholder="e.g., Food, Entertainment, Travel..."
                     required
                 />
 
-                <Input
-                    label="Monthly Limit"
-                    id="limit"
-                    type="number"
-                    placeholder="0.00"
-                    min="0"
-                    step="0.01"
-                    value={formData.limit}
-                    onChange={(e) => setFormData({ ...formData, limit: e.target.value })}
-                    required
-                />
+                <div className={styles.row}>
+                    <Input
+                        label={`Limit (${settings.currencySymbol})`}
+                        id="limit"
+                        type="number"
+                        value={limit}
+                        onChange={(e) => setLimit(e.target.value)}
+                        placeholder="5000"
+                        required
+                    />
+                    <Select
+                        label="Category"
+                        id="category"
+                        value={category}
+                        onChange={(e) => setCategory(e.target.value)}
+                        options={[{ value: '', label: 'Same as name' }, ...categories]}
+                    />
+                </div>
 
-                <Select
-                    label="Category"
-                    id="category"
-                    value={formData.category}
-                    onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-                    options={BUDGET_ICONS.map(icon => ({ value: icon.label, label: icon.label }))}
-                />
+                {/* Flexible Budget Period */}
+                <div className={styles.periodSection}>
+                    <label className={styles.sectionLabel}>Budget Period</label>
+                    <div className={styles.periodRow}>
+                        <span className={styles.periodPrefix}>Resets every</span>
+                        <Input
+                            id="periodCount"
+                            type="number"
+                            value={periodCount}
+                            onChange={(e) => setPeriodCount(e.target.value)}
+                            min="1"
+                            className={styles.periodCount}
+                        />
+                        <Select
+                            id="periodUnit"
+                            value={periodUnit}
+                            onChange={(e) => setPeriodUnit(e.target.value as BillingCycle['unit'])}
+                            options={budgetPeriodUnits.map(u => ({ value: u.value, label: u.label }))}
+                        />
+                    </div>
+                </div>
 
-                <Select
-                    label="Icon"
-                    id="icon"
-                    value={formData.icon}
-                    onChange={(e) => setFormData({ ...formData, icon: e.target.value })}
-                    options={BUDGET_ICONS.map(icon => ({ value: icon.name, label: icon.label }))}
+                <div className={styles.row}>
+                    <IconPicker
+                        label="Icon"
+                        value={icon}
+                        onChange={setIcon}
+                    />
+                </div>
+
+                <ColorPicker
+                    label="Color"
+                    value={color}
+                    onChange={setColor}
                 />
 
                 <div className={styles.actions}>
-                    <Button type="button" variant="ghost" onClick={handleClose}>
+                    <Button type="button" variant="ghost" onClick={onClose}>
                         Cancel
                     </Button>
                     <Button type="submit" variant="primary">
-                        {editId ? 'Save Changes' : 'Create Budget'}
+                        {isEditing ? 'Save Changes' : 'Create Budget'}
                     </Button>
                 </div>
             </form>

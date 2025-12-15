@@ -1,37 +1,15 @@
 'use client';
 
 import { useState } from 'react';
-import { useAppStore } from '@/store';
+import { useAppStore, formatCycleDisplay } from '@/store';
 import Header from '@/components/Header';
 import Card from '@/components/Card';
 import Button from '@/components/Button';
 import BudgetForm from '@/components/BudgetForm';
 import ProgressBar from '@/components/ProgressBar';
 import { Plus, Trash2, Pencil } from 'lucide-react';
-import {
-    UtensilsCrossed,
-    Film,
-    Car,
-    ShoppingCart,
-    Dumbbell,
-    Lightbulb,
-    Home,
-    GraduationCap,
-    HelpCircle
-} from 'lucide-react';
+import * as LucideIcons from 'lucide-react';
 import styles from './page.module.css';
-
-// Icon mapping
-const ICON_MAP: Record<string, React.ElementType> = {
-    UtensilsCrossed,
-    Film,
-    Car,
-    ShoppingCart,
-    Dumbbell,
-    Lightbulb,
-    Home,
-    GraduationCap,
-};
 
 export default function BudgetsPage() {
     const [isFormOpen, setIsFormOpen] = useState(false);
@@ -122,7 +100,8 @@ export default function BudgetsPage() {
                 ) : (
                     <div className={styles.budgetGrid}>
                         {budgets.map((budget) => {
-                            const Icon = ICON_MAP[budget.icon] || HelpCircle;
+                            // Dynamic icon loading from Lucide
+                            const Icon = (LucideIcons as Record<string, React.ElementType>)[budget.icon] || LucideIcons.HelpCircle;
                             const percentage = (budget.spent / budget.limit) * 100;
                             const isOverBudget = budget.spent >= budget.limit;
 
@@ -146,10 +125,18 @@ export default function BudgetsPage() {
                                     </div>
 
                                     <div className={styles.budgetHeader}>
-                                        <div className={styles.budgetIcon}>
+                                        <div
+                                            className={styles.budgetIcon}
+                                            style={budget.color ? { background: `${budget.color}20`, color: budget.color } : undefined}
+                                        >
                                             <Icon size={20} />
                                         </div>
-                                        <span className={styles.budgetName}>{budget.name}</span>
+                                        <div className={styles.budgetTitleBlock}>
+                                            <span className={styles.budgetName}>{budget.name}</span>
+                                            {budget.period && (
+                                                <span className={styles.budgetPeriod}>{formatCycleDisplay(budget.period)}</span>
+                                            )}
+                                        </div>
                                     </div>
 
                                     <div className={styles.budgetAmounts}>
