@@ -1,0 +1,110 @@
+/* ===== Toast Notifications ===== */
+
+.container {
+    position: fixed;
+    bottom: var(--space-lg);
+    right: var(--space-lg);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+    z-index: 1000;
+    max-width: 400px;
+    pointer-events: none;
+}
+
+.toast {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    padding: var(--space-md);
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-primary);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-lg);
+    animation: slideIn 0.3s ease;
+    pointer-events: auto;
+}
+
+.toast.success {
+    border-left: 3px solid var(--success);
+}
+
+.toast.success .icon {
+    color: var(--success);
+}
+
+.toast.error {
+    border-left: 3px solid var(--error);
+}
+
+.toast.error .icon {
+    color: var(--error);
+}
+
+.toast.warning {
+    border-left: 3px solid var(--warning);
+}
+
+.toast.warning .icon {
+    color: var(--warning);
+}
+
+.toast.info {
+    border-left: 3px solid var(--info);
+}
+
+.toast.info .icon {
+    color: var(--info);
+}
+
+.icon {
+    flex-shrink: 0;
+}
+
+.message {
+    flex: 1;
+    font-size: var(--text-sm);
+    color: var(--text-primary);
+    line-height: var(--leading-normal);
+}
+
+.close {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--space-xs);
+    background: transparent;
+    border: none;
+    border-radius: var(--radius-sm);
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.close:hover {
+    background: var(--bg-hover);
+    color: var(--text-primary);
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateX(100%);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+/* Mobile adjustments */
+@media (max-width: 480px) {
+    .container {
+        left: var(--space-md);
+        right: var(--space-md);
+        bottom: var(--space-md);
+        max-width: none;
+    }
+}

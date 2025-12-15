@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useAppStore } from '@/store';
+import { useToast } from './Toast';
 import Modal from './Modal';
 import Input, { Select } from './Input';
 import Button from './Button';
@@ -18,6 +19,7 @@ export default function TransactionForm({ isOpen, onClose, editId }: Transaction
     const transactions = useAppStore((state) => state.transactions);
     const updateTransaction = useAppStore((state) => state.updateTransaction);
     const settings = useAppStore((state) => state.settings);
+    const { showToast } = useToast();
 
     const existingTransaction = editId
         ? transactions.find(t => t.id === editId)
@@ -88,8 +90,10 @@ export default function TransactionForm({ isOpen, onClose, editId }: Transaction
 
         if (editId) {
             updateTransaction(editId, transactionData);
+            showToast('Transaction updated successfully', 'success');
         } else {
             addTransaction(transactionData);
+            showToast('Transaction added successfully', 'success');
         }
 
         onClose();

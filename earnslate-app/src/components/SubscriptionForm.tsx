@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useAppStore } from '@/store';
+import { useToast } from './Toast';
 import { TIME_UNITS, BillingCycle } from '@/types';
 import { ServiceTemplate } from '@/data/services';
 import Modal from './Modal';
@@ -39,6 +40,7 @@ export default function SubscriptionForm({ isOpen, onClose, editId }: Subscripti
     const addSubscription = useAppStore((state) => state.addSubscription);
     const updateSubscription = useAppStore((state) => state.updateSubscription);
     const settings = useAppStore((state) => state.settings);
+    const { showToast } = useToast();
 
     const isEditing = !!editId;
     const existingSubscription = editId ? subscriptions.find(s => s.id === editId) : null;
@@ -116,8 +118,10 @@ export default function SubscriptionForm({ isOpen, onClose, editId }: Subscripti
 
         if (isEditing && editId) {
             updateSubscription(editId, subscriptionData);
+            showToast('Subscription updated successfully', 'success');
         } else {
             addSubscription(subscriptionData);
+            showToast('Subscription added successfully', 'success');
         }
 
         onClose();

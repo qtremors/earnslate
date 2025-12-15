@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useAppStore } from '@/store';
+import { useToast } from './Toast';
 import { TIME_UNITS, BillingCycle } from '@/types';
 import Modal from './Modal';
 import Input from './Input';
@@ -30,6 +31,7 @@ export default function BudgetForm({ isOpen, onClose, editId }: BudgetFormProps)
     const addBudget = useAppStore((state) => state.addBudget);
     const updateBudget = useAppStore((state) => state.updateBudget);
     const settings = useAppStore((state) => state.settings);
+    const { showToast } = useToast();
 
     const isEditing = !!editId;
     const existingBudget = editId ? budgets.find(b => b.id === editId) : null;
@@ -73,8 +75,10 @@ export default function BudgetForm({ isOpen, onClose, editId }: BudgetFormProps)
 
         if (isEditing && editId) {
             updateBudget(editId, budgetData);
+            showToast('Budget updated successfully', 'success');
         } else {
             addBudget(budgetData);
+            showToast('Budget created successfully', 'success');
         }
 
         onClose();

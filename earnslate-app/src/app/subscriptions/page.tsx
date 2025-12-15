@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useAppStore, formatCycleDisplay, getMonthlyEquivalent } from '@/store';
 import { useConfirm } from '@/hooks/useConfirm';
+import { useToast } from '@/components/Toast';
 import Header from '@/components/Header';
 import Card from '@/components/Card';
 import Button from '@/components/Button';
@@ -25,6 +26,7 @@ export default function SubscriptionsPage() {
     const updateSubscription = useAppStore((state) => state.updateSubscription);
     const settings = useAppStore((state) => state.settings);
     const { confirm, ConfirmDialog } = useConfirm();
+    const { showToast } = useToast();
 
     const formatCurrency = (amount: number) => {
         return `${settings.currencySymbol}${amount.toLocaleString('en-IN')}`;
@@ -47,11 +49,15 @@ export default function SubscriptionsPage() {
             confirmText: 'Delete',
             variant: 'danger',
         });
-        if (confirmed) deleteSubscription(id);
+        if (confirmed) {
+            deleteSubscription(id);
+            showToast('Subscription deleted', 'success');
+        }
     };
 
     const handleToggleActive = (id: string, currentActive: boolean) => {
         updateSubscription(id, { active: !currentActive });
+        showToast(currentActive ? 'Subscription paused' : 'Subscription resumed', 'info');
     };
 
     const getSubscriptionIcon = (iconName: string) => {

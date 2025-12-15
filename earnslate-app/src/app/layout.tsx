@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import StoreProvider from '@/components/StoreProvider';
+import { ToastProvider } from '@/components/Toast';
 import Sidebar from '@/components/Sidebar';
 import './globals.css';
 import styles from './layout.module.css';
@@ -25,14 +26,17 @@ export default function RootLayout({
     <html lang="en" className={inter.variable}>
       <body>
         <StoreProvider>
-          <div className={styles.appContainer}>
-            <Sidebar />
-            <main className={styles.mainContent}>
-              {children}
-            </main>
-          </div>
+          <ToastProvider>
+            <div className={styles.appContainer}>
+              <Sidebar />
+              <main className={styles.mainContent}>
+                {children}
+              </main>
+            </div>
+          </ToastProvider>
         </StoreProvider>
       </body>
     </html>
   );
 }
+

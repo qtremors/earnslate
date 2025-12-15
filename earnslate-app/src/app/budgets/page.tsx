@@ -3,6 +3,7 @@
 import { useState, useMemo } from 'react';
 import { useAppStore, formatCycleDisplay } from '@/store';
 import { useConfirm } from '@/hooks/useConfirm';
+import { useToast } from '@/components/Toast';
 import Header from '@/components/Header';
 import Card from '@/components/Card';
 import Button from '@/components/Button';
@@ -23,6 +24,7 @@ export default function BudgetsPage() {
     const deleteBudget = useAppStore((state) => state.deleteBudget);
     const settings = useAppStore((state) => state.settings);
     const { confirm, ConfirmDialog } = useConfirm();
+    const { showToast } = useToast();
 
     const formatCurrency = (amount: number) => `${settings.currencySymbol}${amount.toLocaleString('en-IN')}`;
 
@@ -56,7 +58,10 @@ export default function BudgetsPage() {
             confirmText: 'Delete',
             variant: 'danger',
         });
-        if (confirmed) deleteBudget(id);
+        if (confirmed) {
+            deleteBudget(id);
+            showToast('Budget deleted', 'success');
+        }
     };
 
     const totalBudget = budgets.reduce((sum, b) => sum + b.limit, 0);

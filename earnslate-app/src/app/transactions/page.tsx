@@ -3,6 +3,7 @@
 import { useState, useMemo } from 'react';
 import { useAppStore } from '@/store';
 import { useConfirm } from '@/hooks/useConfirm';
+import { useToast } from '@/components/Toast';
 import Header from '@/components/Header';
 import Card, { CardHeader } from '@/components/Card';
 import Button from '@/components/Button';
@@ -25,6 +26,7 @@ export default function TransactionsPage() {
     const deleteTransaction = useAppStore((state) => state.deleteTransaction);
     const settings = useAppStore((state) => state.settings);
     const { confirm, ConfirmDialog } = useConfirm();
+    const { showToast } = useToast();
 
     const formatCurrency = (amount: number) => `${settings.currencySymbol}${Math.abs(amount).toLocaleString('en-IN')}`;
 
@@ -93,7 +95,10 @@ export default function TransactionsPage() {
             confirmText: 'Delete',
             variant: 'danger',
         });
-        if (confirmed) deleteTransaction(id);
+        if (confirmed) {
+            deleteTransaction(id);
+            showToast('Transaction deleted', 'success');
+        }
     };
 
     const handleExportCSV = () => {
