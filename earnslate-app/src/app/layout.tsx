@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
+import StoreProvider from '@/components/StoreProvider';
 import Sidebar from '@/components/Sidebar';
 import './globals.css';
 import styles from './layout.module.css';
@@ -23,12 +24,14 @@ export default function RootLayout({
   return (
     <html lang="en" className={inter.variable}>
       <body>
-        <div className={styles.appContainer}>
-          <Sidebar />
-          <main className={styles.mainContent}>
-            {children}
-          </main>
-        </div>
+        <StoreProvider>
+          <div className={styles.appContainer}>
+            <Sidebar />
+            <main className={styles.mainContent}>
+              {children}
+            </main>
+          </div>
+        </StoreProvider>
       </body>
     </html>
   );

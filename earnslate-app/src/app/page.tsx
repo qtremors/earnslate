@@ -1,6 +1,6 @@
 'use client';
 
-import { useAppStore, selectTotalBalance, selectMonthlyIncome, selectMonthlyExpenses, selectRecentTransactions } from '@/store';
+import { useAppStore } from '@/store';
 import Header from '@/components/Header';
 import Card, { CardHeader } from '@/components/Card';
 import ProgressBar from '@/components/ProgressBar';
@@ -27,12 +27,37 @@ const CATEGORY_ICONS: Record<string, React.ElementType> = {
 };
 
 export default function Dashboard() {
+  // Get individual state slices to avoid re-render loops
   const settings = useAppStore((state) => state.settings);
-  const totalBalance = useAppStore(selectTotalBalance);
-  const monthlyIncome = useAppStore(selectMonthlyIncome);
-  const monthlyExpenses = useAppStore(selectMonthlyExpenses);
-  const recentTransactions = useAppStore((state) => selectRecentTransactions(state, 5));
+  const transactions = useAppStore((state) => state.transactions);
   const budgets = useAppStore((state) => state.budgets);
+
+  // Compute values from state (not in selectors to avoid infinite loop)
+  const totalBalance = transactions.reduce((sum, t) => sum + t.amount, 0);
+
+  const now = new Date();
+  const currentMonth = now.getMonth();
+  const currentYear = now.getFullYear();
+
+  const monthlyIncome = transactions
+    .filter(t => {
+      const date = new Date(t.date);
+      return t.type === 'income' &&
+        date.getMonth() === currentMonth &&
+        date.getFullYear() === currentYear;
+    })
+    .reduce((sum, t) => sum + t.amount, 0);
+
+  const monthlyExpenses = transactions
+    .filter(t => {
+      const date = new Date(t.date);
+      return t.type === 'expense' &&
+        date.getMonth() === currentMonth &&
+        date.getFullYear() === currentYear;
+    })
+    .reduce((sum, t) => sum + Math.abs(t.amount), 0);
+
+  const recentTransactions = transactions.slice(0, 5);
 
   const formatCurrency = (amount: number) => {
     return `${settings.currencySymbol}${Math.abs(amount).toLocaleString('en-IN')}`;

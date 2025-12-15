@@ -1,24 +1,33 @@
 # Changelog
 
-All notable changes to this project will be documented in this file.
+All notable changes to Earnslate.
 
-The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
-and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
-
----
-
-## [Unreleased]
+## [0.2.0] - 2025-12-15
 
 ### Added
-- Features currently in development
+- Full CRUD for transactions (add, edit, delete)
+- Full CRUD for budgets with progress tracking
+- Full CRUD for subscriptions with pause/resume
+- Settings page with currency and name editing
+- Zustand store with localStorage persistence
+- Modal, Input, Select components
+- Empty states for all pages
+- StoreProvider for SSR hydration safety
 
----
+### Changed
+- Dashboard now shows real data from store
+- Removed hardcoded sample data
 
 ## [0.1.0] - 2025-12-15
 
 ### Added
-- 🚀 Project scaffolding with Next.js 16
-- Initial project structure
-- TypeScript configuration
-- ESLint setup
-- Project documentation (README, AGENTS.md, CHANGELOG, TASKS)
+- Initial project setup with Next.js 15
+- Monochrome design system with white accents
+- Dashboard with summary cards
+- Transactions page with table view
+- Budgets page with progress bars
+- Subscriptions page with brand icons
+- Settings page with sections
+- Onboarding wizard
+- Sidebar navigation with Lucide icons
+- React Icons for brand logos (Netflix, Spotify, etc.)

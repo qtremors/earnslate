@@ -1,13 +1,9 @@
 import { create } from 'zustand';
-import { persist, createJSONStorage } from 'zustand/middleware';
+import { persist } from 'zustand/middleware';
 import { Transaction, Budget, Subscription, UserSettings } from '@/types';
 
 // ===== Store State =====
 interface AppState {
-    // Hydration
-    _hasHydrated: boolean;
-    setHasHydrated: (state: boolean) => void;
-
     // Data
     transactions: Transaction[];
     budgets: Budget[];
@@ -56,10 +52,6 @@ const getTimestamp = () => new Date().toISOString();
 export const useAppStore = create<AppState>()(
     persist(
         (set, get) => ({
-            // Hydration state
-            _hasHydrated: false,
-            setHasHydrated: (state) => set({ _hasHydrated: state }),
-
             // Initial State
             transactions: [],
             budgets: [],
@@ -190,23 +182,15 @@ export const useAppStore = create<AppState>()(
         }),
         {
             name: 'earnslate-storage',
-            storage: createJSONStorage(() => {
-                // Return a no-op storage during SSR
-                if (typeof window === 'undefined') {
-                    return {
-                        getItem: () => null,
-                        setItem: () => { },
-                        removeItem: () => { },
-                    };
-                }
-                return localStorage;
-            }),
-            onRehydrateStorage: () => (state) => {
-                state?.setHasHydrated(true);
-            },
+            skipHydration: true, // Important: skip automatic hydration
         }
     )
 );
+
+// Manual rehydration on client side
+if (typeof window !== 'undefined') {
+    useAppStore.persist.rehydrate();
+}
 
 // ===== Selectors =====
 export const selectTotalBalance = (state: AppState) => {
@@ -257,9 +241,4 @@ export const selectMonthlySubscriptionCost = (state: AppState) => {
         .reduce((sum, s) => {
             return sum + (s.cycle === 'yearly' ? s.amount / 12 : s.amount);
         }, 0);
-};
-
-// Hook to check if store has hydrated
-export const useHasHydrated = () => {
-    return useAppStore((state) => state._hasHydrated);
 };
