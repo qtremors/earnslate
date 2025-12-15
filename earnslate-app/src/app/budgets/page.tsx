@@ -2,6 +2,7 @@
 
 import { useState, useMemo } from 'react';
 import { useAppStore, formatCycleDisplay } from '@/store';
+import { useConfirm } from '@/hooks/useConfirm';
 import Header from '@/components/Header';
 import Card from '@/components/Card';
 import Button from '@/components/Button';
@@ -21,6 +22,7 @@ export default function BudgetsPage() {
     const budgets = useAppStore((state) => state.budgets);
     const deleteBudget = useAppStore((state) => state.deleteBudget);
     const settings = useAppStore((state) => state.settings);
+    const { confirm, ConfirmDialog } = useConfirm();
 
     const formatCurrency = (amount: number) => `${settings.currencySymbol}${amount.toLocaleString('en-IN')}`;
 
@@ -47,10 +49,14 @@ export default function BudgetsPage() {
         setIsFormOpen(true);
     };
 
-    const handleDelete = (id: string) => {
-        if (confirm('Are you sure you want to delete this budget?')) {
-            deleteBudget(id);
-        }
+    const handleDelete = async (id: string) => {
+        const confirmed = await confirm({
+            title: 'Delete Budget',
+            message: 'Are you sure you want to delete this budget?',
+            confirmText: 'Delete',
+            variant: 'danger',
+        });
+        if (confirmed) deleteBudget(id);
     };
 
     const totalBudget = budgets.reduce((sum, b) => sum + b.limit, 0);
@@ -260,6 +266,7 @@ export default function BudgetsPage() {
             </div>
 
             <BudgetForm isOpen={isFormOpen} onClose={() => setIsFormOpen(false)} editId={editingId} />
+            <ConfirmDialog />
         </div>
     );
 }

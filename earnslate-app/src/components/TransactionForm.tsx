@@ -55,6 +55,22 @@ export default function TransactionForm({ isOpen, onClose, editId }: Transaction
         }
     }, [existingTransaction, isOpen]);
 
+    // Get categories from settings based on type
+    const categories = settings.customCategories
+        .filter(c => c.type === formData.type || c.type === 'both')
+        .map(c => ({ value: c.name, label: c.name }));
+
+    // Reset category when type changes and current category is invalid
+    useEffect(() => {
+        const validCategories = settings.customCategories
+            .filter(c => c.type === formData.type || c.type === 'both')
+            .map(c => c.name);
+
+        if (!validCategories.includes(formData.category) && validCategories.length > 0) {
+            setFormData(prev => ({ ...prev, category: validCategories[0] }));
+        }
+    }, [formData.type, settings.customCategories]);
+
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
 
@@ -78,11 +94,6 @@ export default function TransactionForm({ isOpen, onClose, editId }: Transaction
 
         onClose();
     };
-
-    // Get categories from settings based on type
-    const categories = settings.customCategories
-        .filter(c => c.type === formData.type || c.type === 'both')
-        .map(c => ({ value: c.name, label: c.name }));
 
     return (
         <Modal

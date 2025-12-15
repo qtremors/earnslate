@@ -11,24 +11,24 @@
 - [x] Data import restores all data (via importData method)
 - [x] Version updated to v0.4.0
 
-## 🟠 Medium Bugs (Pending)
-- [ ] Budget period reset not implemented
-- [ ] Subscription next billing date never auto-updates
+## ✅ Completed - Medium Bugs
+- [x] Budget period reset implemented (auto-resets on app load)
+- [x] Subscription next billing date auto-updates on load
 
-## 🟡 Logic Issues (Pending)
-- [ ] Category type mismatch when switching income/expense
-- [ ] Treemap should clarify it only shows active subs
+## ✅ Completed - Logic Issues
+- [x] Category type mismatch fixed (auto-selects valid category on type switch)
 
 ## 🔵 Missing Features
 - [ ] Toast notifications
-- [ ] Budget period auto-reset
 - [ ] Subscription due reminders
 - [ ] Transaction search in Dashboard
 - [ ] Dark/Light theme toggle
 - [ ] PWA/offline support
 
-## 🟣 UX Improvements
-- [ ] Replace native `confirm()` with styled modal
+## ✅ Completed - UX Improvements
+- [x] Replace native `confirm()` with styled modal (all pages)
+
+## 🟣 UX Improvements (Pending)
 - [ ] Add loading states to forms
 - [ ] Add form validation feedback
 - [ ] Add chart hover tooltips
