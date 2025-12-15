@@ -4,6 +4,8 @@
 
 ### Added - God-Tier Customization
 - **ServicePicker**: 55+ popular services with brand icons (Netflix, Spotify, YouTube, etc.)
+- **Treemap View**: Visual bento-box layout for subscriptions sized by cost percentage
+- **View Toggle**: Switch between List and Treemap views
 - **Search & Filter**: Search services by name or category
 - **Flexible Billing Cycles**: Every N hours/days/weeks/months/years
 - **Icon Picker**: 100+ searchable Lucide icons for custom subscriptions

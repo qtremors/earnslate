@@ -6,14 +6,18 @@ import Header from '@/components/Header';
 import Card from '@/components/Card';
 import Button from '@/components/Button';
 import SubscriptionForm from '@/components/SubscriptionForm';
-import { Plus, Trash2, Pencil, Play, Pause } from 'lucide-react';
+import SubscriptionTreemap from '@/components/SubscriptionTreemap';
+import { Plus, Trash2, Pencil, Play, Pause, LayoutGrid, List } from 'lucide-react';
 import * as LucideIcons from 'lucide-react';
 import * as SimpleIcons from 'react-icons/si';
 import styles from './page.module.css';
 
+type ViewMode = 'list' | 'treemap';
+
 export default function SubscriptionsPage() {
     const [isFormOpen, setIsFormOpen] = useState(false);
     const [editingId, setEditingId] = useState<string | undefined>();
+    const [viewMode, setViewMode] = useState<ViewMode>('list');
 
     const subscriptions = useAppStore((state) => state.subscriptions);
     const deleteSubscription = useAppStore((state) => state.deleteSubscription);
@@ -44,7 +48,6 @@ export default function SubscriptionsPage() {
         updateSubscription(id, { active: !currentActive });
     };
 
-    // Get icon component (handles both brand: prefix and lucide icons)
     const getSubscriptionIcon = (iconName: string) => {
         if (iconName.startsWith('brand:')) {
             const brandIcon = iconName.replace('brand:', '');
@@ -55,19 +58,12 @@ export default function SubscriptionsPage() {
     };
 
     const activeSubscriptions = subscriptions.filter(s => s.active);
-
-    // Calculate monthly total using flexible cycles
-    const monthlyTotal = activeSubscriptions.reduce((sum, s) => {
-        return sum + getMonthlyEquivalent(s.amount, s.cycle);
-    }, 0);
+    const monthlyTotal = activeSubscriptions.reduce((sum, s) => sum + getMonthlyEquivalent(s.amount, s.cycle), 0);
     const yearlyTotal = monthlyTotal * 12;
 
     return (
         <div className={styles.page}>
-            <Header
-                title="Subscriptions"
-                subtitle="Track your recurring payments and subscriptions"
-            />
+            <Header title="Subscriptions" subtitle="Track your recurring payments and subscriptions" />
 
             <div className={styles.content}>
                 {/* Summary */}
@@ -88,13 +84,30 @@ export default function SubscriptionsPage() {
 
                 {/* Actions */}
                 <div className={styles.actions}>
+                    <div className={styles.viewToggle}>
+                        <button
+                            className={`${styles.viewButton} ${viewMode === 'list' ? styles.active : ''}`}
+                            onClick={() => setViewMode('list')}
+                            title="List View"
+                        >
+                            <List size={18} />
+                        </button>
+                        <button
+                            className={`${styles.viewButton} ${viewMode === 'treemap' ? styles.active : ''}`}
+                            onClick={() => setViewMode('treemap')}
+                            title="Treemap View"
+                        >
+                            <LayoutGrid size={18} />
+                        </button>
+                    </div>
+
                     <Button variant="primary" onClick={handleAdd}>
                         <Plus size={18} />
                         Add Subscription
                     </Button>
                 </div>
 
-                {/* Subscriptions List */}
+                {/* Content */}
                 {subscriptions.length === 0 ? (
                     <Card>
                         <div className={styles.emptyState}>
@@ -105,11 +118,12 @@ export default function SubscriptionsPage() {
                             </Button>
                         </div>
                     </Card>
+                ) : viewMode === 'treemap' ? (
+                    <SubscriptionTreemap subscriptions={subscriptions} currencySymbol={settings.currencySymbol} />
                 ) : (
                     <div className={styles.subscriptionList}>
                         {subscriptions.map((sub) => {
                             const Icon = getSubscriptionIcon(sub.icon);
-
                             return (
                                 <Card
                                     key={sub.id}
@@ -136,26 +150,13 @@ export default function SubscriptionsPage() {
                                     </div>
 
                                     <div className={styles.cardActions}>
-                                        <button
-                                            className={styles.actionButton}
-                                            onClick={() => handleToggleActive(sub.id, sub.active)}
-                                            aria-label={sub.active ? 'Pause' : 'Resume'}
-                                            title={sub.active ? 'Pause subscription' : 'Resume subscription'}
-                                        >
+                                        <button className={styles.actionButton} onClick={() => handleToggleActive(sub.id, sub.active)} title={sub.active ? 'Pause' : 'Resume'}>
                                             {sub.active ? <Pause size={16} /> : <Play size={16} />}
                                         </button>
-                                        <button
-                                            className={styles.actionButton}
-                                            onClick={() => handleEdit(sub.id)}
-                                            aria-label="Edit"
-                                        >
+                                        <button className={styles.actionButton} onClick={() => handleEdit(sub.id)} aria-label="Edit">
                                             <Pencil size={16} />
                                         </button>
-                                        <button
-                                            className={`${styles.actionButton} ${styles.deleteButton}`}
-                                            onClick={() => handleDelete(sub.id)}
-                                            aria-label="Delete"
-                                        >
+                                        <button className={`${styles.actionButton} ${styles.deleteButton}`} onClick={() => handleDelete(sub.id)} aria-label="Delete">
                                             <Trash2 size={16} />
                                         </button>
                                     </div>
@@ -166,12 +167,7 @@ export default function SubscriptionsPage() {
                 )}
             </div>
 
-            {/* Subscription Form Modal */}
-            <SubscriptionForm
-                isOpen={isFormOpen}
-                onClose={() => setIsFormOpen(false)}
-                editId={editingId}
-            />
+            <SubscriptionForm isOpen={isFormOpen} onClose={() => setIsFormOpen(false)} editId={editingId} />
         </div>
     );
 }

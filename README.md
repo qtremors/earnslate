@@ -11,6 +11,7 @@
 
 ### God-Tier Customization
 - ✅ **ServicePicker** - Search 55+ services with brand icons (Netflix, Spotify, etc.)
+- ✅ **Treemap View** - Visual bento-box layout sized by cost percentage
 - ✅ **Flexible Billing** - Every N hours/days/weeks/months/years
 - ✅ **Icon Picker** - 100+ searchable Lucide icons for custom subscriptions
 - ✅ **Color Picker** - 12-color palette for personalization

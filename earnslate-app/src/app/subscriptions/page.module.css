@@ -38,7 +38,39 @@
 .actions {
     display: flex;
     justify-content: flex-end;
+    align-items: center;
+    gap: var(--space-md);
     margin-bottom: var(--space-lg);
+}
+
+.viewToggle {
+    display: flex;
+    gap: var(--space-xs);
+    background: var(--bg-tertiary);
+    padding: var(--space-xs);
+    border-radius: var(--radius-md);
+}
+
+.viewButton {
+    padding: var(--space-sm);
+    background: transparent;
+    border: none;
+    border-radius: var(--radius-sm);
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.viewButton:hover {
+    color: var(--text-primary);
+}
+
+.viewButton.active {
+    background: var(--bg-inverted);
+    color: var(--text-inverted);
 }
 
 /* ===== Empty State ===== */
