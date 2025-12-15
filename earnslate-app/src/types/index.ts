@@ -134,6 +134,18 @@ export const COLOR_OPTIONS = [
     '#64748B', // Slate (neutral)
 ] as const;
 
+// ===== Chart Colors =====
+export const CHART_COLORS = [
+    '#E50914', // Red
+    '#1DB954', // Green
+    '#FF9900', // Orange
+    '#3693F3', // Blue
+    '#8B5CF6', // Purple
+    '#10B981', // Emerald
+    '#F59E0B', // Amber
+    '#EF4444', // Red variant
+] as const;
+
 // ===== Default Categories =====
 export const DEFAULT_CATEGORIES: Category[] = [
     { id: 'food', name: 'Food & Dining', icon: 'UtensilsCrossed', color: '#F59E0B', type: 'expense' },

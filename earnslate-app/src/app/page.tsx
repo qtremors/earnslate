@@ -2,6 +2,7 @@
 
 import { useState, useMemo } from 'react';
 import { useAppStore } from '@/store';
+import { CHART_COLORS } from '@/types';
 import Header from '@/components/Header';
 import Card, { CardHeader } from '@/components/Card';
 import ProgressBar from '@/components/ProgressBar';
@@ -27,8 +28,6 @@ const CATEGORY_ICONS: Record<string, React.ElementType> = {
   Utilities: Zap,
   Income: Briefcase,
 };
-
-const CHART_COLORS = ['#E50914', '#1DB954', '#FF9900', '#3693F3', '#8B5CF6', '#10B981', '#F59E0B', '#EF4444'];
 
 export default function Dashboard() {
   const settings = useAppStore((state) => state.settings);

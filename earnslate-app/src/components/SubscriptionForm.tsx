@@ -94,8 +94,46 @@ export default function SubscriptionForm({ isOpen, onClose, editId }: Subscripti
         setMode('custom');
     };
 
+    // Validation state
+    const [errors, setErrors] = useState<{ name?: string; amount?: string }>({});
+
+    const validate = (): boolean => {
+        const newErrors: { name?: string; amount?: string } = {};
+
+        if (!name.trim()) {
+            newErrors.name = 'Subscription name is required';
+        }
+
+        const amountNum = parseFloat(amount);
+        if (!amount || isNaN(amountNum) || amountNum <= 0) {
+            newErrors.amount = 'Please enter a valid amount';
+        }
+
+        setErrors(newErrors);
+        return Object.keys(newErrors).length === 0;
+    };
+
+    // Clear errors when user types
+    useEffect(() => {
+        if (name.trim() && errors.name) {
+            setErrors(prev => ({ ...prev, name: undefined }));
+        }
+    }, [name, errors.name]);
+
+    useEffect(() => {
+        const amountNum = parseFloat(amount);
+        if (amount && !isNaN(amountNum) && amountNum > 0 && errors.amount) {
+            setErrors(prev => ({ ...prev, amount: undefined }));
+        }
+    }, [amount, errors.amount]);
+
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
+
+        if (!validate()) {
+            showToast('Please fix the errors before submitting', 'error');
+            return;
+        }
 
         const cycle: BillingCycle = {
             count: parseInt(cycleCount) || 1,
@@ -172,6 +210,7 @@ export default function SubscriptionForm({ isOpen, onClose, editId }: Subscripti
                             value={name}
                             onChange={(e) => setName(e.target.value)}
                             placeholder="Subscription name..."
+                            error={errors.name}
                             required
                             className={styles.nameInput}
                         />
@@ -185,6 +224,7 @@ export default function SubscriptionForm({ isOpen, onClose, editId }: Subscripti
                             value={amount}
                             onChange={(e) => setAmount(e.target.value)}
                             placeholder="0"
+                            error={errors.amount}
                             required
                         />
                         <Input

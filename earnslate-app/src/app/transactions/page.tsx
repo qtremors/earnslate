@@ -2,6 +2,7 @@
 
 import { useState, useMemo } from 'react';
 import { useAppStore } from '@/store';
+import { CHART_COLORS } from '@/types';
 import { useConfirm } from '@/hooks/useConfirm';
 import { useToast } from '@/components/Toast';
 import Header from '@/components/Header';
@@ -74,9 +75,6 @@ export default function TransactionsPage() {
     }, [filteredTransactions]);
 
     const totalExpenses = chartData.reduce((sum, d) => sum + d.amount, 0);
-
-    // Chart colors
-    const chartColors = ['#E50914', '#1DB954', '#FF9900', '#3693F3', '#8B5CF6', '#10B981', '#F59E0B', '#EF4444'];
 
     const handleEdit = (id: string) => {
         setEditingId(id);
@@ -225,7 +223,7 @@ export default function TransactionsPage() {
                                                 <path
                                                     key={d.category}
                                                     d={`M 50 50 L ${x1} ${y1} A 40 40 0 ${largeArc} 1 ${x2} ${y2} Z`}
-                                                    fill={chartColors[i % chartColors.length]}
+                                                    fill={CHART_COLORS[i % CHART_COLORS.length]}
                                                     stroke="var(--bg-primary)"
                                                     strokeWidth="0.5"
                                                 />
@@ -242,7 +240,7 @@ export default function TransactionsPage() {
                                         <div key={d.category} className={styles.legendItem}>
                                             <div
                                                 className={styles.legendColor}
-                                                style={{ backgroundColor: chartColors[i % chartColors.length] }}
+                                                style={{ backgroundColor: CHART_COLORS[i % CHART_COLORS.length] }}
                                             />
                                             <span className={styles.legendLabel}>{d.category}</span>
                                             <span className={styles.legendValue}>{formatCurrency(d.amount)}</span>

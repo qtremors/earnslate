@@ -56,8 +56,46 @@ export default function BudgetForm({ isOpen, onClose, editId }: BudgetFormProps)
         }
     }, [existingBudget, isOpen]);
 
+    // Validation state
+    const [errors, setErrors] = useState<{ name?: string; limit?: string }>({});
+
+    const validate = (): boolean => {
+        const newErrors: { name?: string; limit?: string } = {};
+
+        if (!name.trim()) {
+            newErrors.name = 'Budget name is required';
+        }
+
+        const limitNum = parseFloat(limit);
+        if (!limit || isNaN(limitNum) || limitNum <= 0) {
+            newErrors.limit = 'Please enter a valid limit';
+        }
+
+        setErrors(newErrors);
+        return Object.keys(newErrors).length === 0;
+    };
+
+    // Clear errors when user types
+    useEffect(() => {
+        if (name.trim() && errors.name) {
+            setErrors(prev => ({ ...prev, name: undefined }));
+        }
+    }, [name, errors.name]);
+
+    useEffect(() => {
+        const limitNum = parseFloat(limit);
+        if (limit && !isNaN(limitNum) && limitNum > 0 && errors.limit) {
+            setErrors(prev => ({ ...prev, limit: undefined }));
+        }
+    }, [limit, errors.limit]);
+
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
+
+        if (!validate()) {
+            showToast('Please fix the errors before submitting', 'error');
+            return;
+        }
 
         const period: BillingCycle = {
             count: parseInt(periodCount) || 1,
@@ -106,6 +144,7 @@ export default function BudgetForm({ isOpen, onClose, editId }: BudgetFormProps)
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                     placeholder="e.g., Food, Entertainment, Travel..."
+                    error={errors.name}
                     required
                 />
 
@@ -117,6 +156,7 @@ export default function BudgetForm({ isOpen, onClose, editId }: BudgetFormProps)
                         value={limit}
                         onChange={(e) => setLimit(e.target.value)}
                         placeholder="5000"
+                        error={errors.limit}
                         required
                     />
                     <Select
