@@ -1,50 +1,37 @@
 # Earnslate Tasks
 
-## ✅ Completed - Critical Bugs
-- [x] Onboarding saves currency selection
-- [x] Delete transaction updates budget spent
-- [x] Edit transaction adjusts budget spent
-- [x] JSX namespace errors fixed
-- [x] Division by zero guard in charts
+All major tasks have been completed. This file now tracks only remaining items for future development.
 
-## ✅ Completed - Data Management
-- [x] Data import restores all data (via importData method)
-- [x] Version updated to v0.4.0
+---
 
-## ✅ Completed - Medium Bugs
-- [x] Budget period reset implemented (auto-resets on app load)
-- [x] Subscription next billing date auto-updates on load
+## ✅ Recently Completed (v0.5.0)
+- Budget period reset (auto-resets on app load)
+- Subscription billing date auto-update
+- Category type mismatch fix
+- Toast notification system
+- Form validation feedback
+- Transaction search in Dashboard
+- Mobile hamburger menu
+- Loading states for buttons
+- Chart hover tooltips
+- Styled confirm dialogs (all pages)
+- Code quality improvements (TypeScript fixes, constants, cleanup)
 
-## ✅ Completed - Logic Issues
-- [x] Category type mismatch fixed (auto-selects valid category on type switch)
+---
 
-## ✅ Completed - Features
-- [x] Toast notifications (success/error/warning/info with auto-dismiss)
+## � Future Enhancements
 
-## 🔵 Missing Features (Pending)
-- [ ] Subscription due reminders
-- [ ] Transaction search in Dashboard
+### Features
+- [ ] Subscription due reminders (notifications/badges)
 - [ ] Dark/Light theme toggle
 - [ ] PWA/offline support
+- [ ] Data export to CSV
+- [ ] Recurring transactions
 
-## ✅ Completed - UX Improvements
-- [x] Replace native `confirm()` with styled modal (all pages)
-- [x] Form validation feedback (TransactionForm)
-
-## 🟣 UX Improvements (Pending)
-- [ ] Add loading states to forms
-- [ ] Add form validation feedback to Budget/Subscription forms
-- [ ] Add chart hover tooltips
-- [ ] Mobile sidebar collapse/hamburger
-
-## 🖥️ Performance (Pending)
+### Performance
 - [ ] Dynamic imports for icon libraries
-- [ ] Optimize store selectors to reduce re-renders
+- [ ] Optimize store selectors
 
-## ✅ Completed - Code Quality
-- [x] Fixed TypeScript errors in IconPicker
-- [x] Removed unused `email` field
-- [x] Fixed magic numbers (DAYS_PER_MONTH constant)
+---
 
-## 📝 Code Quality (Pending)
-- [ ] Remove hardcoded color values
+*Last updated: 2025-12-15*

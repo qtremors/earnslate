@@ -8,11 +8,21 @@
 - Integrated across all forms and delete actions
 - Slide-in animation from bottom-right
 
-#### Form Validation Feedback
+#### Form Validation & Loading States
 - Inline validation errors on TransactionForm
 - Visual error states with red border and message
 - Errors auto-clear when user corrects input
-- Toast notification on validation failure
+- Button loading state with spinner animation
+
+#### Dashboard Enhancements
+- Transaction search in Recent Transactions section
+- Chart hover tooltips showing category, amount, and percentage
+- Pie slice hover effects for visual feedback
+
+#### Mobile Experience
+- Hamburger menu button for mobile devices
+- Slide-in drawer sidebar with backdrop
+- Auto-close menu on navigation
 
 ### Fixed - Priority Bug Fixes
 
