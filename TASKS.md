@@ -1,13 +1,13 @@
 # Earnslate Tasks
 
-## � Active Tasks
+## 🔜 Active Tasks
 
 ### Logic Inconsistencies
-- [ ] Standardize transaction amount sign convention (negative vs absolute)
+- [x] Standardize transaction amount sign convention (negative for expenses, already consistent)
 - [ ] Fix budget category matching (case-insensitive match, case-sensitive display)
 
 ### Half-Baked Features
-- [ ] Add icon/color pickers to category editor in settings
+- [x] Add icon/color pickers to category editor in settings
 
 ### Performance
 - [ ] Optimize `useShallow` selectors for granular property access
