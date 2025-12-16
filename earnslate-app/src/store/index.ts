@@ -308,6 +308,13 @@ export const useAppStore = create<AppState>()(
                 budgets?: Budget[];
                 subscriptions?: Subscription[];
             }) => {
+                // Validate date format (YYYY-MM-DD or ISO)
+                const isValidDate = (dateStr: unknown): boolean => {
+                    if (typeof dateStr !== 'string') return false;
+                    const date = new Date(dateStr);
+                    return !isNaN(date.getTime());
+                };
+
                 // Sanitize string fields to prevent XSS
                 const sanitizeString = (str: string | undefined): string => {
                     if (typeof str !== 'string') return '';
@@ -318,28 +325,39 @@ export const useAppStore = create<AppState>()(
                         .slice(0, 500); // Limit string length
                 };
 
+                // Validate transaction type
+                const isValidTransactionType = (type: unknown): type is 'income' | 'expense' => {
+                    return type === 'income' || type === 'expense';
+                };
+
                 // Validate and sanitize transactions
                 const sanitizedTransactions = data.transactions?.map(t => ({
                     ...t,
+                    id: typeof t.id === 'string' ? t.id : '',
                     description: sanitizeString(t.description),
                     category: sanitizeString(t.category),
-                    amount: typeof t.amount === 'number' ? t.amount : 0,
-                })).filter(t => t.id && t.date) || undefined;
+                    amount: typeof t.amount === 'number' && isFinite(t.amount) ? t.amount : 0,
+                    type: isValidTransactionType(t.type) ? t.type : 'expense',
+                    date: isValidDate(t.date) ? t.date : new Date().toISOString().split('T')[0],
+                })).filter(t => t.id && t.description) || undefined;
 
                 // Validate and sanitize budgets
                 const sanitizedBudgets = data.budgets?.map(b => ({
                     ...b,
+                    id: typeof b.id === 'string' ? b.id : '',
                     name: sanitizeString(b.name),
                     category: sanitizeString(b.category),
-                    limit: typeof b.limit === 'number' ? Math.max(0, b.limit) : 0,
-                    spent: typeof b.spent === 'number' ? Math.max(0, b.spent) : 0,
+                    limit: typeof b.limit === 'number' && isFinite(b.limit) ? Math.max(0, b.limit) : 0,
+                    spent: typeof b.spent === 'number' && isFinite(b.spent) ? Math.max(0, b.spent) : 0,
                 })).filter(b => b.id && b.name) || undefined;
 
                 // Validate and sanitize subscriptions
                 const sanitizedSubscriptions = data.subscriptions?.map(s => ({
                     ...s,
+                    id: typeof s.id === 'string' ? s.id : '',
                     name: sanitizeString(s.name),
-                    amount: typeof s.amount === 'number' ? Math.max(0, s.amount) : 0,
+                    amount: typeof s.amount === 'number' && isFinite(s.amount) ? Math.max(0, s.amount) : 0,
+                    nextBilling: isValidDate(s.nextBilling) ? s.nextBilling : new Date().toISOString().split('T')[0],
                 })).filter(s => s.id && s.name) || undefined;
 
                 // Sanitize settings
@@ -372,6 +390,14 @@ if (typeof window !== 'undefined') {
         useAppStore.getState().checkAndResetBudgets();
         useAppStore.getState().updateSubscriptionBillingDates();
     }, 100);
+
+    // Re-check budgets when user returns to the app (after being away)
+    document.addEventListener('visibilitychange', () => {
+        if (document.visibilityState === 'visible') {
+            useAppStore.getState().checkAndResetBudgets();
+            useAppStore.getState().updateSubscriptionBillingDates();
+        }
+    });
 }
 
 // ===== Helper to format cycle for display =====

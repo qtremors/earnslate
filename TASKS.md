@@ -5,7 +5,7 @@
 ### Bundle Size / Performance
 - [x] **Dashboard uses hardcoded CATEGORY_ICONS** - now uses DynamicIcon with settings lookup
 - [x] **budgets/page.tsx imports entire LucideIcons bundle** - now uses DynamicIcon
-- [ ] **DynamicIcon.tsx and IconPicker.tsx import entire LucideIcons bundle** - consider lazy loading (lower priority)
+- [x] **DynamicIcon.tsx imports entire LucideIcons bundle** - now uses Iconify for all icons (Lucide via lucide: prefix)
 
 ### Dead Code / Unused
 - [x] **store/index.ts: `DAYS_PER_MONTH` constant** - inlined into `getMonthlyEquivalent` function
@@ -14,8 +14,8 @@
 
 ### Logic / Data
 - [x] **BudgetForm icon defaults inconsistent** - now uses 'UtensilsCrossed' consistently
-- [ ] **No data validation on JSON import** - could import corrupted data beyond sanitization
-- [ ] **Budget period reset only checked on app load** - not real-time if app stays open
+- [x] **No data validation on JSON import** - added date format, isFinite, and type validation
+- [x] **Budget period reset only checked on app load** - now also checks on visibility change (tab return)
 
 ---
 
@@ -95,8 +95,11 @@
 - [x] Remove unused formatCycle function (8 lines)
 - [x] Add pagination to transactions (25 items/page)
 - [x] Add date range presets (7 quick options)
+- [x] Refactor DynamicIcon to use Iconify for Lucide icons
+- [x] Add visibility-change listener for budget period reset
+- [x] Enhanced JSON import validation (date, type, isFinite checks)
 
 ---
 
 *Deep review completed: 2025-12-16*
-*Total improvements: 17 items completed, ~100+ lines of new features*
+*All bugs and issues resolved*

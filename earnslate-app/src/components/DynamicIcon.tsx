@@ -1,12 +1,10 @@
 /**
  * Unified Icon Utility
- * Handles all icon formats: Iconify, Lucide, and legacy patterns
+ * Handles all icon formats via Iconify - eliminates LucideIcons bundle import
  */
 'use client';
 
 import { Icon } from '@iconify/react';
-import * as LucideIcons from 'lucide-react';
-import { HelpCircle } from 'lucide-react';
 
 interface IconProps {
     name: string;
@@ -17,10 +15,10 @@ interface IconProps {
 
 /**
  * Renders an icon based on its format:
- * - Iconify format: 'simple-icons:netflix', 'mdi:home'
+ * - Iconify format: 'simple-icons:netflix', 'mdi:home', 'lucide:home'
  * - Double-prefixed: 'brand:simple-icons:netflix'
  * - Legacy brand: 'brand:SiNetflix' or 'SiNetflix'
- * - Lucide: 'Home', 'CreditCard'
+ * - Lucide: 'Home', 'CreditCard' (converted to lucide:home)
  */
 export function DynamicIcon({ name, size = 24, color, className }: IconProps) {
     // Handle double-prefixed format (brand:simple-icons:*)
@@ -78,14 +76,22 @@ export function DynamicIcon({ name, size = 24, color, className }: IconProps) {
         );
     }
 
-    // Handle Lucide icons
-    const LucideIcon = (LucideIcons as unknown as Record<string, React.ElementType>)[name];
-    if (LucideIcon) {
-        return <LucideIcon size={size} style={{ color: color || 'currentColor' }} className={className} />;
-    }
+    // Handle Lucide icons via Iconify (PascalCase -> kebab-case)
+    // e.g., 'UtensilsCrossed' -> 'lucide:utensils-crossed'
+    const kebabName = name
+        .replace(/([a-z])([A-Z])/g, '$1-$2')
+        .replace(/([A-Z])([A-Z][a-z])/g, '$1-$2')
+        .toLowerCase();
 
-    // Fallback to HelpCircle
-    return <HelpCircle size={size} className={className} />;
+    return (
+        <Icon
+            icon={`lucide:${kebabName}`}
+            width={size}
+            height={size}
+            style={{ color: color || 'currentColor' }}
+            className={className}
+        />
+    );
 }
 
 /**
@@ -107,5 +113,10 @@ export function normalizeIconName(name: string): string {
     if (name.startsWith('Si')) {
         return `simple-icons:${name.replace(/^Si/, '').toLowerCase()}`;
     }
-    return name; // Lucide name
+    // Convert Lucide PascalCase to kebab-case
+    const kebabName = name
+        .replace(/([a-z])([A-Z])/g, '$1-$2')
+        .replace(/([A-Z])([A-Z][a-z])/g, '$1-$2')
+        .toLowerCase();
+    return `lucide:${kebabName}`;
 }
