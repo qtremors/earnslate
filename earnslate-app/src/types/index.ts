@@ -186,17 +186,22 @@ export const calculateNextBilling = (lastBilling: Date, cycle: BillingCycle): Da
             break;
         case 'month': {
             // Handle edge case: Jan 31 → Feb should be Feb 28/29, not Mar 3
-            next.setMonth(next.getMonth() + cycle.count);
-            // If the day changed (rolled over), set to last day of target month
+            const targetMonth = next.getMonth() + cycle.count;
+            next.setMonth(targetMonth);
+            // If the day changed (month overflowed), clamp to last day of target month
             if (next.getDate() !== originalDay) {
-                next.setDate(0); // Go to last day of previous month (which is target month)
+                // setDate(0) goes to last day of the previous month
+                // After overflow, "previous month" IS our target month
+                next.setDate(0);
             }
             break;
         }
         case 'year': {
             // Handle leap year edge case: Feb 29 → Feb 28 in non-leap year
-            next.setFullYear(next.getFullYear() + cycle.count);
+            const targetYear = next.getFullYear() + cycle.count;
+            next.setFullYear(targetYear);
             if (next.getDate() !== originalDay) {
+                // Clamp to last day of February in non-leap year
                 next.setDate(0);
             }
             break;
@@ -204,6 +209,7 @@ export const calculateNextBilling = (lastBilling: Date, cycle: BillingCycle): Da
     }
     return next;
 };
+
 
 // ===== Currency Formatting =====
 export const formatCurrency = (amount: number, symbol: string = '₹', locale: string = 'en-IN'): string => {

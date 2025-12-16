@@ -9,7 +9,7 @@ import Header from '@/components/Header';
 import Card, { CardHeader } from '@/components/Card';
 import Button from '@/components/Button';
 import TransactionForm from '@/components/TransactionForm';
-import { Plus, Trash2, Pencil, Search, Download, PieChart, List, ArrowUpDown } from 'lucide-react';
+import { Plus, Trash2, Pencil, Search, Download, PieChart, List } from 'lucide-react';
 import styles from './page.module.css';
 
 type ViewMode = 'list' | 'chart';

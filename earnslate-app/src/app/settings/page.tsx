@@ -11,8 +11,9 @@ import Modal from '@/components/Modal';
 import Input, { Select } from '@/components/Input';
 import { Download, Upload, Plus, Trash2, Tag, Moon, Sun, Monitor } from 'lucide-react';
 import styles from './page.module.css';
+import packageJson from '../../../package.json';
 
-const APP_VERSION = '0.5.0';
+const APP_VERSION = packageJson.version;
 
 const CURRENCIES = [
     { value: 'INR', label: '₹ Indian Rupee (INR)', symbol: '₹' },

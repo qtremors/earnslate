@@ -1,6 +1,6 @@
 # Earnslate - Personal Finance Manager
 
-> A local-first personal finance tracker with god-tier customization.
+> A local-first personal finance tracker.
 
 ## ✨ Features
 
@@ -60,15 +60,7 @@ earnslate-app/
 
 ## 📋 Roadmap
 
-- [x] Toast notifications
-- [x] Data export (CSV/JSON)
-- [x] Category management UI
-- [x] Dark/Light theme toggle
 - [ ] PWA/offline support
 - [ ] Subscription reminders
 - [ ] Recurring transactions
 - [ ] Cloud sync (optional)
-
-## 📄 License
-
-MIT

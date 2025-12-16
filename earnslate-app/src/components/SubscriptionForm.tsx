@@ -10,9 +10,8 @@ import Button from './Button';
 import IconPicker from './IconPicker';
 import ColorPicker from './ColorPicker';
 import ServicePicker from './ServicePicker';
+import { DynamicIcon, isBrandIcon } from './DynamicIcon';
 import { POPULAR_SERVICES, ServiceTemplate } from '@/data/services';
-import * as LucideIcons from 'lucide-react';
-import { Icon } from '@iconify/react';
 import styles from './SubscriptionForm.module.css';
 
 interface SubscriptionFormProps {
@@ -207,24 +206,8 @@ export default function SubscriptionForm({ isOpen, onClose, editId }: Subscripti
         setMode('picker');
     };
 
-    // Get icon component for preview
-    const getPreviewIcon = () => {
-        // Handle Iconify brand icons (simple-icons:*)
-        if (icon.includes(':')) {
-            return <Icon icon={icon} style={{ color: color || 'currentColor' }} width={24} height={24} />;
-        }
-        // Handle legacy react-icons/si format (SiNetflix -> simple-icons:netflix)
-        if (icon.startsWith('Si')) {
-            const brandIcon = icon.replace(/^Si/, '').toLowerCase();
-            return <Icon icon={`simple-icons:${brandIcon}`} style={{ color: color || 'currentColor' }} width={24} height={24} />;
-        }
-        // Handle Lucide icons
-        const LucideIcon = (LucideIcons as unknown as Record<string, React.ElementType>)[icon];
-        if (LucideIcon) {
-            return <LucideIcon size={24} style={{ color: color || 'currentColor' }} />;
-        }
-        return <LucideIcons.HelpCircle size={24} />;
-    };
+    // Check if current icon is a brand icon (shouldn't show icon picker for brands)
+    const showIconPicker = !isBrandIcon(icon);
 
     return (
         <Modal
@@ -250,7 +233,7 @@ export default function SubscriptionForm({ isOpen, onClose, editId }: Subscripti
                             className={styles.previewIcon}
                             style={{ backgroundColor: `${color}20`, color: color }}
                         >
-                            {getPreviewIcon()}
+                            <DynamicIcon name={icon} color={color} size={24} />
                         </div>
                         <Input
                             id="name"
@@ -307,7 +290,7 @@ export default function SubscriptionForm({ isOpen, onClose, editId }: Subscripti
                     </div>
 
                     {/* Only show icon picker for custom (non-brand) subscriptions */}
-                    {iconType === 'lucide' && (
+                    {showIconPicker && (
                         <IconPicker
                             label="Icon"
                             value={icon}

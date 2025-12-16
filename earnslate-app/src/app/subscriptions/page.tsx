@@ -9,9 +9,8 @@ import Card from '@/components/Card';
 import Button from '@/components/Button';
 import SubscriptionForm from '@/components/SubscriptionForm';
 import SubscriptionTreemap from '@/components/SubscriptionTreemap';
-import { Plus, Trash2, Pencil, Play, Pause, LayoutGrid, List, Download, HelpCircle } from 'lucide-react';
-import * as LucideIcons from 'lucide-react';
-import { Icon } from '@iconify/react';
+import { DynamicIcon } from '@/components/DynamicIcon';
+import { Plus, Trash2, Pencil, Play, Pause, LayoutGrid, List, Download } from 'lucide-react';
 import styles from './page.module.css';
 
 type ViewMode = 'list' | 'treemap';
@@ -63,34 +62,6 @@ export default function SubscriptionsPage() {
     const handleToggleActive = (id: string, currentActive: boolean) => {
         updateSubscription(id, { active: !currentActive });
         showToast(currentActive ? 'Subscription paused' : 'Subscription resumed', 'info');
-    };
-
-    const getSubscriptionIcon = (iconName: string, color?: string) => {
-        // Handle double-prefixed format (brand:simple-icons:*)
-        if (iconName.startsWith('brand:simple-icons:')) {
-            const cleanIcon = iconName.replace('brand:', '');
-            return <Icon icon={cleanIcon} style={{ color: color || 'currentColor' }} width={24} height={24} />;
-        }
-        // Handle Iconify brand icons (simple-icons:*)
-        if (iconName.includes(':')) {
-            return <Icon icon={iconName} style={{ color: color || 'currentColor' }} width={24} height={24} />;
-        }
-        // Handle legacy brand: prefix (convert to Iconify format)
-        if (iconName.startsWith('brand:')) {
-            const brandIcon = iconName.replace('brand:', '').replace(/^Si/, '').toLowerCase();
-            return <Icon icon={`simple-icons:${brandIcon}`} style={{ color: color || 'currentColor' }} width={24} height={24} />;
-        }
-        // Handle legacy react-icons/si format (SiNetflix -> simple-icons:netflix)
-        if (iconName.startsWith('Si')) {
-            const brandIcon = iconName.replace(/^Si/, '').toLowerCase();
-            return <Icon icon={`simple-icons:${brandIcon}`} style={{ color: color || 'currentColor' }} width={24} height={24} />;
-        }
-        // Handle Lucide icons
-        const LucideIcon = (LucideIcons as unknown as Record<string, React.ElementType>)[iconName];
-        if (LucideIcon) {
-            return <LucideIcon size={24} style={{ color: color || 'currentColor' }} />;
-        }
-        return <HelpCircle size={24} />;
     };
 
     const activeSubscriptions = subscriptions.filter(s => s.active);
@@ -185,47 +156,44 @@ export default function SubscriptionsPage() {
                     <SubscriptionTreemap subscriptions={subscriptions} currencySymbol={settings.currencySymbol} />
                 ) : (
                     <div className={styles.subscriptionList}>
-                        {subscriptions.map((sub) => {
-                            const iconElement = getSubscriptionIcon(sub.icon, sub.color || undefined);
-                            return (
-                                <Card
-                                    key={sub.id}
-                                    className={`${styles.subscriptionCard} ${!sub.active ? styles.inactive : ''}`}
-                                    hover
-                                    style={sub.color ? { borderLeftColor: sub.color } : undefined}
-                                >
-                                    <div className={styles.subscriptionMain}>
-                                        <div className={styles.subscriptionIcon}>
-                                            {iconElement}
-                                        </div>
-                                        <div className={styles.subscriptionInfo}>
-                                            <span className={styles.subscriptionName}>{sub.name}</span>
-                                            <span className={styles.subscriptionMeta}>
-                                                {formatCycleDisplay(sub.cycle)} • Next: {new Date(sub.nextBilling).toLocaleDateString()}
-                                            </span>
-                                            {sub.notes && <span className={styles.subscriptionNotes}>{sub.notes}</span>}
-                                        </div>
+                        {subscriptions.map((sub) => (
+                            <Card
+                                key={sub.id}
+                                className={`${styles.subscriptionCard} ${!sub.active ? styles.inactive : ''}`}
+                                hover
+                                style={sub.color ? { borderLeftColor: sub.color } : undefined}
+                            >
+                                <div className={styles.subscriptionMain}>
+                                    <div className={styles.subscriptionIcon}>
+                                        <DynamicIcon name={sub.icon} color={sub.color || undefined} size={24} />
                                     </div>
+                                    <div className={styles.subscriptionInfo}>
+                                        <span className={styles.subscriptionName}>{sub.name}</span>
+                                        <span className={styles.subscriptionMeta}>
+                                            {formatCycleDisplay(sub.cycle)} • Next: {new Date(sub.nextBilling).toLocaleDateString()}
+                                        </span>
+                                        {sub.notes && <span className={styles.subscriptionNotes}>{sub.notes}</span>}
+                                    </div>
+                                </div>
 
-                                    <div className={styles.subscriptionRight}>
-                                        <span className={styles.subscriptionAmount}>{formatCurrency(sub.amount)}</span>
-                                        <span className={styles.subscriptionCycle}>/{sub.cycle.count === 1 ? sub.cycle.unit : `${sub.cycle.count} ${sub.cycle.unit}s`}</span>
-                                    </div>
+                                <div className={styles.subscriptionRight}>
+                                    <span className={styles.subscriptionAmount}>{formatCurrency(sub.amount)}</span>
+                                    <span className={styles.subscriptionCycle}>/{sub.cycle.count === 1 ? sub.cycle.unit : `${sub.cycle.count} ${sub.cycle.unit}s`}</span>
+                                </div>
 
-                                    <div className={styles.cardActions}>
-                                        <button className={styles.actionButton} onClick={() => handleToggleActive(sub.id, sub.active)} title={sub.active ? 'Pause' : 'Resume'}>
-                                            {sub.active ? <Pause size={16} /> : <Play size={16} />}
-                                        </button>
-                                        <button className={styles.actionButton} onClick={() => handleEdit(sub.id)} aria-label="Edit">
-                                            <Pencil size={16} />
-                                        </button>
-                                        <button className={`${styles.actionButton} ${styles.deleteButton}`} onClick={() => handleDelete(sub.id)} aria-label="Delete">
-                                            <Trash2 size={16} />
-                                        </button>
-                                    </div>
-                                </Card>
-                            );
-                        })}
+                                <div className={styles.cardActions}>
+                                    <button className={styles.actionButton} onClick={() => handleToggleActive(sub.id, sub.active)} title={sub.active ? 'Pause' : 'Resume'}>
+                                        {sub.active ? <Pause size={16} /> : <Play size={16} />}
+                                    </button>
+                                    <button className={styles.actionButton} onClick={() => handleEdit(sub.id)} aria-label="Edit">
+                                        <Pencil size={16} />
+                                    </button>
+                                    <button className={`${styles.actionButton} ${styles.deleteButton}`} onClick={() => handleDelete(sub.id)} aria-label="Delete">
+                                        <Trash2 size={16} />
+                                    </button>
+                                </div>
+                            </Card>
+                        ))}
                     </div>
                 )}
             </div>

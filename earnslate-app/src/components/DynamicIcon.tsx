@@ -1,118 +1,111 @@
+/**
+ * Unified Icon Utility
+ * Handles all icon formats: Iconify, Lucide, and legacy patterns
+ */
 'use client';
 
-import { lazy, Suspense, ComponentType, createElement } from 'react';
-import type { LucideProps } from 'lucide-react';
+import { Icon } from '@iconify/react';
+import * as LucideIcons from 'lucide-react';
+import { HelpCircle } from 'lucide-react';
 
-// Icon component type
-type IconComponent = ComponentType<LucideProps>;
-
-// Cache for loaded icons
-const iconCache = new Map<string, IconComponent>();
-
-// Fallback icon for loading states
-const IconFallback = () => null;
+interface IconProps {
+    name: string;
+    size?: number;
+    color?: string;
+    className?: string;
+}
 
 /**
- * Get a Lucide icon component by name with lazy loading.
- * This reduces the initial bundle size by only loading icons as needed.
+ * Renders an icon based on its format:
+ * - Iconify format: 'simple-icons:netflix', 'mdi:home'
+ * - Double-prefixed: 'brand:simple-icons:netflix'
+ * - Legacy brand: 'brand:SiNetflix' or 'SiNetflix'
+ * - Lucide: 'Home', 'CreditCard'
  */
-export const getLucideIcon = (iconName: string): IconComponent => {
-    // Return from cache if already loaded
-    if (iconCache.has(iconName)) {
-        return iconCache.get(iconName)!;
-    }
-
-    // Create a lazy-loaded component
-    const LazyIcon = lazy(async () => {
-        try {
-            // Dynamic import of the specific icon
-            const lucideModule = await import('lucide-react');
-            const IconComponent = (lucideModule as unknown as Record<string, IconComponent>)[iconName];
-
-            if (IconComponent) {
-                // Cache the loaded icon
-                iconCache.set(iconName, IconComponent);
-                return { default: IconComponent };
-            }
-        } catch {
-            // Silently fail and return fallback
-        }
-
-        // Fallback to HelpCircle if icon not found
-        const { HelpCircle } = await import('lucide-react');
-        return { default: HelpCircle };
-    });
-
-    // Wrap in a component that handles Suspense
-    const WrappedIcon: IconComponent = (props) =>
-        createElement(Suspense, { fallback: createElement(IconFallback) },
-            createElement(LazyIcon, props)
+export function DynamicIcon({ name, size = 24, color, className }: IconProps) {
+    // Handle double-prefixed format (brand:simple-icons:*)
+    if (name.startsWith('brand:simple-icons:')) {
+        const cleanIcon = name.replace('brand:', '');
+        return (
+            <Icon
+                icon={cleanIcon}
+                width={size}
+                height={size}
+                style={{ color: color || 'currentColor' }}
+                className={className}
+            />
         );
-
-    return WrappedIcon;
-};
-
-/**
- * Get a Simple Icons (brand) icon component by name with lazy loading.
- */
-export const getSimpleIcon = (iconName: string): IconComponent => {
-    const cacheKey = `brand:${iconName}`;
-
-    if (iconCache.has(cacheKey)) {
-        return iconCache.get(cacheKey)!;
     }
 
-    const LazyIcon = lazy(async () => {
-        try {
-            const siModule = await import('react-icons/si');
-            const IconComponent = (siModule as unknown as Record<string, IconComponent>)[iconName];
-
-            if (IconComponent) {
-                iconCache.set(cacheKey, IconComponent);
-                return { default: IconComponent };
-            }
-        } catch {
-            // Silently fail
-        }
-
-        // Fallback to Lucide HelpCircle
-        const { HelpCircle } = await import('lucide-react');
-        return { default: HelpCircle };
-    });
-
-    const WrappedIcon: IconComponent = (props) =>
-        createElement(Suspense, { fallback: createElement(IconFallback) },
-            createElement(LazyIcon, props)
+    // Handle Iconify format (contains colon like 'simple-icons:netflix')
+    if (name.includes(':')) {
+        return (
+            <Icon
+                icon={name}
+                width={size}
+                height={size}
+                style={{ color: color || 'currentColor' }}
+                className={className}
+            />
         );
+    }
 
-    return WrappedIcon;
-};
+    // Handle legacy brand: prefix (convert to Iconify format)
+    if (name.startsWith('brand:')) {
+        const brandIcon = name.replace('brand:', '').replace(/^Si/, '').toLowerCase();
+        return (
+            <Icon
+                icon={`simple-icons:${brandIcon}`}
+                width={size}
+                height={size}
+                style={{ color: color || 'currentColor' }}
+                className={className}
+            />
+        );
+    }
+
+    // Handle legacy react-icons/si format (SiNetflix -> simple-icons:netflix)
+    if (name.startsWith('Si')) {
+        const brandIcon = name.replace(/^Si/, '').toLowerCase();
+        return (
+            <Icon
+                icon={`simple-icons:${brandIcon}`}
+                width={size}
+                height={size}
+                style={{ color: color || 'currentColor' }}
+                className={className}
+            />
+        );
+    }
+
+    // Handle Lucide icons
+    const LucideIcon = (LucideIcons as unknown as Record<string, React.ElementType>)[name];
+    if (LucideIcon) {
+        return <LucideIcon size={size} style={{ color: color || 'currentColor' }} className={className} />;
+    }
+
+    // Fallback to HelpCircle
+    return <HelpCircle size={size} className={className} />;
+}
 
 /**
- * Get either a Lucide or Simple icon based on the icon string format.
- * Brand icons are prefixed with "brand:" (e.g., "brand:SiNetflix")
+ * Check if an icon name is a brand icon (Iconify format)
  */
-export const getIcon = (iconName: string): IconComponent => {
-    if (iconName.startsWith('brand:')) {
-        return getSimpleIcon(iconName.replace('brand:', ''));
-    }
-    return getLucideIcon(iconName);
-};
+export function isBrandIcon(name: string): boolean {
+    return name.includes(':') || name.startsWith('brand:') || name.startsWith('Si');
+}
 
-// Common icons that should be loaded immediately (small subset for critical UI)
-export {
-    Plus,
-    Trash2,
-    Pencil,
-    Search,
-    X,
-    ChevronDown,
-    ChevronUp,
-    ChevronLeft,
-    ChevronRight,
-    Loader2,
-    AlertTriangle,
-    CheckCircle,
-    Info,
-    HelpCircle,
-} from 'lucide-react';
+/**
+ * Normalize icon name to Iconify format
+ */
+export function normalizeIconName(name: string): string {
+    if (name.includes(':')) return name;
+    if (name.startsWith('brand:')) {
+        const brandIcon = name.replace('brand:', '').replace(/^Si/, '').toLowerCase();
+        return `simple-icons:${brandIcon}`;
+    }
+    if (name.startsWith('Si')) {
+        return `simple-icons:${name.replace(/^Si/, '').toLowerCase()}`;
+    }
+    return name; // Lucide name
+}

@@ -6,7 +6,6 @@ import { CHART_COLORS } from '@/types';
 import Header from '@/components/Header';
 import Card, { CardHeader } from '@/components/Card';
 import ProgressBar from '@/components/ProgressBar';
-import TransactionForm from '@/components/TransactionForm';
 import { Search, TrendingUp, TrendingDown, Banknote, ShoppingCart, Coffee, Film, Car, Home, Briefcase, Heart, Sparkles, UtensilsCrossed, Plane, Gift, Smartphone, Lightbulb, Shirt, User, AlertTriangle, Wallet, HelpCircle } from 'lucide-react';
 import styles from './page.module.css';
 
@@ -36,7 +35,6 @@ const CATEGORY_ICONS: Record<string, React.ElementType> = {
 };
 
 export default function Dashboard() {
-  const [isFormOpen, setIsFormOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
 
   // Use shallow comparison to avoid re-renders when other store parts change

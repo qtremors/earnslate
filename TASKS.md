@@ -1,42 +1,57 @@
 # Earnslate Tasks
 
-## ✅ Completed This Session (2025-12-16)
+## 🔴 Critical Bugs
+- [x] Fix `calculateNextBilling()` month boundary bug in `src/types/index.ts`
+- [x] Remove unused `isFormOpen` state and `TransactionForm` import in `src/app/page.tsx`
+- [ ] Fix React hook dependency warnings in forms
 
-### Icon System Upgrade
-- [x] Migrated from react-icons/si to @iconify/react
-- [x] 100+ subscription service icons (Netflix, Spotify, Crunchyroll, etc.)
-- [x] Backwards compatibility for legacy icon formats
-- [x] Fixed double-prefix icon bug (brand:simple-icons:*)
+## 🟠 Logic Inconsistencies
+- [x] Unify 4 different icon handling patterns into single utility
+- [ ] Standardize transaction amount sign convention (negative vs absolute)
+- [ ] Fix budget category matching (case-insensitive match, case-sensitive display)
 
-### UI/UX Improvements
-- [x] Fixed invisible pie chart (single-category 360° arc bug)
-- [x] Header shows user's display name instead of profile icon
-- [x] Removed duplicate cost summary from subscription treemap
-- [x] Fixed subscriptions page layout (space-between actions)
-- [x] Styled date input calendar for dark/light themes
-- [x] Fixed button icon/text alignment
-- [x] Fixed duplicate icons in IconPicker (Video, Bike)
+## 🟡 Half-Baked Features
+- [ ] Fix `formatDate()` locale parameter - currently unused
+- [ ] Add icon/color pickers to category editor in settings
+- [x] Integrate `DynamicIcon.tsx` properly or remove dead code
 
-### Theme & Styling
-- [x] Dark/Light/System theme support
-- [x] Light theme CSS variables
-- [x] Theme toggle UI in Settings
-- [x] System preference detection
+## 💀 Dead Code Cleanup
+- [x] Remove unused `TransactionForm` import from dashboard
+- [x] Remove unused `ArrowUpDown` import from transactions page
+- [x] Remove largely unused `DynamicIcon.tsx` utilities
+- [ ] Fix `locale` parameter in `formatDate()` function
+- [x] Sync `APP_VERSION` constant with `package.json` version
 
-### Data Features
-- [x] Date range filter on Transactions page
-- [x] Sorting options (date, amount, category)
-- [x] CSV export for Budgets and Subscriptions
+## ⚡ Performance
+- [ ] Optimize `useShallow` selectors for granular property access
+- [ ] Memoize chart SVG path calculations in budgets page
+- [ ] Consider migrating fully to Iconify (remove react-icons bloat)
+- [ ] Add category-indexed lookup for budget matching
 
----
+## 🎨 UI/UX Improvements
+- [ ] Add loading states during delete operations
+- [ ] Fix pie chart legend showing only 5 items while chart shows all
+- [ ] Improve mobile responsiveness (sidebar collapse, toolbar overflow)
+- [ ] Standardize button placement across modals and forms
+- [ ] Check color contrast for accessibility (WCAG)
 
-## 🐛 Known Issues
-- [ ] Next billing date calculation may be incorrect for some cycle types
+## 📚 Code Quality
+- [ ] Centralize `formatCurrency()` - duplicated in 4+ files
+- [ ] Add stricter TypeScript checks (`noUncheckedIndexedAccess`)
+- [ ] Add input sanitization for form data
 
 ## 🔜 Future Enhancements
-- Subscription due reminders (notifications/badges)
-- PWA/offline support
-- Recurring transactions (requires data model changes)
+- [ ] Add pagination for transactions list
+- [ ] Subscription due reminders/notifications
+- [ ] PWA/offline support
+- [ ] Recurring transactions (not just subscriptions)
+- [ ] Cloud sync (optional)
+- [ ] Undo/redo for deletions
+- [ ] Batch delete operations
+- [ ] Dashboard date range filter (beyond "this month")
+- [ ] Budget period reset notifications
+- [ ] Data validation on import
+- [ ] Multi-currency support
 
 ---
 
