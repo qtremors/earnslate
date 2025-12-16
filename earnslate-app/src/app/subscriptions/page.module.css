@@ -73,6 +73,12 @@
     color: var(--text-inverted);
 }
 
+.actionButtons {
+    display: flex;
+    gap: var(--space-sm);
+    align-items: center;
+}
+
 /* ===== Empty State ===== */
 .emptyState {
     display: flex;

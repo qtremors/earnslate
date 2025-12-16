@@ -9,7 +9,7 @@ import Card, { CardHeader } from '@/components/Card';
 import Button from '@/components/Button';
 import Modal from '@/components/Modal';
 import Input, { Select } from '@/components/Input';
-import { Download, Upload, Plus, Trash2, Tag } from 'lucide-react';
+import { Download, Upload, Plus, Trash2, Tag, Moon, Sun, Monitor } from 'lucide-react';
 import styles from './page.module.css';
 
 const APP_VERSION = '0.5.0';
@@ -247,6 +247,37 @@ export default function SettingsPage() {
                             </span>
                         </div>
                         <Button variant="ghost" size="sm" onClick={() => openEditModal('locale')}>Change</Button>
+                    </div>
+                    <div className={styles.settingRow}>
+                        <div className={styles.settingInfo}>
+                            <span className={styles.settingLabel}>Theme</span>
+                            <span className={styles.settingValue}>
+                                {settings.theme === 'dark' ? 'Dark' : settings.theme === 'light' ? 'Light' : 'System'}
+                            </span>
+                        </div>
+                        <div className={styles.themeToggle}>
+                            <button
+                                className={`${styles.themeButton} ${settings.theme === 'dark' ? styles.active : ''}`}
+                                onClick={() => updateSettings({ theme: 'dark' })}
+                                title="Dark theme"
+                            >
+                                <Moon size={16} />
+                            </button>
+                            <button
+                                className={`${styles.themeButton} ${settings.theme === 'light' ? styles.active : ''}`}
+                                onClick={() => updateSettings({ theme: 'light' })}
+                                title="Light theme"
+                            >
+                                <Sun size={16} />
+                            </button>
+                            <button
+                                className={`${styles.themeButton} ${settings.theme === 'system' ? styles.active : ''}`}
+                                onClick={() => updateSettings({ theme: 'system' })}
+                                title="System preference"
+                            >
+                                <Monitor size={16} />
+                            </button>
+                        </div>
                     </div>
                 </Card>
 

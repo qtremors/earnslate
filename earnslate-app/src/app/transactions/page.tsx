@@ -9,11 +9,12 @@ import Header from '@/components/Header';
 import Card, { CardHeader } from '@/components/Card';
 import Button from '@/components/Button';
 import TransactionForm from '@/components/TransactionForm';
-import { Plus, Trash2, Pencil, Search, Download, PieChart, List } from 'lucide-react';
+import { Plus, Trash2, Pencil, Search, Download, PieChart, List, ArrowUpDown } from 'lucide-react';
 import styles from './page.module.css';
 
 type ViewMode = 'list' | 'chart';
 type TypeFilter = 'all' | 'income' | 'expense';
+type SortOption = 'date-desc' | 'date-asc' | 'amount-desc' | 'amount-asc' | 'category';
 
 export default function TransactionsPage() {
     const [isFormOpen, setIsFormOpen] = useState(false);
@@ -22,6 +23,9 @@ export default function TransactionsPage() {
     const [categoryFilter, setCategoryFilter] = useState<string>('all');
     const [searchQuery, setSearchQuery] = useState('');
     const [viewMode, setViewMode] = useState<ViewMode>('list');
+    const [dateFrom, setDateFrom] = useState('');
+    const [dateTo, setDateTo] = useState('');
+    const [sortBy, setSortBy] = useState<SortOption>('date-desc');
 
     // Use shallow comparison to avoid re-renders when other store parts change
     const { transactions, deleteTransaction, settings } = useAppStore(
@@ -50,9 +54,9 @@ export default function TransactionsPage() {
         return cats.sort();
     }, [transactions]);
 
-    // Filtered transactions
+    // Filtered and sorted transactions
     const filteredTransactions = useMemo(() => {
-        return transactions.filter(t => {
+        let result = transactions.filter(t => {
             if (typeFilter !== 'all' && t.type !== typeFilter) return false;
             if (categoryFilter !== 'all' && t.category !== categoryFilter) return false;
             if (searchQuery.trim()) {
@@ -61,9 +65,33 @@ export default function TransactionsPage() {
                     return false;
                 }
             }
+            // Date range filter
+            if (dateFrom && t.date < dateFrom) return false;
+            if (dateTo && t.date > dateTo) return false;
             return true;
         });
-    }, [transactions, typeFilter, categoryFilter, searchQuery]);
+
+        // Sort
+        switch (sortBy) {
+            case 'date-asc':
+                result = [...result].sort((a, b) => a.date.localeCompare(b.date));
+                break;
+            case 'amount-desc':
+                result = [...result].sort((a, b) => Math.abs(b.amount) - Math.abs(a.amount));
+                break;
+            case 'amount-asc':
+                result = [...result].sort((a, b) => Math.abs(a.amount) - Math.abs(b.amount));
+                break;
+            case 'category':
+                result = [...result].sort((a, b) => a.category.localeCompare(b.category));
+                break;
+            case 'date-desc':
+            default:
+                result = [...result].sort((a, b) => b.date.localeCompare(a.date));
+        }
+
+        return result;
+    }, [transactions, typeFilter, categoryFilter, searchQuery, dateFrom, dateTo, sortBy]);
 
     // Calculate totals for chart
     const chartData = useMemo(() => {
@@ -162,6 +190,34 @@ export default function TransactionsPage() {
                             {categories.map(cat => (
                                 <option key={cat} value={cat}>{cat}</option>
                             ))}
+                        </select>
+
+                        <input
+                            type="date"
+                            value={dateFrom}
+                            onChange={(e) => setDateFrom(e.target.value)}
+                            className={styles.filterSelect}
+                            title="From date"
+                        />
+                        <input
+                            type="date"
+                            value={dateTo}
+                            onChange={(e) => setDateTo(e.target.value)}
+                            className={styles.filterSelect}
+                            title="To date"
+                        />
+
+                        <select
+                            value={sortBy}
+                            onChange={(e) => setSortBy(e.target.value as SortOption)}
+                            className={styles.filterSelect}
+                            title="Sort by"
+                        >
+                            <option value="date-desc">Newest First</option>
+                            <option value="date-asc">Oldest First</option>
+                            <option value="amount-desc">Highest Amount</option>
+                            <option value="amount-asc">Lowest Amount</option>
+                            <option value="category">Category</option>
                         </select>
                     </div>
                 </div>

@@ -58,6 +58,7 @@ export interface UserSettings {
     currencySymbol: string;
     locale: string; // Number/date formatting locale (e.g., 'en-IN', 'en-US')
     dateFormat: string;
+    theme: 'dark' | 'light' | 'system';
     hasCompletedOnboarding: boolean;
     customCategories: Category[];
 }
@@ -222,3 +223,42 @@ export const formatCurrencyCompact = (amount: number, symbol: string = '₹', lo
     }
     return `${symbol}${abs.toLocaleString(locale)}`;
 };
+
+// ===== Date Formatting =====
+/**
+ * Format a date string according to the specified format.
+ * @param dateString - ISO date string or date string
+ * @param format - 'DD/MM/YYYY', 'MM/DD/YYYY', or 'YYYY-MM-DD'
+ * @param locale - Locale for month names (e.g., 'en-IN', 'en-US')
+ */
+export const formatDate = (dateString: string, format: string = 'DD/MM/YYYY', locale: string = 'en-IN'): string => {
+    const date = new Date(dateString);
+    const day = date.getDate().toString().padStart(2, '0');
+    const month = (date.getMonth() + 1).toString().padStart(2, '0');
+    const year = date.getFullYear();
+
+    switch (format) {
+        case 'MM/DD/YYYY':
+            return `${month}/${day}/${year}`;
+        case 'YYYY-MM-DD':
+            return `${year}-${month}-${day}`;
+        case 'DD/MM/YYYY':
+        default:
+            return `${day}/${month}/${year}`;
+    }
+};
+
+/**
+ * Format a date string for display with short month name.
+ */
+export const formatDateShort = (dateString: string, locale: string = 'en-IN'): string => {
+    return new Date(dateString).toLocaleDateString(locale, { day: 'numeric', month: 'short' });
+};
+
+/**
+ * Format a date string for display with full format.
+ */
+export const formatDateFull = (dateString: string, locale: string = 'en-IN'): string => {
+    return new Date(dateString).toLocaleDateString(locale, { day: 'numeric', month: 'short', year: 'numeric' });
+};
+

@@ -55,6 +55,7 @@ const defaultSettings: UserSettings = {
     currencySymbol: '₹',
     locale: 'en-IN',
     dateFormat: 'DD/MM/YYYY',
+    theme: 'dark',
     hasCompletedOnboarding: false,
     customCategories: DEFAULT_CATEGORIES,
 };

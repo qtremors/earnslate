@@ -9,7 +9,7 @@ import Card from '@/components/Card';
 import Button from '@/components/Button';
 import SubscriptionForm from '@/components/SubscriptionForm';
 import SubscriptionTreemap from '@/components/SubscriptionTreemap';
-import { Plus, Trash2, Pencil, Play, Pause, LayoutGrid, List } from 'lucide-react';
+import { Plus, Trash2, Pencil, Play, Pause, LayoutGrid, List, Download } from 'lucide-react';
 import * as LucideIcons from 'lucide-react';
 import * as SimpleIcons from 'react-icons/si';
 import styles from './page.module.css';
@@ -78,6 +78,27 @@ export default function SubscriptionsPage() {
     const monthlyTotal = activeSubscriptions.reduce((sum, s) => sum + getMonthlyEquivalent(s.amount, s.cycle), 0);
     const yearlyTotal = monthlyTotal * 12;
 
+    const handleExportCSV = () => {
+        const headers = ['Name', 'Amount', 'Cycle', 'Next Billing', 'Active', 'Monthly Equivalent'];
+        const rows = subscriptions.map(s => [
+            s.name,
+            s.amount.toString(),
+            formatCycleDisplay(s.cycle),
+            s.nextBilling,
+            s.active ? 'Yes' : 'No',
+            Math.round(getMonthlyEquivalent(s.amount, s.cycle)).toString()
+        ]);
+
+        const csv = [headers, ...rows].map(row => row.join(',')).join('\n');
+        const blob = new Blob([csv], { type: 'text/csv' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `subscriptions_${new Date().toISOString().split('T')[0]}.csv`;
+        a.click();
+        URL.revokeObjectURL(url);
+    };
+
     return (
         <div className={styles.page}>
             <Header title="Subscriptions" subtitle="Track your recurring payments and subscriptions" />
@@ -118,10 +139,16 @@ export default function SubscriptionsPage() {
                         </button>
                     </div>
 
-                    <Button variant="primary" onClick={handleAdd}>
-                        <Plus size={18} />
-                        Add Subscription
-                    </Button>
+                    <div className={styles.actionButtons}>
+                        <Button variant="ghost" size="sm" onClick={handleExportCSV}>
+                            <Download size={16} />
+                            Export
+                        </Button>
+                        <Button variant="primary" onClick={handleAdd}>
+                            <Plus size={18} />
+                            Add Subscription
+                        </Button>
+                    </div>
                 </div>
 
                 {/* Content */}

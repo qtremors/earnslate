@@ -1,30 +1,29 @@
 # Earnslate Tasks
 
-## ✅ All High Priority Issues - DONE
+## ✅ Completed This Session
 
-- [x] TransactionForm missing `loading` prop on submit button
-- [x] Budgets page chartColors → shared CHART_COLORS
-- [x] All pages and forms now use `useShallow` for optimized selectors
+### Quick Fixes
+- [x] `formatDate`, `formatDateShort`, `formatDateFull` utilities in types
+- [x] CSV export for Budgets page
+- [x] CSV export for Subscriptions page
+
+### Medium Features  
+- [x] Date range filter on Transactions page
+- [x] Sorting options on Transactions (date, amount, category)
+
+### Theme Toggle
+- [x] Dark/Light/System theme support
+- [x] Light theme CSS variables
+- [x] Theme toggle UI in Settings
+- [x] System preference detection
 
 ---
 
-## ✅ Medium Priority - DONE
-
-- [x] Onboarding sets locale based on currency selection
-- [x] Removed unused Dashboard imports (CreditCard, Plus)
-
----
-
-## 🔜 Future Enhancements + Remaining Items
+## 🔜 Future Enhancements
 - Subscription due reminders (notifications/badges)
-- Dark/Light theme toggle
-- PWA/offline support  
-- Data export to CSV for budgets/subscriptions
-- Recurring transactions
-- DynamicIcon utility (created but not integrated yet)
-- Date range filter on transactions page
-- Sorting options on list pages
-- dateFormat setting not actually used for formatting
+- PWA/offline support
+- Recurring transactions (requires data model changes)
+- DynamicIcon integration (optional optimization)
 
 ---
 

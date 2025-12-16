@@ -10,7 +10,7 @@ import Card from '@/components/Card';
 import Button from '@/components/Button';
 import BudgetForm from '@/components/BudgetForm';
 import ProgressBar from '@/components/ProgressBar';
-import { Plus, Trash2, Pencil, PieChart, LayoutGrid, AlertTriangle } from 'lucide-react';
+import { Plus, Trash2, Pencil, PieChart, LayoutGrid, AlertTriangle, Download } from 'lucide-react';
 import * as LucideIcons from 'lucide-react';
 import styles from './page.module.css';
 
@@ -74,6 +74,27 @@ export default function BudgetsPage() {
     const totalSpent = budgets.reduce((sum, b) => sum + b.spent, 0);
     const totalRemaining = budgets.reduce((sum, b) => sum + getRemaining(b.spent, b.limit), 0);
 
+    const handleExportCSV = () => {
+        const headers = ['Name', 'Category', 'Limit', 'Spent', 'Remaining', 'Period'];
+        const rows = budgets.map(b => [
+            b.name,
+            b.category,
+            b.limit.toString(),
+            b.spent.toString(),
+            getRemaining(b.spent, b.limit).toString(),
+            formatCycleDisplay(b.period)
+        ]);
+
+        const csv = [headers, ...rows].map(row => row.join(',')).join('\n');
+        const blob = new Blob([csv], { type: 'text/csv' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `budgets_${new Date().toISOString().split('T')[0]}.csv`;
+        a.click();
+        URL.revokeObjectURL(url);
+    };
+
     // Chart data for donut
     const chartData = useMemo(() => {
         return budgets.map((b, i) => ({
@@ -125,10 +146,16 @@ export default function BudgetsPage() {
                         </button>
                     </div>
 
-                    <Button variant="primary" onClick={handleAdd}>
-                        <Plus size={18} />
-                        Create Budget
-                    </Button>
+                    <div className={styles.actionButtons}>
+                        <Button variant="ghost" size="sm" onClick={handleExportCSV}>
+                            <Download size={16} />
+                            Export
+                        </Button>
+                        <Button variant="primary" onClick={handleAdd}>
+                            <Plus size={18} />
+                            Create Budget
+                        </Button>
+                    </div>
                 </div>
 
                 {/* Content */}
