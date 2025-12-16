@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useAppStore } from '@/store';
+import { useAppStore, useShallow } from '@/store';
 import { useToast } from './Toast';
 import { TIME_UNITS, BillingCycle } from '@/types';
 import Modal from './Modal';
@@ -21,17 +21,22 @@ interface BudgetFormProps {
 export default function BudgetForm({ isOpen, onClose, editId }: BudgetFormProps) {
     const [name, setName] = useState('');
     const [limit, setLimit] = useState('');
-    const [category, setCategory] = useState('');
-    const [icon, setIcon] = useState('UtensilsCrossed');
+    const [category, setCategory] = useState('Other');
+    const [icon, setIcon] = useState('Wallet');
     const [color, setColor] = useState('#F59E0B');
     const [periodCount, setPeriodCount] = useState('1');
     const [periodUnit, setPeriodUnit] = useState<BillingCycle['unit']>('month');
     const [isSubmitting, setIsSubmitting] = useState(false);
 
-    const budgets = useAppStore((state) => state.budgets);
-    const addBudget = useAppStore((state) => state.addBudget);
-    const updateBudget = useAppStore((state) => state.updateBudget);
-    const settings = useAppStore((state) => state.settings);
+    // Use shallow comparison to avoid re-renders when other store parts change
+    const { budgets, addBudget, updateBudget, settings } = useAppStore(
+        useShallow((state) => ({
+            budgets: state.budgets,
+            addBudget: state.addBudget,
+            updateBudget: state.updateBudget,
+            settings: state.settings,
+        }))
+    );
     const { showToast } = useToast();
 
     const isEditing = !!editId;

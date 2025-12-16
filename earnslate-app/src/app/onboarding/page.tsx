@@ -14,10 +14,10 @@ const steps = [
 ];
 
 const currencies = [
-    { code: 'INR', symbol: '₹', name: 'Indian Rupee' },
-    { code: 'USD', symbol: '$', name: 'US Dollar' },
-    { code: 'EUR', symbol: '€', name: 'Euro' },
-    { code: 'GBP', symbol: '£', name: 'British Pound' },
+    { code: 'INR', symbol: '₹', name: 'Indian Rupee', locale: 'en-IN' },
+    { code: 'USD', symbol: '$', name: 'US Dollar', locale: 'en-US' },
+    { code: 'EUR', symbol: '€', name: 'Euro', locale: 'de-DE' },
+    { code: 'GBP', symbol: '£', name: 'British Pound', locale: 'en-GB' },
 ];
 
 export default function OnboardingPage() {
@@ -37,6 +37,7 @@ export default function OnboardingPage() {
                     updateSettings({
                         currency: currency.code,
                         currencySymbol: currency.symbol,
+                        locale: currency.locale,
                     });
                 }
             }

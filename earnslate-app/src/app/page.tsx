@@ -7,7 +7,7 @@ import Header from '@/components/Header';
 import Card, { CardHeader } from '@/components/Card';
 import ProgressBar from '@/components/ProgressBar';
 import TransactionForm from '@/components/TransactionForm';
-import { Search, TrendingUp, TrendingDown, CreditCard, Banknote, ShoppingCart, Coffee, Film, Car, Home, Briefcase, Heart, Sparkles, UtensilsCrossed, Plane, Gift, Smartphone, Lightbulb, Shirt, User, AlertTriangle, Plus, Wallet, HelpCircle } from 'lucide-react';
+import { Search, TrendingUp, TrendingDown, Banknote, ShoppingCart, Coffee, Film, Car, Home, Briefcase, Heart, Sparkles, UtensilsCrossed, Plane, Gift, Smartphone, Lightbulb, Shirt, User, AlertTriangle, Wallet, HelpCircle } from 'lucide-react';
 import styles from './page.module.css';
 
 // Category icons for recent transactions

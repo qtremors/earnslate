@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useMemo } from 'react';
-import { useAppStore } from '@/store';
+import { useAppStore, useShallow } from '@/store';
 import { CHART_COLORS } from '@/types';
 import { useConfirm } from '@/hooks/useConfirm';
 import { useToast } from '@/components/Toast';
@@ -23,9 +23,14 @@ export default function TransactionsPage() {
     const [searchQuery, setSearchQuery] = useState('');
     const [viewMode, setViewMode] = useState<ViewMode>('list');
 
-    const transactions = useAppStore((state) => state.transactions);
-    const deleteTransaction = useAppStore((state) => state.deleteTransaction);
-    const settings = useAppStore((state) => state.settings);
+    // Use shallow comparison to avoid re-renders when other store parts change
+    const { transactions, deleteTransaction, settings } = useAppStore(
+        useShallow((state) => ({
+            transactions: state.transactions,
+            deleteTransaction: state.deleteTransaction,
+            settings: state.settings,
+        }))
+    );
     const { confirm, ConfirmDialog } = useConfirm();
     const { showToast } = useToast();
 

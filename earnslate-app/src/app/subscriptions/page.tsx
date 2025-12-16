@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { useAppStore, formatCycleDisplay, getMonthlyEquivalent } from '@/store';
+import { useAppStore, useShallow, formatCycleDisplay, getMonthlyEquivalent } from '@/store';
 import { useConfirm } from '@/hooks/useConfirm';
 import { useToast } from '@/components/Toast';
 import Header from '@/components/Header';
@@ -21,10 +21,15 @@ export default function SubscriptionsPage() {
     const [editingId, setEditingId] = useState<string | undefined>();
     const [viewMode, setViewMode] = useState<ViewMode>('list');
 
-    const subscriptions = useAppStore((state) => state.subscriptions);
-    const deleteSubscription = useAppStore((state) => state.deleteSubscription);
-    const updateSubscription = useAppStore((state) => state.updateSubscription);
-    const settings = useAppStore((state) => state.settings);
+    // Use shallow comparison to avoid re-renders when other store parts change
+    const { subscriptions, deleteSubscription, updateSubscription, settings } = useAppStore(
+        useShallow((state) => ({
+            subscriptions: state.subscriptions,
+            deleteSubscription: state.deleteSubscription,
+            updateSubscription: state.updateSubscription,
+            settings: state.settings,
+        }))
+    );
     const { confirm, ConfirmDialog } = useConfirm();
     const { showToast } = useToast();
 

@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useAppStore } from '@/store';
+import { useAppStore, useShallow } from '@/store';
 import { useToast } from './Toast';
 import Modal from './Modal';
 import Input, { Select } from './Input';
@@ -15,10 +15,15 @@ interface TransactionFormProps {
 }
 
 export default function TransactionForm({ isOpen, onClose, editId }: TransactionFormProps) {
-    const addTransaction = useAppStore((state) => state.addTransaction);
-    const transactions = useAppStore((state) => state.transactions);
-    const updateTransaction = useAppStore((state) => state.updateTransaction);
-    const settings = useAppStore((state) => state.settings);
+    // Use shallow comparison to avoid re-renders when other store parts change
+    const { addTransaction, transactions, updateTransaction, settings } = useAppStore(
+        useShallow((state) => ({
+            addTransaction: state.addTransaction,
+            transactions: state.transactions,
+            updateTransaction: state.updateTransaction,
+            settings: state.settings,
+        }))
+    );
     const { showToast } = useToast();
 
     const existingTransaction = editId
@@ -33,6 +38,7 @@ export default function TransactionForm({ isOpen, onClose, editId }: Transaction
         date: new Date().toISOString().split('T')[0],
         notes: '',
     });
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     // Populate form when editing
     useEffect(() => {
@@ -133,7 +139,12 @@ export default function TransactionForm({ isOpen, onClose, editId }: Transaction
             showToast('Transaction added successfully', 'success');
         }
 
-        onClose();
+        setIsSubmitting(true);
+        // Short delay for visual feedback before closing
+        setTimeout(() => {
+            setIsSubmitting(false);
+            onClose();
+        }, 300);
     };
 
     return (
@@ -215,7 +226,7 @@ export default function TransactionForm({ isOpen, onClose, editId }: Transaction
                     <Button type="button" variant="ghost" onClick={onClose}>
                         Cancel
                     </Button>
-                    <Button type="submit" variant="primary">
+                    <Button type="submit" variant="primary" loading={isSubmitting}>
                         {editId ? 'Save Changes' : 'Add Transaction'}
                     </Button>
                 </div>

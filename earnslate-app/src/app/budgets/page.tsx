@@ -1,7 +1,8 @@
 'use client';
 
 import { useState, useMemo } from 'react';
-import { useAppStore, formatCycleDisplay } from '@/store';
+import { useAppStore, useShallow, formatCycleDisplay } from '@/store';
+import { CHART_COLORS } from '@/types';
 import { useConfirm } from '@/hooks/useConfirm';
 import { useToast } from '@/components/Toast';
 import Header from '@/components/Header';
@@ -20,9 +21,14 @@ export default function BudgetsPage() {
     const [editingId, setEditingId] = useState<string | undefined>();
     const [viewMode, setViewMode] = useState<ViewMode>('grid');
 
-    const budgets = useAppStore((state) => state.budgets);
-    const deleteBudget = useAppStore((state) => state.deleteBudget);
-    const settings = useAppStore((state) => state.settings);
+    // Use shallow comparison to avoid re-renders when other store parts change
+    const { budgets, deleteBudget, settings } = useAppStore(
+        useShallow((state) => ({
+            budgets: state.budgets,
+            deleteBudget: state.deleteBudget,
+            settings: state.settings,
+        }))
+    );
     const { confirm, ConfirmDialog } = useConfirm();
     const { showToast } = useToast();
 
@@ -68,16 +74,13 @@ export default function BudgetsPage() {
     const totalSpent = budgets.reduce((sum, b) => sum + b.spent, 0);
     const totalRemaining = budgets.reduce((sum, b) => sum + getRemaining(b.spent, b.limit), 0);
 
-    // Chart colors
-    const chartColors = ['#E50914', '#1DB954', '#FF9900', '#3693F3', '#8B5CF6', '#10B981', '#F59E0B', '#EF4444'];
-
     // Chart data for donut
     const chartData = useMemo(() => {
         return budgets.map((b, i) => ({
             name: b.name,
             spent: b.spent,
             limit: b.limit,
-            color: b.color || chartColors[i % chartColors.length],
+            color: b.color || CHART_COLORS[i % CHART_COLORS.length],
             remaining: getRemaining(b.spent, b.limit),
         }));
     }, [budgets]);

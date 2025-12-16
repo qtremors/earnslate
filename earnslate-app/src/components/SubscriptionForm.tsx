@@ -1,17 +1,16 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useAppStore } from '@/store';
-import { useToast } from './Toast';
+import { useAppStore, useShallow } from '@/store';
 import { TIME_UNITS, BillingCycle } from '@/types';
-import { ServiceTemplate } from '@/data/services';
+import { useToast } from './Toast';
 import Modal from './Modal';
-import Input from './Input';
-import { Select } from './Input';
+import Input, { Select } from './Input';
 import Button from './Button';
 import IconPicker from './IconPicker';
 import ColorPicker from './ColorPicker';
 import ServicePicker from './ServicePicker';
+import { POPULAR_SERVICES, ServiceTemplate } from '@/data/services';
 import * as LucideIcons from 'lucide-react';
 import * as SimpleIcons from 'react-icons/si';
 import styles from './SubscriptionForm.module.css';
@@ -22,25 +21,28 @@ interface SubscriptionFormProps {
     editId?: string;
 }
 
-type FormMode = 'picker' | 'custom' | 'edit';
-
 export default function SubscriptionForm({ isOpen, onClose, editId }: SubscriptionFormProps) {
-    const [mode, setMode] = useState<FormMode>('picker');
+    const [mode, setMode] = useState<'picker' | 'custom' | 'edit'>('picker');
     const [name, setName] = useState('');
     const [amount, setAmount] = useState('');
     const [cycleCount, setCycleCount] = useState('1');
     const [cycleUnit, setCycleUnit] = useState<BillingCycle['unit']>('month');
     const [nextBilling, setNextBilling] = useState(new Date().toISOString().split('T')[0]);
-    const [icon, setIcon] = useState('Tv');
+    const [icon, setIcon] = useState('CreditCard');
     const [iconType, setIconType] = useState<'brand' | 'lucide'>('lucide');
     const [color, setColor] = useState('#E50914');
     const [notes, setNotes] = useState('');
     const [isSubmitting, setIsSubmitting] = useState(false);
 
-    const subscriptions = useAppStore((state) => state.subscriptions);
-    const addSubscription = useAppStore((state) => state.addSubscription);
-    const updateSubscription = useAppStore((state) => state.updateSubscription);
-    const settings = useAppStore((state) => state.settings);
+    // Use shallow comparison to avoid re-renders when other store parts change
+    const { subscriptions, addSubscription, updateSubscription, settings } = useAppStore(
+        useShallow((state) => ({
+            subscriptions: state.subscriptions,
+            addSubscription: state.addSubscription,
+            updateSubscription: state.updateSubscription,
+            settings: state.settings,
+        }))
+    );
     const { showToast } = useToast();
 
     const isEditing = !!editId;
