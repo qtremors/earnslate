@@ -9,7 +9,9 @@ import Card, { CardHeader } from '@/components/Card';
 import Button from '@/components/Button';
 import Modal from '@/components/Modal';
 import Input, { Select } from '@/components/Input';
-import { Download, Upload, Plus, Trash2, Tag, Moon, Sun, Monitor } from 'lucide-react';
+import { Download, Upload, Plus, Trash2, Tag, Moon, Sun, Monitor, Pencil } from 'lucide-react';
+import IconPicker from '@/components/IconPicker';
+import ColorPicker from '@/components/ColorPicker';
 import styles from './page.module.css';
 import packageJson from '../../../package.json';
 
@@ -53,6 +55,12 @@ export default function SettingsPage() {
     const [editModal, setEditModal] = useState<'name' | 'currency' | 'date' | 'locale' | 'category' | null>(null);
     const [tempValue, setTempValue] = useState('');
     const [newCategory, setNewCategory] = useState('');
+    const [editingCategory, setEditingCategory] = useState<{
+        id: string;
+        name: string;
+        icon: string;
+        color: string;
+    } | null>(null);
     const fileInputRef = useRef<HTMLInputElement>(null);
 
     const openEditModal = (type: 'name' | 'currency' | 'date' | 'locale' | 'category') => {
@@ -99,6 +107,29 @@ export default function SettingsPage() {
     const handleDeleteCategory = (catId: string) => {
         if (settings.customCategories.length > 1) {
             updateSettings({ customCategories: settings.customCategories.filter(c => c.id !== catId) });
+        }
+    };
+
+    const handleEditCategory = (cat: typeof settings.customCategories[0]) => {
+        setEditingCategory({
+            id: cat.id,
+            name: cat.name,
+            icon: cat.icon,
+            color: cat.color || '#64748B',
+        });
+    };
+
+    const handleSaveCategory = () => {
+        if (editingCategory) {
+            updateSettings({
+                customCategories: settings.customCategories.map(c =>
+                    c.id === editingCategory.id
+                        ? { ...c, name: editingCategory.name, icon: editingCategory.icon, color: editingCategory.color }
+                        : c
+                ),
+            });
+            setEditingCategory(null);
+            showToast('Category updated', 'success');
         }
     };
 
@@ -191,17 +222,29 @@ export default function SettingsPage() {
                     <div className={styles.categoryList}>
                         {settings.customCategories.map((cat) => (
                             <div key={cat.id} className={styles.categoryItem}>
-                                <Tag size={14} />
+                                <div
+                                    className={styles.categoryColor}
+                                    style={{ backgroundColor: cat.color || '#64748B' }}
+                                />
                                 <span>{cat.name}</span>
-                                {settings.customCategories.length > 1 && (
+                                <div className={styles.categoryActions}>
                                     <button
-                                        className={styles.deleteCategory}
-                                        onClick={() => handleDeleteCategory(cat.id)}
-                                        aria-label={`Delete ${cat.name} category`}
+                                        className={styles.editCategory}
+                                        onClick={() => handleEditCategory(cat)}
+                                        aria-label={`Edit ${cat.name} category`}
                                     >
-                                        <Trash2 size={14} />
+                                        <Pencil size={14} />
                                     </button>
-                                )}
+                                    {settings.customCategories.length > 1 && (
+                                        <button
+                                            className={styles.deleteCategory}
+                                            onClick={() => handleDeleteCategory(cat.id)}
+                                            aria-label={`Delete ${cat.name} category`}
+                                        >
+                                            <Trash2 size={14} />
+                                        </button>
+                                    )}
+                                </div>
                             </div>
                         ))}
                     </div>
@@ -373,6 +416,39 @@ export default function SettingsPage() {
                         <Button type="submit" variant="primary">Save</Button>
                     </div>
                 </form>
+            </Modal>
+
+            {/* Edit Category Modal */}
+            <Modal
+                isOpen={editingCategory !== null}
+                onClose={() => setEditingCategory(null)}
+                title="Edit Category"
+                size="md"
+            >
+                {editingCategory && (
+                    <form onSubmit={(e) => { e.preventDefault(); handleSaveCategory(); }} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                        <Input
+                            label="Category Name"
+                            id="categoryName"
+                            value={editingCategory.name}
+                            onChange={(e) => setEditingCategory({ ...editingCategory, name: e.target.value })}
+                        />
+                        <IconPicker
+                            label="Icon"
+                            value={editingCategory.icon}
+                            onChange={(icon) => setEditingCategory({ ...editingCategory, icon })}
+                        />
+                        <ColorPicker
+                            label="Color"
+                            value={editingCategory.color}
+                            onChange={(color) => setEditingCategory({ ...editingCategory, color })}
+                        />
+                        <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.5rem' }}>
+                            <Button type="button" variant="ghost" onClick={() => setEditingCategory(null)}>Cancel</Button>
+                            <Button type="submit" variant="primary">Save</Button>
+                        </div>
+                    </form>
+                )}
             </Modal>
 
             <ConfirmDialog />

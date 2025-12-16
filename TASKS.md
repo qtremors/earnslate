@@ -1,46 +1,29 @@
 # Earnslate Tasks
 
-## 🔴 Critical Bugs
-- [x] Fix `calculateNextBilling()` month boundary bug in `src/types/index.ts`
-- [x] Remove unused `isFormOpen` state and `TransactionForm` import in `src/app/page.tsx`
-- [x] Fix React hook dependency warnings in forms
+## � Active Tasks
 
-## 🟠 Logic Inconsistencies
-- [x] Unify 4 different icon handling patterns into single utility
+### Logic Inconsistencies
 - [ ] Standardize transaction amount sign convention (negative vs absolute)
 - [ ] Fix budget category matching (case-insensitive match, case-sensitive display)
 
-## 🟡 Half-Baked Features
-- [x] Fix `formatDate()` locale parameter - now uses Intl.DateTimeFormat
+### Half-Baked Features
 - [ ] Add icon/color pickers to category editor in settings
-- [x] Integrate `DynamicIcon.tsx` properly or remove dead code
 
-## 💀 Dead Code Cleanup
-- [x] Remove unused `TransactionForm` import from dashboard
-- [x] Remove unused `ArrowUpDown` import from transactions page
-- [x] Remove largely unused `DynamicIcon.tsx` utilities
-- [x] Fix `locale` parameter in `formatDate()` function
-- [x] Sync `APP_VERSION` constant with `package.json` version
-
-## ⚡ Performance
+### Performance
 - [ ] Optimize `useShallow` selectors for granular property access
-- [x] Memoize chart SVG path calculations in budgets page
-- [x] Consider migrating fully to Iconify (remove react-icons bloat)
 - [ ] Add category-indexed lookup for budget matching
 
-## 🎨 UI/UX Improvements
+### UI/UX Improvements
 - [ ] Add loading states during delete operations
-- [x] Fix pie chart legend showing only 5 items while chart shows all
-- [x] Improve mobile responsiveness (sidebar collapse, toolbar overflow)
 - [ ] Standardize button placement across modals and forms
 - [ ] Check color contrast for accessibility (WCAG)
 
-## 📚 Code Quality
-- [x] Centralize `formatCurrency()` - duplicated in 4+ files
+### Code Quality
 - [ ] Add stricter TypeScript checks (`noUncheckedIndexedAccess`)
-- [x] Add input sanitization for form data
 
-## 🔜 Future Enhancements
+---
+
+## � Future Enhancements
 - [ ] Add pagination for transactions list
 - [ ] Subscription due reminders/notifications
 - [ ] PWA/offline support
@@ -52,6 +35,36 @@
 - [ ] Budget period reset notifications
 - [ ] Data validation on import
 - [ ] Multi-currency support
+
+---
+
+## ✅ Completed
+
+### Critical Bugs
+- [x] Fix `calculateNextBilling()` month boundary bug
+- [x] Remove unused `isFormOpen` state and `TransactionForm` import
+- [x] Fix React hook dependency warnings
+
+### Logic & Code
+- [x] Unify 4 different icon handling patterns (`DynamicIcon.tsx`)
+- [x] Fix `formatDate()` locale parameter (Intl.DateTimeFormat)
+- [x] Integrate `DynamicIcon.tsx` properly
+
+### Dead Code Cleanup
+- [x] Remove unused imports (TransactionForm, ArrowUpDown)
+- [x] Sync `APP_VERSION` with `package.json`
+
+### Performance
+- [x] Memoize chart SVG path calculations
+- [x] Migrate to Iconify (removed react-icons)
+
+### UI/UX
+- [x] Fix pie chart legend (shows all categories)
+- [x] Mobile responsiveness (sidebar collapse)
+
+### Code Quality
+- [x] Centralize `formatCurrency()` via `useFormatters` hook
+- [x] Add input sanitization for data import
 
 ---
 
