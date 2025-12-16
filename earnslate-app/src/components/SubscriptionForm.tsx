@@ -26,7 +26,7 @@ export default function SubscriptionForm({ isOpen, onClose, editId }: Subscripti
     const [amount, setAmount] = useState('');
     const [cycleCount, setCycleCount] = useState('1');
     const [cycleUnit, setCycleUnit] = useState<BillingCycle['unit']>('month');
-    const [nextBilling, setNextBilling] = useState(new Date().toISOString().split('T')[0]);
+    const [startDate, setStartDate] = useState(new Date().toISOString().split('T')[0]);
     const [icon, setIcon] = useState('CreditCard');
     const [iconType, setIconType] = useState<'brand' | 'lucide'>('lucide');
     const [color, setColor] = useState('#E50914');
@@ -54,7 +54,8 @@ export default function SubscriptionForm({ isOpen, onClose, editId }: Subscripti
             setAmount(String(existingSubscription.amount));
             setCycleCount(String(existingSubscription.cycle.count));
             setCycleUnit(existingSubscription.cycle.unit);
-            setNextBilling(existingSubscription.nextBilling.split('T')[0]);
+            // For editing, show the next billing date as start date
+            setStartDate(existingSubscription.nextBilling.split('T')[0]);
             setIcon(existingSubscription.icon);
             setColor(existingSubscription.color || '#E50914');
             setNotes(existingSubscription.notes || '');
@@ -69,10 +70,8 @@ export default function SubscriptionForm({ isOpen, onClose, editId }: Subscripti
         setAmount('');
         setCycleCount('1');
         setCycleUnit('month');
-        // Set next billing to 1 month from today by default
-        const nextDate = new Date();
-        nextDate.setMonth(nextDate.getMonth() + 1);
-        setNextBilling(nextDate.toISOString().split('T')[0]);
+        // Default start date to today
+        setStartDate(new Date().toISOString().split('T')[0]);
         setIcon('Tv');
         setIconType('lucide');
         setColor('#E50914');
@@ -113,12 +112,10 @@ export default function SubscriptionForm({ isOpen, onClose, editId }: Subscripti
                 default:
                     nextDate.setMonth(nextDate.getMonth() + count);
             }
-            setNextBilling(nextDate.toISOString().split('T')[0]);
+            setStartDate(new Date().toISOString().split('T')[0]);
         } else {
-            // Default to 1 month if no cycle specified
-            const nextDate = new Date();
-            nextDate.setMonth(nextDate.getMonth() + 1);
-            setNextBilling(nextDate.toISOString().split('T')[0]);
+            // Default start date to today
+            setStartDate(new Date().toISOString().split('T')[0]);
         }
         setMode('custom'); // Switch to form to confirm/edit
     };
@@ -173,6 +170,27 @@ export default function SubscriptionForm({ isOpen, onClose, editId }: Subscripti
             count: parseInt(cycleCount) || 1,
             unit: cycleUnit,
         };
+
+        // Calculate next billing date from start date + cycle
+        const start = new Date(startDate);
+        switch (cycle.unit) {
+            case 'hour':
+                start.setHours(start.getHours() + cycle.count);
+                break;
+            case 'day':
+                start.setDate(start.getDate() + cycle.count);
+                break;
+            case 'week':
+                start.setDate(start.getDate() + (cycle.count * 7));
+                break;
+            case 'month':
+                start.setMonth(start.getMonth() + cycle.count);
+                break;
+            case 'year':
+                start.setFullYear(start.getFullYear() + cycle.count);
+                break;
+        }
+        const nextBilling = start.toISOString().split('T')[0];
 
         // Store icon directly (already in correct Iconify format from ServicePicker)
         const subscriptionData = {
@@ -258,11 +276,11 @@ export default function SubscriptionForm({ isOpen, onClose, editId }: Subscripti
                             required
                         />
                         <Input
-                            label="Next Billing"
-                            id="nextBilling"
+                            label="Start Date"
+                            id="startDate"
                             type="date"
-                            value={nextBilling}
-                            onChange={(e) => setNextBilling(e.target.value)}
+                            value={startDate}
+                            onChange={(e) => setStartDate(e.target.value)}
                             required
                         />
                     </div>

@@ -1,5 +1,6 @@
 <p align="center">
-  <h1 align="center">💰 Earnslate</h1>
+  <img src="./earnslate-app/public/earnslate.png" alt="Earnslate" width="120" />
+  <h1 align="center">Earnslate</h1>
   <p align="center">
     <strong>Personal Finance Manager</strong><br/>
     Track income, expenses, budgets, and subscriptions with a premium monochrome interface.
