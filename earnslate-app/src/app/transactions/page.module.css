@@ -209,6 +209,10 @@
     background: var(--bg-hover);
 }
 
+.tableRow.selected {
+    background: var(--bg-tertiary);
+}
+
 .description {
     font-weight: var(--font-medium);
     color: var(--text-primary);

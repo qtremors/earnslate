@@ -18,6 +18,7 @@ interface AppState {
     addTransaction: (transaction: Omit<Transaction, 'id' | 'createdAt'>) => void;
     updateTransaction: (id: string, updates: Partial<Transaction>) => void;
     deleteTransaction: (id: string) => void;
+    deleteMultipleTransactions: (ids: string[]) => void;
 
     // Budget Actions
     addBudget: (budget: Omit<Budget, 'id' | 'createdAt' | 'spent' | 'periodStartDate'>) => void;
@@ -174,6 +175,39 @@ export const useAppStore = create<AppState>()(
                 });
             },
 
+            deleteMultipleTransactions: (ids) => {
+                set((state) => {
+                    const idsSet = new Set(ids);
+                    const toDelete = state.transactions.filter(t => idsSet.has(t.id));
+                    const newTransactions = state.transactions.filter(t => !idsSet.has(t.id));
+
+                    // Update budgets for all deleted expenses
+                    let newBudgets = state.budgets;
+                    const budgetAdjustments: Record<string, number> = {};
+
+                    toDelete.forEach(tx => {
+                        if (tx.type === 'expense') {
+                            const matchingBudget = state.budgets.find(b =>
+                                b.category.toLowerCase() === tx.category.toLowerCase()
+                            );
+                            if (matchingBudget) {
+                                budgetAdjustments[matchingBudget.id] =
+                                    (budgetAdjustments[matchingBudget.id] || 0) + Math.abs(tx.amount);
+                            }
+                        }
+                    });
+
+                    if (Object.keys(budgetAdjustments).length > 0) {
+                        newBudgets = state.budgets.map(b =>
+                            budgetAdjustments[b.id]
+                                ? { ...b, spent: Math.max(0, b.spent - budgetAdjustments[b.id]) }
+                                : b
+                        );
+                    }
+
+                    return { transactions: newTransactions, budgets: newBudgets };
+                });
+            },
             // ===== Budget Actions =====
             addBudget: (budget) => {
                 const newBudget: Budget = {

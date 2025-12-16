@@ -33,12 +33,14 @@ export default function TransactionsPage() {
     const [dateTo, setDateTo] = useState('');
     const [sortBy, setSortBy] = useState<SortOption>('date-desc');
     const [currentPage, setCurrentPage] = useState(1);
+    const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
 
     // Use shallow comparison to avoid re-renders when other store parts change
-    const { transactions, deleteTransaction, settings } = useAppStore(
+    const { transactions, deleteTransaction, deleteMultipleTransactions, settings } = useAppStore(
         useShallow((state) => ({
             transactions: state.transactions,
             deleteTransaction: state.deleteTransaction,
+            deleteMultipleTransactions: state.deleteMultipleTransactions,
             settings: state.settings,
         }))
     );
@@ -129,6 +131,38 @@ export default function TransactionsPage() {
         if (confirmed) {
             deleteTransaction(id);
             showToast('Transaction deleted', 'success');
+        }
+    };
+
+    const toggleSelection = (id: string) => {
+        setSelectedIds(prev => {
+            const newSet = new Set(prev);
+            if (newSet.has(id)) newSet.delete(id);
+            else newSet.add(id);
+            return newSet;
+        });
+    };
+
+    const toggleSelectAll = () => {
+        if (selectedIds.size === paginatedTransactions.length) {
+            setSelectedIds(new Set());
+        } else {
+            setSelectedIds(new Set(paginatedTransactions.map(t => t.id)));
+        }
+    };
+
+    const handleDeleteSelected = async () => {
+        if (selectedIds.size === 0) return;
+        const confirmed = await confirm({
+            title: 'Delete Selected',
+            message: `Are you sure you want to delete ${selectedIds.size} transaction(s)?`,
+            confirmText: 'Delete All',
+            variant: 'danger',
+        });
+        if (confirmed) {
+            deleteMultipleTransactions(Array.from(selectedIds));
+            setSelectedIds(new Set());
+            showToast(`${selectedIds.size} transactions deleted`, 'success');
         }
     };
 
@@ -416,16 +450,43 @@ export default function TransactionsPage() {
                                     <table className={styles.table}>
                                         <thead>
                                             <tr>
+                                                <th style={{ width: 40 }}>
+                                                    <input
+                                                        type="checkbox"
+                                                        checked={selectedIds.size === paginatedTransactions.length && paginatedTransactions.length > 0}
+                                                        onChange={toggleSelectAll}
+                                                        aria-label="Select all"
+                                                    />
+                                                </th>
                                                 <th>Description</th>
                                                 <th>Category</th>
                                                 <th>Date</th>
                                                 <th>Amount</th>
-                                                <th></th>
+                                                <th>
+                                                    {selectedIds.size > 0 && (
+                                                        <button
+                                                            className={`${styles.actionButton} ${styles.deleteButton}`}
+                                                            onClick={handleDeleteSelected}
+                                                            aria-label={`Delete ${selectedIds.size} selected`}
+                                                            title={`Delete ${selectedIds.size} selected`}
+                                                        >
+                                                            <Trash2 size={16} />
+                                                        </button>
+                                                    )}
+                                                </th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             {paginatedTransactions.map((tx) => (
-                                                <tr key={tx.id} className={styles.tableRow}>
+                                                <tr key={tx.id} className={`${styles.tableRow} ${selectedIds.has(tx.id) ? styles.selected : ''}`}>
+                                                    <td>
+                                                        <input
+                                                            type="checkbox"
+                                                            checked={selectedIds.has(tx.id)}
+                                                            onChange={() => toggleSelection(tx.id)}
+                                                            aria-label={`Select ${tx.description}`}
+                                                        />
+                                                    </td>
                                                     <td className={styles.description}>{tx.description}</td>
                                                     <td>
                                                         <span className={styles.categoryBadge}>{tx.category}</span>

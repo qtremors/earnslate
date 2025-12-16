@@ -14,50 +14,24 @@ All resolved ✅
 - [x] Date range presets - All Time, Today, This Week, This Month, Last 30/90 Days, Custom
 
 ### Medium Priority
-- [ ] Subscription due reminders/notifications (requires notification API)
-- [ ] Recurring transactions (not just subscriptions)
-- [ ] Undo/redo for deletions
-- [ ] Batch delete operations
-- [ ] Budget period reset notifications
+- [x] Batch delete operations - checkbox selection with select all and delete selected
+- Recurring transactions (not just subscriptions) - deferred (large feature)
+- Undo/redo for deletions - deferred (complex state management)
+- Subscription/budget notifications - deferred (requires notification API)
 
 ### Low Priority / Future (Deferred)
 - PWA/offline support
 - Cloud sync
 - Multi-currency support
 - Data export to PDF/Excel
-- Dark/light mode transitions
 
 ---
 
-## 🟢 UI/UX Improvements
+## 🟢 UI/UX Improvements (Deferred)
 
-### Polish (Deferred)
 - Empty states improvements
-- Onboarding name collection
 - Skeleton loaders
 - Chart tooltips
-
-### Accessibility
-- [x] ARIA labels present on icon-only buttons
-
----
-
-## ⚡ Optimization (Deferred)
-
-- Memoization
-- Virtual scrolling
-- Lazy loading
-- Category indexing
-
----
-
-## 🧹 Code Quality (Deferred)
-
-- TypeScript strictness
-- Unit tests
-- Icon consolidation
-- JSDoc comments
-- Chart extraction
 
 ---
 
@@ -68,23 +42,20 @@ All resolved ✅
 - [x] Centralize formatting with `useFormatters` hook
 - [x] Add input sanitization for data import
 - [x] Remove react-icons dependency
-- [x] Fix pie chart legend
-- [x] Improve color contrast (WCAG AA)
+- [x] Fix pie chart legend and color contrast
 - [x] Add icon/color pickers to category editor
 - [x] Mobile responsive sidebar
-- [x] Inline DAYS_PER_MONTH in getMonthlyEquivalent
-- [x] Replace hardcoded CATEGORY_ICONS with DynamicIcon
-- [x] Replace LucideIcons bundle imports with DynamicIcon/Iconify
-- [x] Fix BudgetForm icon defaults
-- [x] Remove unused ICON_OPTIONS and formatCycle
+- [x] Replace hardcoded icons with DynamicIcon/Iconify
+- [x] Remove unused code (ICON_OPTIONS, formatCycle, DAYS_PER_MONTH)
 - [x] Add pagination to transactions (25 items/page)
 - [x] Add date range presets (7 quick options)
 - [x] Refactor DynamicIcon to use Iconify for all icons
 - [x] Add visibility-change listener for budget period reset
 - [x] Enhanced JSON import validation
 - [x] Add keyboard shortcuts (Ctrl+N, Ctrl+D/T/B)
+- [x] Add batch delete with checkbox selection
 
 ---
 
 *Deep review completed: 2025-12-16*
-*All bugs resolved, high priority features implemented*
+*All bugs resolved, high priority + batch delete implemented*
