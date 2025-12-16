@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { useAppStore, useShallow, formatCycleDisplay, getMonthlyEquivalent } from '@/store';
+import { useFormatters } from '@/hooks/useFormatters';
 import { useConfirm } from '@/hooks/useConfirm';
 import { useToast } from '@/components/Toast';
 import Header from '@/components/Header';
@@ -31,10 +32,7 @@ export default function SubscriptionsPage() {
     );
     const { confirm, ConfirmDialog } = useConfirm();
     const { showToast } = useToast();
-
-    const formatCurrency = (amount: number) => {
-        return `${settings.currencySymbol}${amount.toLocaleString(settings.locale || 'en-IN')}`;
-    };
+    const { formatCurrency } = useFormatters();
 
     const handleEdit = (id: string) => {
         setEditingId(id);

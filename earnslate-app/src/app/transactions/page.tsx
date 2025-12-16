@@ -2,6 +2,7 @@
 
 import { useState, useMemo } from 'react';
 import { useAppStore, useShallow } from '@/store';
+import { useFormatters } from '@/hooks/useFormatters';
 import { CHART_COLORS } from '@/types';
 import { useConfirm } from '@/hooks/useConfirm';
 import { useToast } from '@/components/Toast';
@@ -37,16 +38,7 @@ export default function TransactionsPage() {
     );
     const { confirm, ConfirmDialog } = useConfirm();
     const { showToast } = useToast();
-
-    const formatCurrency = (amount: number) => `${settings.currencySymbol}${Math.abs(amount).toLocaleString(settings.locale || 'en-IN')}`;
-
-    const formatDate = (dateString: string) => {
-        return new Date(dateString).toLocaleDateString(settings.locale || 'en-IN', {
-            day: 'numeric',
-            month: 'short',
-            year: 'numeric',
-        });
-    };
+    const { formatCurrency, formatDateLong: formatDate } = useFormatters();
 
     // Get unique categories from transactions
     const categories = useMemo(() => {

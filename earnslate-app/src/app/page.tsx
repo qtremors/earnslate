@@ -2,6 +2,7 @@
 
 import { useState, useMemo } from 'react';
 import { useAppStore, useShallow } from '@/store';
+import { useFormatters } from '@/hooks/useFormatters';
 import { CHART_COLORS } from '@/types';
 import Header from '@/components/Header';
 import Card, { CardHeader } from '@/components/Card';
@@ -96,11 +97,7 @@ export default function Dashboard() {
     return filtered.slice(0, 5);
   }, [transactions, searchQuery]);
 
-  const formatCurrency = (amount: number) => `${settings.currencySymbol}${Math.abs(amount).toLocaleString(settings.locale || 'en-IN')}`;
-
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString(settings.locale || 'en-IN', { day: 'numeric', month: 'short' });
-  };
+  const { formatCurrency, formatDate } = useFormatters();
 
   // Budget alerts (over 80%)
   const budgetAlerts = budgets.filter(b => (b.spent / b.limit) >= 0.8);

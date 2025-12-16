@@ -2,6 +2,7 @@
 
 import { useState, useMemo } from 'react';
 import { useAppStore, useShallow, formatCycleDisplay } from '@/store';
+import { useFormatters } from '@/hooks/useFormatters';
 import { CHART_COLORS } from '@/types';
 import { useConfirm } from '@/hooks/useConfirm';
 import { useToast } from '@/components/Toast';
@@ -31,8 +32,7 @@ export default function BudgetsPage() {
     );
     const { confirm, ConfirmDialog } = useConfirm();
     const { showToast } = useToast();
-
-    const formatCurrency = (amount: number) => `${settings.currencySymbol}${amount.toLocaleString(settings.locale || 'en-IN')}`;
+    const { formatCurrency } = useFormatters();
 
     const getRemaining = (spent: number, limit: number) => {
         const remaining = limit - spent;
