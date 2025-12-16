@@ -12,7 +12,7 @@ import Button from '@/components/Button';
 import BudgetForm from '@/components/BudgetForm';
 import ProgressBar from '@/components/ProgressBar';
 import { Plus, Trash2, Pencil, PieChart, LayoutGrid, AlertTriangle, Download } from 'lucide-react';
-import * as LucideIcons from 'lucide-react';
+import { DynamicIcon } from '@/components/DynamicIcon';
 import styles from './page.module.css';
 
 type ViewMode = 'grid' | 'chart';
@@ -239,7 +239,6 @@ export default function BudgetsPage() {
                 ) : (
                     <div className={styles.budgetGrid}>
                         {budgets.map((budget) => {
-                            const Icon = (LucideIcons as unknown as Record<string, React.ElementType>)[budget.icon] || LucideIcons.HelpCircle;
                             const percentage = (budget.spent / budget.limit) * 100;
                             const status = getStatus(budget.spent, budget.limit);
 
@@ -267,7 +266,7 @@ export default function BudgetsPage() {
                                             className={styles.budgetIcon}
                                             style={budget.color ? { background: `${budget.color}20`, color: budget.color } : undefined}
                                         >
-                                            <Icon size={20} />
+                                            <DynamicIcon name={budget.icon} size={20} />
                                         </div>
                                         <div className={styles.budgetTitleBlock}>
                                             <span className={styles.budgetName}>{budget.name}</span>

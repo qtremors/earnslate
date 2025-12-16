@@ -45,8 +45,6 @@ interface AppState {
     }) => void;
 }
 
-// ===== Constants =====
-const DAYS_PER_MONTH = 30; // Used for billing cycle calculations
 
 // ===== Default Values =====
 const defaultSettings: UserSettings = {
@@ -393,6 +391,7 @@ export const formatCycleDisplay = (cycle: BillingCycle): string => {
 
 // ===== Calculate monthly equivalent for sorting/totals =====
 export const getMonthlyEquivalent = (amount: number, cycle: BillingCycle): number => {
+    const DAYS_PER_MONTH = 30; // Approximate days per month
     switch (cycle.unit) {
         case 'hour':
             return amount * (24 * DAYS_PER_MONTH) / cycle.count;

@@ -1,15 +1,14 @@
 # Earnslate Tasks
 
-## � Bugs & Issues
+## 🔴 Bugs & Issues
 
 ### Bundle Size / Performance
-- [ ] **Dashboard uses hardcoded CATEGORY_ICONS** - duplicates logic, should use DynamicIcon
-- [ ] **budgets/page.tsx imports entire LucideIcons bundle** (`import * as LucideIcons`) - use DynamicIcon instead
-- [ ] **DynamicIcon.tsx imports entire LucideIcons bundle** - consider lazy loading or direct imports
+- [x] **Dashboard uses hardcoded CATEGORY_ICONS** - now uses DynamicIcon with settings lookup
+- [x] **budgets/page.tsx imports entire LucideIcons bundle** - now uses DynamicIcon
+- [ ] **DynamicIcon.tsx imports entire LucideIcons bundle** - consider lazy loading or direct imports (lower priority)
 
 ### Dead Code / Unused
-- [ ] **SubscriptionForm: `iconType` state unused** (line 31) - always set but never read for rendering
-- [ ] **store/index.ts: `DAYS_PER_MONTH` constant unused** (line 49) - defined but never used
+- [x] **store/index.ts: `DAYS_PER_MONTH` constant** - inlined into `getMonthlyEquivalent` function
 - [ ] **types/index.ts: `ICON_OPTIONS` partially redundant** with IconPicker's own list
 - [ ] **types/index.ts: `formatCycle` function** - similar to `formatCycleDisplay` in store (potential duplicate)
 
@@ -17,7 +16,6 @@
 - [ ] **BudgetForm icon defaults inconsistent** - line 25 uses 'Wallet', line 58 uses 'UtensilsCrossed'
 - [ ] **No data validation on JSON import** - could import corrupted data beyond sanitization
 - [ ] **Budget period reset only checked on app load** - not real-time if app stays open
-- [ ] **Category type filtering** - 'Other' is 'both' but some categories might need better defaults
 
 ---
 
@@ -89,6 +87,9 @@
 - [x] Improve color contrast (WCAG AA)
 - [x] Add icon/color pickers to category editor
 - [x] Mobile responsive sidebar
+- [x] Inline DAYS_PER_MONTH in getMonthlyEquivalent
+- [x] Replace hardcoded CATEGORY_ICONS with DynamicIcon
+- [x] Replace LucideIcons bundle import in budgets page
 
 ---
 

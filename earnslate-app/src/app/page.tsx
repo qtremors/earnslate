@@ -7,33 +7,9 @@ import { CHART_COLORS } from '@/types';
 import Header from '@/components/Header';
 import Card, { CardHeader } from '@/components/Card';
 import ProgressBar from '@/components/ProgressBar';
-import { Search, TrendingUp, TrendingDown, Banknote, ShoppingCart, Coffee, Film, Car, Home, Briefcase, Heart, Sparkles, UtensilsCrossed, Plane, Gift, Smartphone, Lightbulb, Shirt, User, AlertTriangle, Wallet, HelpCircle } from 'lucide-react';
+import { Search, TrendingUp, TrendingDown, AlertTriangle, Wallet } from 'lucide-react';
+import { DynamicIcon } from '@/components/DynamicIcon';
 import styles from './page.module.css';
-
-// Category icons for recent transactions
-const CATEGORY_ICONS: Record<string, React.ElementType> = {
-  'Food & Dining': UtensilsCrossed,
-  'Food': UtensilsCrossed,
-  'Transport': Car,
-  'Transportation': Car,
-  'Entertainment': Film,
-  'Shopping': ShoppingCart,
-  'Coffee': Coffee,
-  'Groceries': ShoppingCart,
-  'Utilities': Lightbulb,
-  'Travel': Plane,
-  'Health': Heart,
-  'Healthcare': Heart,
-  'Work': Briefcase,
-  'Home': Home,
-  'Gifts': Gift,
-  'Phone': Smartphone,
-  'Clothing': Shirt,
-  'Personal': User,
-  'Income': Banknote,
-  'Salary': Banknote,
-  'Other': Sparkles,
-};
 
 export default function Dashboard() {
   const [searchQuery, setSearchQuery] = useState('');
@@ -96,6 +72,14 @@ export default function Dashboard() {
     }
     return filtered.slice(0, 5);
   }, [transactions, searchQuery]);
+
+  // Get icon for category from settings
+  const getCategoryIcon = (categoryName: string): string => {
+    const cat = settings.customCategories.find(
+      c => c.name.toLowerCase() === categoryName.toLowerCase()
+    );
+    return cat?.icon || 'HelpCircle';
+  };
 
   const { formatCurrency, formatDate } = useFormatters();
 
@@ -261,11 +245,11 @@ export default function Dashboard() {
             ) : (
               <ul className={styles.transactionList}>
                 {recentTransactions.map((tx) => {
-                  const Icon = CATEGORY_ICONS[tx.category] || HelpCircle;
+                  const iconName = getCategoryIcon(tx.category);
                   return (
                     <li key={tx.id} className={styles.transactionItem}>
                       <div className={styles.transactionIcon}>
-                        <Icon size={18} />
+                        <DynamicIcon name={iconName} size={18} />
                       </div>
                       <div className={styles.transactionInfo}>
                         <span className={styles.transactionDesc}>{tx.description}</span>
@@ -313,6 +297,6 @@ export default function Dashboard() {
           </Card>
         </div>
       </div>
-    </div>
+    </div >
   );
 }
