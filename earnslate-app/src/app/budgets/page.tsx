@@ -26,7 +26,7 @@ export default function BudgetsPage() {
     const { confirm, ConfirmDialog } = useConfirm();
     const { showToast } = useToast();
 
-    const formatCurrency = (amount: number) => `${settings.currencySymbol}${amount.toLocaleString('en-IN')}`;
+    const formatCurrency = (amount: number) => `${settings.currencySymbol}${amount.toLocaleString(settings.locale || 'en-IN')}`;
 
     const getRemaining = (spent: number, limit: number) => {
         const remaining = limit - spent;

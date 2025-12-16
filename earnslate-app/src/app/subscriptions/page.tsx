@@ -29,7 +29,7 @@ export default function SubscriptionsPage() {
     const { showToast } = useToast();
 
     const formatCurrency = (amount: number) => {
-        return `${settings.currencySymbol}${amount.toLocaleString('en-IN')}`;
+        return `${settings.currencySymbol}${amount.toLocaleString(settings.locale || 'en-IN')}`;
     };
 
     const handleEdit = (id: string) => {

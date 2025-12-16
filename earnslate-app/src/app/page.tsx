@@ -1,43 +1,52 @@
 'use client';
 
 import { useState, useMemo } from 'react';
-import { useAppStore } from '@/store';
+import { useAppStore, useShallow } from '@/store';
 import { CHART_COLORS } from '@/types';
 import Header from '@/components/Header';
 import Card, { CardHeader } from '@/components/Card';
 import ProgressBar from '@/components/ProgressBar';
-import {
-  Wallet,
-  TrendingUp,
-  TrendingDown,
-  ShoppingCart,
-  Briefcase,
-  Tv,
-  Zap,
-  Coffee,
-  HelpCircle,
-  AlertTriangle,
-  Search,
-} from 'lucide-react';
+import TransactionForm from '@/components/TransactionForm';
+import { Search, TrendingUp, TrendingDown, CreditCard, Banknote, ShoppingCart, Coffee, Film, Car, Home, Briefcase, Heart, Sparkles, UtensilsCrossed, Plane, Gift, Smartphone, Lightbulb, Shirt, User, AlertTriangle, Plus, Wallet, HelpCircle } from 'lucide-react';
 import styles from './page.module.css';
 
+// Category icons for recent transactions
 const CATEGORY_ICONS: Record<string, React.ElementType> = {
-  'Food': Coffee,
-  'Food & Dining': Coffee,
+  'Food & Dining': UtensilsCrossed,
+  'Food': UtensilsCrossed,
+  'Transport': Car,
+  'Transportation': Car,
+  'Entertainment': Film,
   'Shopping': ShoppingCart,
-  'Entertainment': Tv,
-  'Utilities': Zap,
-  'Income': Briefcase,
-  'Transport': TrendingUp,
-  'Health': HelpCircle, // Would need Heart import
-  'Other': HelpCircle,
+  'Coffee': Coffee,
+  'Groceries': ShoppingCart,
+  'Utilities': Lightbulb,
+  'Travel': Plane,
+  'Health': Heart,
+  'Healthcare': Heart,
+  'Work': Briefcase,
+  'Home': Home,
+  'Gifts': Gift,
+  'Phone': Smartphone,
+  'Clothing': Shirt,
+  'Personal': User,
+  'Income': Banknote,
+  'Salary': Banknote,
+  'Other': Sparkles,
 };
 
 export default function Dashboard() {
-  const settings = useAppStore((state) => state.settings);
-  const transactions = useAppStore((state) => state.transactions);
-  const budgets = useAppStore((state) => state.budgets);
+  const [isFormOpen, setIsFormOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+
+  // Use shallow comparison to avoid re-renders when other store parts change
+  const { settings, transactions, budgets } = useAppStore(
+    useShallow((state) => ({
+      settings: state.settings,
+      transactions: state.transactions,
+      budgets: state.budgets,
+    }))
+  );
 
   const totalBalance = transactions.reduce((sum, t) => sum + t.amount, 0);
 
@@ -89,10 +98,10 @@ export default function Dashboard() {
     return filtered.slice(0, 5);
   }, [transactions, searchQuery]);
 
-  const formatCurrency = (amount: number) => `${settings.currencySymbol}${Math.abs(amount).toLocaleString('en-IN')}`;
+  const formatCurrency = (amount: number) => `${settings.currencySymbol}${Math.abs(amount).toLocaleString(settings.locale || 'en-IN')}`;
 
   const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' });
+    return new Date(dateString).toLocaleDateString(settings.locale || 'en-IN', { day: 'numeric', month: 'short' });
   };
 
   // Budget alerts (over 80%)

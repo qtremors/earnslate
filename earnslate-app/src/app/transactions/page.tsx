@@ -29,10 +29,10 @@ export default function TransactionsPage() {
     const { confirm, ConfirmDialog } = useConfirm();
     const { showToast } = useToast();
 
-    const formatCurrency = (amount: number) => `${settings.currencySymbol}${Math.abs(amount).toLocaleString('en-IN')}`;
+    const formatCurrency = (amount: number) => `${settings.currencySymbol}${Math.abs(amount).toLocaleString(settings.locale || 'en-IN')}`;
 
     const formatDate = (dateString: string) => {
-        return new Date(dateString).toLocaleDateString('en-IN', {
+        return new Date(dateString).toLocaleDateString(settings.locale || 'en-IN', {
             day: 'numeric',
             month: 'short',
             year: 'numeric',

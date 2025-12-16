@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useRef } from 'react';
-import { useAppStore } from '@/store';
+import { useAppStore, useShallow } from '@/store';
 import { useConfirm } from '@/hooks/useConfirm';
 import { useToast } from '@/components/Toast';
 import Header from '@/components/Header';
@@ -27,26 +27,38 @@ const DATE_FORMATS = [
     { value: 'YYYY-MM-DD', label: 'YYYY-MM-DD (2025-12-31)' },
 ];
 
+const LOCALES = [
+    { value: 'en-IN', label: 'Indian (1,00,000)' },
+    { value: 'en-US', label: 'US/International (100,000)' },
+    { value: 'de-DE', label: 'European (100.000)' },
+];
+
 export default function SettingsPage() {
-    const settings = useAppStore((state) => state.settings);
-    const transactions = useAppStore((state) => state.transactions);
-    const budgets = useAppStore((state) => state.budgets);
-    const subscriptions = useAppStore((state) => state.subscriptions);
-    const updateSettings = useAppStore((state) => state.updateSettings);
-    const clearAllData = useAppStore((state) => state.clearAllData);
-    const importData = useAppStore((state) => state.importData);
+    // Use shallow comparison to avoid re-renders when other store parts change
+    const { settings, transactions, budgets, subscriptions, updateSettings, clearAllData, importData } = useAppStore(
+        useShallow((state) => ({
+            settings: state.settings,
+            transactions: state.transactions,
+            budgets: state.budgets,
+            subscriptions: state.subscriptions,
+            updateSettings: state.updateSettings,
+            clearAllData: state.clearAllData,
+            importData: state.importData,
+        }))
+    );
     const { confirm, ConfirmDialog } = useConfirm();
     const { showToast } = useToast();
 
-    const [editModal, setEditModal] = useState<'name' | 'currency' | 'date' | 'category' | null>(null);
+    const [editModal, setEditModal] = useState<'name' | 'currency' | 'date' | 'locale' | 'category' | null>(null);
     const [tempValue, setTempValue] = useState('');
     const [newCategory, setNewCategory] = useState('');
     const fileInputRef = useRef<HTMLInputElement>(null);
 
-    const openEditModal = (type: 'name' | 'currency' | 'date' | 'category') => {
+    const openEditModal = (type: 'name' | 'currency' | 'date' | 'locale' | 'category') => {
         if (type === 'name') setTempValue(settings.displayName);
         if (type === 'currency') setTempValue(settings.currency);
         if (type === 'date') setTempValue(settings.dateFormat);
+        if (type === 'locale') setTempValue(settings.locale || 'en-IN');
         setEditModal(type);
     };
 
@@ -60,6 +72,8 @@ export default function SettingsPage() {
             }
         } else if (editModal === 'date') {
             updateSettings({ dateFormat: tempValue });
+        } else if (editModal === 'locale') {
+            updateSettings({ locale: tempValue });
         }
         setEditModal(null);
     };
@@ -225,6 +239,15 @@ export default function SettingsPage() {
                         </div>
                         <Button variant="ghost" size="sm" onClick={() => openEditModal('date')}>Change</Button>
                     </div>
+                    <div className={styles.settingRow}>
+                        <div className={styles.settingInfo}>
+                            <span className={styles.settingLabel}>Number Format</span>
+                            <span className={styles.settingValue}>
+                                {LOCALES.find(l => l.value === settings.locale)?.label || 'Indian (1,00,000)'}
+                            </span>
+                        </div>
+                        <Button variant="ghost" size="sm" onClick={() => openEditModal('locale')}>Change</Button>
+                    </div>
                 </Card>
 
                 {/* Data Section */}
@@ -302,6 +325,17 @@ export default function SettingsPage() {
             <Modal isOpen={editModal === 'date'} onClose={() => setEditModal(null)} title="Change Date Format" size="sm">
                 <form onSubmit={(e) => { e.preventDefault(); handleSave(); }} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
                     <Select label="Date Format" id="dateFormat" value={tempValue} onChange={(e) => setTempValue(e.target.value)} options={DATE_FORMATS} />
+                    <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.5rem' }}>
+                        <Button type="button" variant="ghost" onClick={() => setEditModal(null)}>Cancel</Button>
+                        <Button type="submit" variant="primary">Save</Button>
+                    </div>
+                </form>
+            </Modal>
+
+            {/* Edit Locale Modal */}
+            <Modal isOpen={editModal === 'locale'} onClose={() => setEditModal(null)} title="Change Number Format" size="sm">
+                <form onSubmit={(e) => { e.preventDefault(); handleSave(); }} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                    <Select label="Number Format" id="locale" value={tempValue} onChange={(e) => setTempValue(e.target.value)} options={LOCALES} />
                     <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.5rem' }}>
                         <Button type="button" variant="ghost" onClick={() => setEditModal(null)}>Cancel</Button>
                         <Button type="submit" variant="primary">Save</Button>

@@ -1,6 +1,10 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
+import { useShallow } from 'zustand/react/shallow';
 import { Transaction, Budget, Subscription, UserSettings, DEFAULT_CATEGORIES, BillingCycle, calculateNextBilling } from '@/types';
+
+// Re-export useShallow for components to use optimized selectors
+export { useShallow };
 
 // ===== Store State =====
 interface AppState {
@@ -49,6 +53,7 @@ const defaultSettings: UserSettings = {
     displayName: 'User',
     currency: 'INR',
     currencySymbol: '₹',
+    locale: 'en-IN',
     dateFormat: 'DD/MM/YYYY',
     hasCompletedOnboarding: false,
     customCategories: DEFAULT_CATEGORIES,

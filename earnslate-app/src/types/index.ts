@@ -56,6 +56,7 @@ export interface UserSettings {
     displayName: string;
     currency: string;
     currencySymbol: string;
+    locale: string; // Number/date formatting locale (e.g., 'en-IN', 'en-US')
     dateFormat: string;
     hasCompletedOnboarding: boolean;
     customCategories: Category[];
@@ -204,11 +205,11 @@ export const calculateNextBilling = (lastBilling: Date, cycle: BillingCycle): Da
 };
 
 // ===== Currency Formatting =====
-export const formatCurrency = (amount: number, symbol: string = '₹'): string => {
-    return `${symbol}${Math.abs(amount).toLocaleString('en-IN')}`;
+export const formatCurrency = (amount: number, symbol: string = '₹', locale: string = 'en-IN'): string => {
+    return `${symbol}${Math.abs(amount).toLocaleString(locale)}`;
 };
 
-export const formatCurrencyCompact = (amount: number, symbol: string = '₹'): string => {
+export const formatCurrencyCompact = (amount: number, symbol: string = '₹', locale: string = 'en-IN'): string => {
     const abs = Math.abs(amount);
     if (abs >= 10000000) { // 1 Crore
         return `${symbol}${(abs / 10000000).toFixed(1)}Cr`;
@@ -219,5 +220,5 @@ export const formatCurrencyCompact = (amount: number, symbol: string = '₹'): s
     if (abs >= 1000) { // 1K
         return `${symbol}${(abs / 1000).toFixed(1)}K`;
     }
-    return `${symbol}${abs.toLocaleString('en-IN')}`;
+    return `${symbol}${abs.toLocaleString(locale)}`;
 };

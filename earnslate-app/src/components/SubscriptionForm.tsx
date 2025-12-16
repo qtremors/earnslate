@@ -35,6 +35,7 @@ export default function SubscriptionForm({ isOpen, onClose, editId }: Subscripti
     const [iconType, setIconType] = useState<'brand' | 'lucide'>('lucide');
     const [color, setColor] = useState('#E50914');
     const [notes, setNotes] = useState('');
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     const subscriptions = useAppStore((state) => state.subscriptions);
     const addSubscription = useAppStore((state) => state.addSubscription);
@@ -162,7 +163,12 @@ export default function SubscriptionForm({ isOpen, onClose, editId }: Subscripti
             showToast('Subscription added successfully', 'success');
         }
 
-        onClose();
+        setIsSubmitting(true);
+        // Short delay for visual feedback before closing
+        setTimeout(() => {
+            setIsSubmitting(false);
+            onClose();
+        }, 300);
     };
 
     const handleBack = () => {
@@ -291,7 +297,7 @@ export default function SubscriptionForm({ isOpen, onClose, editId }: Subscripti
                         <Button type="button" variant="ghost" onClick={onClose}>
                             Cancel
                         </Button>
-                        <Button type="submit" variant="primary">
+                        <Button type="submit" variant="primary" loading={isSubmitting}>
                             {isEditing ? 'Save Changes' : 'Add Subscription'}
                         </Button>
                     </div>
