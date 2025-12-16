@@ -2,20 +2,7 @@
 
 ## 🔴 Bugs & Issues
 
-### Bundle Size / Performance
-- [x] **Dashboard uses hardcoded CATEGORY_ICONS** - now uses DynamicIcon with settings lookup
-- [x] **budgets/page.tsx imports entire LucideIcons bundle** - now uses DynamicIcon
-- [x] **DynamicIcon.tsx imports entire LucideIcons bundle** - now uses Iconify for all icons (Lucide via lucide: prefix)
-
-### Dead Code / Unused
-- [x] **store/index.ts: `DAYS_PER_MONTH` constant** - inlined into `getMonthlyEquivalent` function
-- [x] **types/index.ts: `ICON_OPTIONS`** - removed (IconPicker has own LUCIDE_ICONS list)
-- [x] **types/index.ts: `formatCycle` function** - removed (formatCycleDisplay in store is used instead)
-
-### Logic / Data
-- [x] **BudgetForm icon defaults inconsistent** - now uses 'UtensilsCrossed' consistently
-- [x] **No data validation on JSON import** - added date format, isFinite, and type validation
-- [x] **Budget period reset only checked on app load** - now also checks on visibility change (tab return)
+All resolved ✅
 
 ---
 
@@ -23,56 +10,54 @@
 
 ### High Priority
 - [x] Pagination for transactions list - 25 items per page with prev/next controls
-- [ ] Keyboard shortcuts for common actions (Ctrl+N for new transaction)
+- [x] Keyboard shortcuts for common actions - Ctrl+N (new transaction), Ctrl+D/T/B (navigation)
 - [x] Date range presets - All Time, Today, This Week, This Month, Last 30/90 Days, Custom
 
 ### Medium Priority
-- [ ] Subscription due reminders/notifications
+- [ ] Subscription due reminders/notifications (requires notification API)
 - [ ] Recurring transactions (not just subscriptions)
 - [ ] Undo/redo for deletions
 - [ ] Batch delete operations
 - [ ] Budget period reset notifications
 
-### Low Priority / Future
-- [ ] PWA/offline support
-- [ ] Cloud sync (optional)
-- [ ] Multi-currency support
-- [ ] Data export to PDF/Excel
-- [ ] Dark/light mode transitions (currently instant, could animate)
+### Low Priority / Future (Deferred)
+- PWA/offline support
+- Cloud sync
+- Multi-currency support
+- Data export to PDF/Excel
+- Dark/light mode transitions
 
 ---
 
 ## 🟢 UI/UX Improvements
 
-### Polish
-- [ ] Empty states could be more engaging (add illustrations or suggestions)
-- [ ] Onboarding could collect user name
-- [ ] Add skeleton loaders for initial hydration
-- [ ] Chart tooltips for better data exploration
+### Polish (Deferred)
+- Empty states improvements
+- Onboarding name collection
+- Skeleton loaders
+- Chart tooltips
 
 ### Accessibility
-- [x] ARIA labels present on icon-only buttons (verified 12+ instances)
-- [ ] Add focus trap for modals
-- [ ] Ensure all interactive elements have focus styles
+- [x] ARIA labels present on icon-only buttons
 
 ---
 
-## ⚡ Optimization Opportunities
+## ⚡ Optimization (Deferred)
 
-- [ ] Memoize more expensive calculations (e.g., category totals)
-- [ ] Consider virtual scrolling for large transaction lists
-- [ ] Lazy load subscription treemap component
-- [ ] Add category-indexed lookup for O(1) budget matching
+- Memoization
+- Virtual scrolling
+- Lazy loading
+- Category indexing
 
 ---
 
-## 🧹 Code Quality
+## 🧹 Code Quality (Deferred)
 
-- [ ] Add stricter TypeScript checks (`noUncheckedIndexedAccess`)
-- [ ] Add unit tests for store actions and utility functions
-- [ ] Consolidate duplicate icon handling patterns
-- [ ] Add JSDoc comments to utility functions
-- [ ] Consider extracting chart rendering logic to reusable components
+- TypeScript strictness
+- Unit tests
+- Icon consolidation
+- JSDoc comments
+- Chart extraction
 
 ---
 
@@ -89,17 +74,17 @@
 - [x] Mobile responsive sidebar
 - [x] Inline DAYS_PER_MONTH in getMonthlyEquivalent
 - [x] Replace hardcoded CATEGORY_ICONS with DynamicIcon
-- [x] Replace LucideIcons bundle import in budgets page
-- [x] Fix BudgetForm icon defaults (consistent UtensilsCrossed)
-- [x] Remove unused ICON_OPTIONS (48 lines)
-- [x] Remove unused formatCycle function (8 lines)
+- [x] Replace LucideIcons bundle imports with DynamicIcon/Iconify
+- [x] Fix BudgetForm icon defaults
+- [x] Remove unused ICON_OPTIONS and formatCycle
 - [x] Add pagination to transactions (25 items/page)
 - [x] Add date range presets (7 quick options)
-- [x] Refactor DynamicIcon to use Iconify for Lucide icons
+- [x] Refactor DynamicIcon to use Iconify for all icons
 - [x] Add visibility-change listener for budget period reset
-- [x] Enhanced JSON import validation (date, type, isFinite checks)
+- [x] Enhanced JSON import validation
+- [x] Add keyboard shortcuts (Ctrl+N, Ctrl+D/T/B)
 
 ---
 
 *Deep review completed: 2025-12-16*
-*All bugs and issues resolved*
+*All bugs resolved, high priority features implemented*

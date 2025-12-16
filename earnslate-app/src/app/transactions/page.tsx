@@ -3,6 +3,7 @@
 import { useState, useMemo } from 'react';
 import { useAppStore, useShallow } from '@/store';
 import { useFormatters } from '@/hooks/useFormatters';
+import { useKeyboardShortcuts } from '@/hooks/useKeyboardShortcuts';
 import { CHART_COLORS } from '@/types';
 import { useConfirm } from '@/hooks/useConfirm';
 import { useToast } from '@/components/Toast';
@@ -44,6 +45,13 @@ export default function TransactionsPage() {
     const { confirm, ConfirmDialog } = useConfirm();
     const { showToast } = useToast();
     const { formatCurrency, formatDateLong: formatDate } = useFormatters();
+
+    // Keyboard shortcuts (Ctrl+N to add new transaction)
+    const handleAdd = () => {
+        setEditingId(undefined);
+        setIsFormOpen(true);
+    };
+    useKeyboardShortcuts({ onNewTransaction: handleAdd });
 
     // Get unique categories from transactions
     const categories = useMemo(() => {
@@ -108,11 +116,6 @@ export default function TransactionsPage() {
 
     const handleEdit = (id: string) => {
         setEditingId(id);
-        setIsFormOpen(true);
-    };
-
-    const handleAdd = () => {
-        setEditingId(undefined);
         setIsFormOpen(true);
     };
 
