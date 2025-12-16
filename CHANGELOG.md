@@ -1,3 +1,41 @@
+## [0.8.0] - 2025-12-16
+
+### Deep Review & Cleanup Release
+
+Major code quality improvements, bundle size optimization, and feature additions based on comprehensive project review.
+
+### Added - New Features
+
+#### Transactions
+- **Date Range Presets**: All Time, Today, This Week, This Month, Last 30/90 Days, Custom
+- **Pagination**: 25 items per page with prev/next controls
+- **Batch Delete**: Checkbox selection with select all and delete selected functionality
+- **Keyboard Shortcuts**: Ctrl+N (new transaction), Ctrl+D/T/B (navigation), Escape (close modals)
+
+#### Data Validation
+- **Enhanced JSON Import**: Date format, isFinite, and transaction type validation
+- **Visibility Change Listener**: Budget periods auto-reset when user returns to app
+
+### Fixed - Critical Bugs
+
+#### Bundle Size Optimization
+- **DynamicIcon Refactor**: Now uses Iconify for all icons including Lucide (removes ~100KB bundle)
+- **Dashboard**: Replaced hardcoded CATEGORY_ICONS with DynamicIcon using settings lookup
+- **Budgets Page**: Replaced LucideIcons bundle import with DynamicIcon
+
+#### Consistency Fixes
+- **BudgetForm**: Icon defaults now consistent (UtensilsCrossed)
+
+### Removed - Dead Code
+- **ICON_OPTIONS** from types (48 lines) - IconPicker has own list
+- **formatCycle** function (8 lines) - formatCycleDisplay in store is used instead
+- **DAYS_PER_MONTH** constant - inlined into getMonthlyEquivalent
+
+### Improved - Store Actions
+- **deleteMultipleTransactions**: Batch delete with budget spent updates
+
+---
+
 ## [0.7.0] - 2025-12-16
 
 ### Added - Icon System Upgrade

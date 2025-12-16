@@ -1,61 +1,58 @@
-# Earnslate Tasks
+# Earnslate Task Tracker
 
-## 🔴 Bugs & Issues
+## ✅ Completed
 
-All resolved ✅
+All critical bugs and high-priority features have been resolved.
 
----
+### Recent Session (2025-12-16)
 
-## 🟡 Missing Features
+| Category | Items Completed |
+|----------|-----------------|
+| **Bug Fixes** | 6 |
+| **Features** | 5 |
+| **Dead Code Removed** | 56+ lines |
 
-### High Priority
-- [x] Pagination for transactions list - 25 items per page with prev/next controls
-- [x] Keyboard shortcuts for common actions - Ctrl+N (new transaction), Ctrl+D/T/B (navigation)
-- [x] Date range presets - All Time, Today, This Week, This Month, Last 30/90 Days, Custom
-
-### Medium Priority
-- [x] Batch delete operations - checkbox selection with select all and delete selected
-- Recurring transactions (not just subscriptions) - deferred (large feature)
-- Undo/redo for deletions - deferred (complex state management)
-- Subscription/budget notifications - deferred (requires notification API)
-
-### Low Priority / Future (Deferred)
-- PWA/offline support
-- Cloud sync
-- Multi-currency support
-- Data export to PDF/Excel
+**Full list in CHANGELOG.md v0.8.0**
 
 ---
 
-## 🟢 UI/UX Improvements (Deferred)
+## 🔮 Future Enhancements
 
-- Empty states improvements
-- Skeleton loaders
-- Chart tooltips
+These items are planned for future releases:
+
+### Features
+- [ ] Recurring transactions (separate from subscriptions)
+- [ ] Undo/redo for deletions
+- [ ] Subscription due notifications (browser API)
+- [ ] Budget period reset notifications
+- [ ] Data export to PDF/Excel
+- [ ] PWA/offline support
+- [ ] Cloud sync (optional)
+- [ ] Multi-currency support
+
+### UI/UX
+- [ ] More engaging empty states with illustrations
+- [ ] Skeleton loaders for initial hydration
+- [ ] Chart tooltips on hover
+- [ ] Dark/light mode transition animations
+- [ ] Onboarding name collection
+
+### Accessibility
+- [ ] Focus trap for modals
+- [ ] Enhanced focus styles for all interactive elements
+
+### Performance
+- [ ] Virtual scrolling for 1000+ transactions
+- [ ] Lazy load subscription treemap
+- [ ] Category-indexed O(1) budget matching
+- [ ] Memoize expensive calculations
+
+### Code Quality
+- [ ] Unit tests for store actions
+- [ ] JSDoc comments for utilities
+- [ ] Stricter TypeScript (`noUncheckedIndexedAccess`)
+- [ ] Extract chart logic to reusable components
 
 ---
 
-## ✅ Recently Completed
-
-- [x] Fix `calculateNextBilling()` month boundary bug
-- [x] Unify icon handling with `DynamicIcon.tsx`
-- [x] Centralize formatting with `useFormatters` hook
-- [x] Add input sanitization for data import
-- [x] Remove react-icons dependency
-- [x] Fix pie chart legend and color contrast
-- [x] Add icon/color pickers to category editor
-- [x] Mobile responsive sidebar
-- [x] Replace hardcoded icons with DynamicIcon/Iconify
-- [x] Remove unused code (ICON_OPTIONS, formatCycle, DAYS_PER_MONTH)
-- [x] Add pagination to transactions (25 items/page)
-- [x] Add date range presets (7 quick options)
-- [x] Refactor DynamicIcon to use Iconify for all icons
-- [x] Add visibility-change listener for budget period reset
-- [x] Enhanced JSON import validation
-- [x] Add keyboard shortcuts (Ctrl+N, Ctrl+D/T/B)
-- [x] Add batch delete with checkbox selection
-
----
-
-*Deep review completed: 2025-12-16*
-*All bugs resolved, high priority + batch delete implemented*
+*Last updated: 2025-12-16*
