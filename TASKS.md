@@ -3,7 +3,7 @@
 ## 🔴 Critical Bugs
 - [x] Fix `calculateNextBilling()` month boundary bug in `src/types/index.ts`
 - [x] Remove unused `isFormOpen` state and `TransactionForm` import in `src/app/page.tsx`
-- [ ] Fix React hook dependency warnings in forms
+- [x] Fix React hook dependency warnings in forms
 
 ## 🟠 Logic Inconsistencies
 - [x] Unify 4 different icon handling patterns into single utility
@@ -38,7 +38,7 @@
 ## 📚 Code Quality
 - [x] Centralize `formatCurrency()` - duplicated in 4+ files
 - [ ] Add stricter TypeScript checks (`noUncheckedIndexedAccess`)
-- [ ] Add input sanitization for form data
+- [x] Add input sanitization for form data
 
 ## 🔜 Future Enhancements
 - [ ] Add pagination for transactions list
