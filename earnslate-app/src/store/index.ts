@@ -310,11 +310,52 @@ export const useAppStore = create<AppState>()(
                 budgets?: Budget[];
                 subscriptions?: Subscription[];
             }) => {
+                // Sanitize string fields to prevent XSS
+                const sanitizeString = (str: string | undefined): string => {
+                    if (typeof str !== 'string') return '';
+                    return str
+                        .replace(/</g, '&lt;')
+                        .replace(/>/g, '&gt;')
+                        .replace(/"/g, '&quot;')
+                        .slice(0, 500); // Limit string length
+                };
+
+                // Validate and sanitize transactions
+                const sanitizedTransactions = data.transactions?.map(t => ({
+                    ...t,
+                    description: sanitizeString(t.description),
+                    category: sanitizeString(t.category),
+                    amount: typeof t.amount === 'number' ? t.amount : 0,
+                })).filter(t => t.id && t.date) || undefined;
+
+                // Validate and sanitize budgets
+                const sanitizedBudgets = data.budgets?.map(b => ({
+                    ...b,
+                    name: sanitizeString(b.name),
+                    category: sanitizeString(b.category),
+                    limit: typeof b.limit === 'number' ? Math.max(0, b.limit) : 0,
+                    spent: typeof b.spent === 'number' ? Math.max(0, b.spent) : 0,
+                })).filter(b => b.id && b.name) || undefined;
+
+                // Validate and sanitize subscriptions
+                const sanitizedSubscriptions = data.subscriptions?.map(s => ({
+                    ...s,
+                    name: sanitizeString(s.name),
+                    amount: typeof s.amount === 'number' ? Math.max(0, s.amount) : 0,
+                })).filter(s => s.id && s.name) || undefined;
+
+                // Sanitize settings
+                const currentSettings = get().settings;
+                const sanitizedSettings = data.settings ? {
+                    ...data.settings,
+                    displayName: data.settings.displayName ? sanitizeString(data.settings.displayName) : currentSettings.displayName,
+                } : undefined;
+
                 set((state) => ({
-                    settings: data.settings ? { ...state.settings, ...data.settings } : state.settings,
-                    transactions: data.transactions || state.transactions,
-                    budgets: data.budgets || state.budgets,
-                    subscriptions: data.subscriptions || state.subscriptions,
+                    settings: sanitizedSettings ? { ...state.settings, ...sanitizedSettings } : state.settings,
+                    transactions: sanitizedTransactions || state.transactions,
+                    budgets: sanitizedBudgets || state.budgets,
+                    subscriptions: sanitizedSubscriptions || state.subscriptions,
                 }));
             },
         }),
