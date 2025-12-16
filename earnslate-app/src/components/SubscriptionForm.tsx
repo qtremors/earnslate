@@ -6,6 +6,7 @@ import { TIME_UNITS, BillingCycle } from '@/types';
 import { useToast } from './Toast';
 import Modal from './Modal';
 import Input, { Select } from './Input';
+import DatePicker from './DatePicker';
 import Button from './Button';
 import IconPicker from './IconPicker';
 import ColorPicker from './ColorPicker';
@@ -32,6 +33,7 @@ export default function SubscriptionForm({ isOpen, onClose, editId }: Subscripti
     const [color, setColor] = useState('#E50914');
     const [notes, setNotes] = useState('');
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [isIconPickerOpen, setIsIconPickerOpen] = useState(false);
 
     // Use shallow comparison to avoid re-renders when other store parts change
     const { subscriptions, addSubscription, updateSubscription, settings } = useAppStore(
@@ -83,40 +85,11 @@ export default function SubscriptionForm({ isOpen, onClose, editId }: Subscripti
         setIcon(service.icon);
         setIconType(service.iconType);
         setColor(service.color);
-        if (service.suggestedAmount) {
-            setAmount(String(service.suggestedAmount));
-        }
-        if (service.suggestedCycle) {
-            setCycleCount(String(service.suggestedCycle.count));
-            setCycleUnit(service.suggestedCycle.unit);
-            // Calculate next billing date based on cycle
-            const nextDate = new Date();
-            const count = service.suggestedCycle.count;
-            const unit = service.suggestedCycle.unit as string;
-            switch (unit) {
-                case 'hour':
-                    nextDate.setHours(nextDate.getHours() + count);
-                    break;
-                case 'day':
-                    nextDate.setDate(nextDate.getDate() + count);
-                    break;
-                case 'week':
-                    nextDate.setDate(nextDate.getDate() + (count * 7));
-                    break;
-                case 'month':
-                    nextDate.setMonth(nextDate.getMonth() + count);
-                    break;
-                case 'year':
-                    nextDate.setFullYear(nextDate.getFullYear() + count);
-                    break;
-                default:
-                    nextDate.setMonth(nextDate.getMonth() + count);
-            }
-            setStartDate(new Date().toISOString().split('T')[0]);
-        } else {
-            // Default start date to today
-            setStartDate(new Date().toISOString().split('T')[0]);
-        }
+        // User enters their own amount and cycle
+        setAmount('');
+        setCycleCount('1');
+        setCycleUnit('month');
+        setStartDate(new Date().toISOString().split('T')[0]);
         setMode('custom'); // Switch to form to confirm/edit
     };
 
@@ -224,8 +197,11 @@ export default function SubscriptionForm({ isOpen, onClose, editId }: Subscripti
         setMode('picker');
     };
 
-    // Check if current icon is a brand icon (shouldn't show icon picker for brands)
-    const showIconPicker = !isBrandIcon(icon);
+    const handleIconChange = (newIcon: string) => {
+        setIcon(newIcon);
+        setIconType('lucide'); // When user manually picks, it's always Lucide
+        setIsIconPickerOpen(false);
+    };
 
     return (
         <Modal
@@ -247,12 +223,15 @@ export default function SubscriptionForm({ isOpen, onClose, editId }: Subscripti
                 <form onSubmit={handleSubmit} className={styles.form}>
                     {/* Preview & Name */}
                     <div className={styles.header}>
-                        <div
+                        <button
+                            type="button"
                             className={styles.previewIcon}
                             style={{ backgroundColor: `${color}20`, color: color }}
+                            onClick={() => setIsIconPickerOpen(!isIconPickerOpen)}
+                            title="Click to change icon"
                         >
                             <DynamicIcon name={icon} color={color} size={24} />
-                        </div>
+                        </button>
                         <Input
                             id="name"
                             value={name}
@@ -275,12 +254,11 @@ export default function SubscriptionForm({ isOpen, onClose, editId }: Subscripti
                             error={errors.amount}
                             required
                         />
-                        <Input
+                        <DatePicker
                             label="Start Date"
                             id="startDate"
-                            type="date"
                             value={startDate}
-                            onChange={(e) => setStartDate(e.target.value)}
+                            onChange={setStartDate}
                             required
                         />
                     </div>
@@ -307,14 +285,13 @@ export default function SubscriptionForm({ isOpen, onClose, editId }: Subscripti
                         </div>
                     </div>
 
-                    {/* Only show icon picker for custom (non-brand) subscriptions */}
-                    {showIconPicker && (
-                        <IconPicker
-                            label="Icon"
-                            value={icon}
-                            onChange={setIcon}
-                        />
-                    )}
+                    {/* Icon Picker - opened by clicking the preview icon */}
+                    <IconPicker
+                        value={icon}
+                        onChange={handleIconChange}
+                        isOpen={isIconPickerOpen}
+                        onOpenChange={setIsIconPickerOpen}
+                    />
 
                     <ColorPicker
                         label="Color"

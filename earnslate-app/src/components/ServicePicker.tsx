@@ -88,6 +88,17 @@ export default function ServicePicker({ onSelect, onCustom }: ServicePickerProps
 
             {/* Services Grid */}
             <div className={styles.servicesGrid}>
+                {/* Custom option first */}
+                <button
+                    className={`${styles.serviceCard} ${styles.customCard}`}
+                    onClick={onCustom}
+                >
+                    <div className={styles.serviceIcon}>
+                        <LucideIcons.Plus size={20} />
+                    </div>
+                    <span className={styles.serviceName}>Custom</span>
+                </button>
+
                 {filteredServices.map((service) => (
                     <button
                         key={service.name}
@@ -103,17 +114,6 @@ export default function ServicePicker({ onSelect, onCustom }: ServicePickerProps
                         <span className={styles.serviceName}>{service.name}</span>
                     </button>
                 ))}
-
-                {/* Custom option at end */}
-                <button
-                    className={`${styles.serviceCard} ${styles.customCard}`}
-                    onClick={onCustom}
-                >
-                    <div className={styles.serviceIcon}>
-                        <LucideIcons.Plus size={20} />
-                    </div>
-                    <span className={styles.serviceName}>Custom</span>
-                </button>
             </div>
 
             {filteredServices.length === 0 && (

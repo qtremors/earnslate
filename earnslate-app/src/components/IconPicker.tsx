@@ -136,11 +136,23 @@ interface IconPickerProps {
     value: string;
     onChange: (icon: string) => void;
     label?: string;
+    isOpen?: boolean;
+    onOpenChange?: (open: boolean) => void;
 }
 
-export default function IconPicker({ value, onChange, label }: IconPickerProps) {
-    const [isOpen, setIsOpen] = useState(false);
+export default function IconPicker({ value, onChange, label, isOpen: controlledIsOpen, onOpenChange }: IconPickerProps) {
+    const [internalIsOpen, setInternalIsOpen] = useState(false);
     const [search, setSearch] = useState('');
+
+    // Support both controlled and uncontrolled modes
+    const isOpen = controlledIsOpen !== undefined ? controlledIsOpen : internalIsOpen;
+    const setIsOpen = (open: boolean) => {
+        if (onOpenChange) {
+            onOpenChange(open);
+        } else {
+            setInternalIsOpen(open);
+        }
+    };
 
     // Get the current icon component
     const CurrentIcon = (LucideIcons as unknown as Record<string, React.ElementType>)[value] || LucideIcons.HelpCircle;
@@ -156,19 +168,24 @@ export default function IconPicker({ value, onChange, label }: IconPickerProps) 
 
     const currentLabel = LUCIDE_ICONS.find(i => i.name === value)?.label || 'Select Icon';
 
+    // If controlled from outside (no trigger button shown), just render the dropdown portion
+    const showTrigger = controlledIsOpen === undefined;
+
     return (
         <div className={styles.container}>
             {label && <label className={styles.label}>{label}</label>}
 
-            <button
-                type="button"
-                className={styles.trigger}
-                onClick={() => setIsOpen(!isOpen)}
-            >
-                <CurrentIcon size={20} />
-                <span>{currentLabel}</span>
-                <LucideIcons.ChevronDown size={16} className={styles.chevron} />
-            </button>
+            {showTrigger && (
+                <button
+                    type="button"
+                    className={styles.trigger}
+                    onClick={() => setIsOpen(!isOpen)}
+                >
+                    <CurrentIcon size={20} />
+                    <span>{currentLabel}</span>
+                    <LucideIcons.ChevronDown size={16} className={styles.chevron} />
+                </button>
+            )}
 
             {isOpen && (
                 <>

@@ -119,13 +119,22 @@ earnslate/
 
 ## 📋 Roadmap
 
-See [TASKS.md](./TASKS.md) for the full list of planned features.
+See [TASKS.md](./TASKS.md) for the full roadmap.
 
-**Upcoming:**
-- PWA/offline support
-- Recurring transactions
-- Cloud sync (optional)
-- Multi-currency support
+### 🚀 Coming Soon
+
+| Priority | Feature | Description |
+|----------|---------|-------------|
+| **High** | PWA Offline Support | Install as app, works without internet |
+| **Medium** | Cloud Sync | Optional Supabase sync across devices |
+| **Medium** | Recurring Transactions | Auto-create transactions on schedule |
+| **Low** | Multi-Currency | Track finances in multiple currencies |
+
+### 🎨 Planned Improvements
+- Universal icon picker (all Iconify libraries)
+- Subscription due notifications
+- Data export to PDF/Excel
+- Enhanced empty states with illustrations
 
 ---
 

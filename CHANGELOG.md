@@ -1,231 +1,83 @@
-## [0.8.0] - 2025-12-16
+# Changelog
 
-### Deep Review & Cleanup Release
-
-Major code quality improvements, bundle size optimization, and feature additions based on comprehensive project review.
-
-### Added - New Features
-
-#### Transactions
-- **Date Range Presets**: All Time, Today, This Week, This Month, Last 30/90 Days, Custom
-- **Pagination**: 25 items per page with prev/next controls
-- **Batch Delete**: Checkbox selection with select all and delete selected functionality
-- **Keyboard Shortcuts**: Ctrl+N (new transaction), Ctrl+D/T/B (navigation), Escape (close modals)
-
-#### Data Validation
-- **Enhanced JSON Import**: Date format, isFinite, and transaction type validation
-- **Visibility Change Listener**: Budget periods auto-reset when user returns to app
-
-### Fixed - Critical Bugs
-
-#### Bundle Size Optimization
-- **DynamicIcon Refactor**: Now uses Iconify for all icons including Lucide (removes ~100KB bundle)
-- **Dashboard**: Replaced hardcoded CATEGORY_ICONS with DynamicIcon using settings lookup
-- **Budgets Page**: Replaced LucideIcons bundle import with DynamicIcon
-
-#### Consistency Fixes
-- **BudgetForm**: Icon defaults now consistent (UtensilsCrossed)
-
-### Removed - Dead Code
-- **ICON_OPTIONS** from types (48 lines) - IconPicker has own list
-- **formatCycle** function (8 lines) - formatCycleDisplay in store is used instead
-- **DAYS_PER_MONTH** constant - inlined into getMonthlyEquivalent
-
-### Improved - Store Actions
-- **deleteMultipleTransactions**: Batch delete with budget spent updates
+All notable changes to Earnslate will be documented in this file.
 
 ---
 
-## [0.7.0] - 2025-12-16
+## [1.0.0] - 2025-12-16
 
-### Added - Icon System Upgrade
-- **Iconify Integration**: Migrated from react-icons/si to @iconify/react
-- **100+ Service Icons**: Added HBO Max, Hulu, Apple TV+, Crunchyroll, Tidal, Deezer, 1Password, Bitwarden, Midjourney, GitHub Copilot, Perplexity, Gemini, DoorDash, Uber Eats, and many more
-- **Backwards Compatibility**: Legacy Si* and brand:* icon formats still work
+### 🎉 Initial Public Release
 
-### Added - UI/UX Improvements
-- **Header Username**: Shows user's display name instead of profile icon
-- **Date Input Styling**: Calendar picker matches dark/light theme
-- **Button Alignment**: Fixed icon/text vertical alignment in buttons
+A complete personal finance management app with offline-first architecture.
 
-### Fixed - Critical Bugs
-- **Pie Chart Visibility**: Fixed invisible chart when only one category exists (360° arc bug)
-- **Double-Prefix Icons**: Fixed brand:simple-icons:* format causing icons not to display
-- **Duplicate Icons**: Removed duplicate Video and Bike entries in IconPicker
-- **Subscriptions Layout**: Fixed view toggle position (space-between actions)
+### Core Features
+- **Dashboard**: Real-time balance, spending pie chart, budget alerts
+- **Transactions**: Full CRUD, search, filters, date presets, pagination, batch delete
+- **Budgets**: Progress tracking, donut charts, auto-reset on period expiry
+- **Subscriptions**: 100+ service templates, treemap visualization, flexible billing
+- **Settings**: Custom categories, theme toggle, JSON export/import
 
-### Improved - Subscriptions
-- **Treemap Cleanup**: Removed redundant cost footer (uses main page summary)
-- **Next Billing Calculation**: Now supports hour/day/week/month/year cycles
-- **Form Reset**: New subscriptions default to +1 cycle from today
+### Premium UX
+- **Keyboard Shortcuts**: Ctrl+N (new), Ctrl+D/T/B (navigate), Escape (close)
+- **Icon System**: 120+ Lucide icons + 100+ brand icons via Iconify
+- **Color Customization**: 12-color palette for categories and subscriptions
+- **Dark/Light Theme**: System preference or manual toggle
+- **Mobile Responsive**: Hamburger menu with slide-in drawer
 
-### Known Issues
-- Next billing date may be incorrectly calculated for some cycle configurations
+### Privacy First
+- All data stored locally in browser (localStorage)
+- No account required, works completely offline
+- Full data ownership with JSON export/import
 
----
-
-## [0.6.0] - 2025-12-15
-
-### Fixed - Critical Issues
-
-#### Race Conditions
-- **Budget-Transaction Sync**: Consolidated all state updates into single atomic `set()` call
-- **Delete Transaction**: Fixed concurrent budget deduction with atomic update
-- Both `updateTransaction` and `deleteTransaction` now update transactions and budgets together
-
-#### Data Integrity
-- **Timezone Issues**: Fixed billing date comparisons using date strings instead of Date objects
-- **Import Safety**: Removed `clearAllData()` race condition - imports now directly replace data
-- **Error Feedback**: Added toast notification for invalid JSON import files
-
-#### Version Consistency
-- Fixed export version (was 0.3.0, now dynamic APP_VERSION)
-- Fixed settings page version display (was 0.4.0, now v0.5.0)
-
-### Added - Form Validation
-
-#### BudgetForm
-- Name and limit field validation with error states
-- Error toast on validation failure
-- Auto-clear errors when user corrects input
-
-#### SubscriptionForm  
-- Name and amount field validation with error states
-- Consistent validation UX with other forms
-
-### Removed - Dead Code
-- Deleted unused `HydrationGuard.tsx` component
-- Removed unused `firstDayOfWeek` and `monthStartDay` from UserSettings
-- Removed unused `tags` field from Transaction type
-
-### Improved - Code Quality
-- Consolidated `CHART_COLORS` to shared constant in types
-- Added `formatCurrency` and `formatCurrencyCompact` utility functions
-- Replaced deprecated `onKeyPress` with `onKeyDown`
-- Replaced inline styles in `StoreProvider` with CSS module
-- Added `SPINNER_SIZES` constant for size-aware spinner in Button
-- Added more category icons to Dashboard `CATEGORY_ICONS`
-- Added active subscription count note to Treemap
+### Technical
+- Next.js 15 with App Router
+- TypeScript 5 with strict mode
+- Zustand for state management
+- CSS Modules (no Tailwind)
+- Vercel-ready deployment config
 
 ---
 
-## [0.5.0] - 2025-12-15
+## Pre-Release History
 
-### Added - New Features
+### [0.8.0] - 2025-12-16
+- Date range presets and pagination
+- Batch delete for transactions
+- Bundle size optimization with Iconify
+- Dead code removal (56+ lines)
 
-#### Toast Notifications
-- Global toast notification system with success/error/warning/info types
-- Auto-dismiss after 4 seconds with manual dismiss option
-- Integrated across all forms and delete actions
-- Slide-in animation from bottom-right
+### [0.7.0] - 2025-12-16
+- Iconify integration (100+ brand icons)
+- Fixed pie chart visibility bug
+- Header username display
 
-#### Form Validation & Loading States
-- Inline validation errors on TransactionForm
-- Visual error states with red border and message
-- Errors auto-clear when user corrects input
-- Button loading state with spinner animation
+### [0.6.0] - 2025-12-15
+- Race condition fixes for budget-transaction sync
+- Form validation for budgets and subscriptions
+- Data import safety improvements
 
-#### Dashboard Enhancements
-- Transaction search in Recent Transactions section
-- Chart hover tooltips showing category, amount, and percentage
-- Pie slice hover effects for visual feedback
+### [0.5.0] - 2025-12-15
+- Toast notification system
+- Budget period auto-reset
+- Subscription billing auto-update
+- Mobile hamburger menu
 
-#### Mobile Experience
-- Hamburger menu button for mobile devices
-- Slide-in drawer sidebar with backdrop
-- Auto-close menu on navigation
+### [0.4.0] - 2025-12-15
+- Transaction filters and search
+- Budget donut chart overview
+- Category manager in settings
+- JSON export/import
 
-### Fixed - Priority Bug Fixes
+### [0.3.0] - 2025-12-15
+- ServicePicker with 55+ templates
+- Treemap subscription visualization
+- Icon and color pickers
 
-#### Medium Bugs
-- **Budget Period Reset**: Budgets now automatically reset their `spent` amount when the period expires
-  - Added `periodStartDate` tracking to Budget type
-  - Auto-resets on app load via `checkAndResetBudgets()` 
-- **Subscription Billing Auto-Update**: `nextBilling` date now advances automatically
-  - Billing dates update on app load via `updateSubscriptionBillingDates()`
+### [0.2.0] - 2025-12-15
+- Core CRUD for all modules
+- Zustand hydration fixes
 
-#### Logic Issues
-- **Category Type Mismatch**: Fixed TransactionForm to auto-select valid category when switching between income/expense types
-
-#### UX Improvements  
-- **Styled Confirm Dialogs**: Replaced native `confirm()` with styled `useConfirm` modal in Budgets page (matches Transactions/Subscriptions)
-
-#### Code Quality
-- Fixed TypeScript type casting errors in IconPicker component
-- Removed unused `email` field from UserSettings
-- Added `DAYS_PER_MONTH` constant to replace magic number
-
----
-
-## [0.4.0] - 2025-12-15
-
-### Added - God-Tier Customization for All Pages
-
-#### Transactions
-- Search bar for filtering by description
-- Type and category dropdown filters
-- Pie chart view toggle for spending breakdown
-- CSV export functionality
-
-#### Budgets
-- Donut chart overview with center percentage
-- Alert badges at 80%/90% thresholds
-- Status-based card styling (warning/danger/over)
-- Grid/Chart view toggle
-
-#### Dashboard
-- Spending by category pie chart
-- Budget alert notifications (when over 80%)
-- 3-column responsive layout
-
-#### Settings
-- Category manager (add/delete custom categories)
-- Data export to JSON backup
-- Data import from backup
-- Updated to v0.3.0
-
----
-
-## [0.3.0] - 2025-12-15
-
-### Added - God-Tier Customization
-- **ServicePicker**: 55+ popular services with brand icons (Netflix, Spotify, YouTube, etc.)
-- **Treemap View**: Visual bento-box layout for subscriptions sized by cost percentage
-- **View Toggle**: Switch between List and Treemap views
-- **Search & Filter**: Search services by name or category
-- **Flexible Billing Cycles**: Every N hours/days/weeks/months/years
-- **Icon Picker**: 100+ searchable Lucide icons for custom subscriptions
-- **Color Picker**: 12-color palette for subscription customization
-- **Quick Templates**: One-click add for popular services with suggested pricing
-- **Notes Field**: Add memos to subscriptions (displayed on cards)
-- **Left Border Accent**: Subscription cards show color as left border
-
-### Fixed
-- Missing brand icons (Disney+, JioCinema, Headspace, Claude) now use Lucide fallbacks
-- Icons now properly fill container (28x28px)
-- Removed colored hue background from icons (per user preference)
-
----
-
-## [0.2.0] - 2025-12-15
-
-### Added - Core CRUD
-- Full CRUD for Transactions, Budgets, and Subscriptions
-- Modal forms with validation
-- Dashboard with real-time stats
-- Settings page with data clear option
-
-### Fixed
-- Zustand hydration mismatch with Next.js SSR
-- Dashboard infinite loop from selector reference issues
-
----
-
-## [0.1.0] - 2025-12-15
-
-### Added - Initial Setup
-- Next.js 15 project with TypeScript
-- Monochrome design system with inverted accents
-- Sidebar navigation with Lucide icons
-- Page scaffolding for all routes
-- Zustand store with localStorage persistence
+### [0.1.0] - 2025-12-15
+- Initial project setup
+- Monochrome design system
+- Zustand + localStorage persistence
