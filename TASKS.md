@@ -11,7 +11,7 @@
 - [ ] Fix budget category matching (case-insensitive match, case-sensitive display)
 
 ## 🟡 Half-Baked Features
-- [ ] Fix `formatDate()` locale parameter - currently unused
+- [x] Fix `formatDate()` locale parameter - now uses Intl.DateTimeFormat
 - [ ] Add icon/color pickers to category editor in settings
 - [x] Integrate `DynamicIcon.tsx` properly or remove dead code
 
@@ -19,13 +19,13 @@
 - [x] Remove unused `TransactionForm` import from dashboard
 - [x] Remove unused `ArrowUpDown` import from transactions page
 - [x] Remove largely unused `DynamicIcon.tsx` utilities
-- [ ] Fix `locale` parameter in `formatDate()` function
+- [x] Fix `locale` parameter in `formatDate()` function
 - [x] Sync `APP_VERSION` constant with `package.json` version
 
 ## ⚡ Performance
 - [ ] Optimize `useShallow` selectors for granular property access
-- [ ] Memoize chart SVG path calculations in budgets page
-- [ ] Consider migrating fully to Iconify (remove react-icons bloat)
+- [x] Memoize chart SVG path calculations in budgets page
+- [x] Consider migrating fully to Iconify (remove react-icons bloat)
 - [ ] Add category-indexed lookup for budget matching
 
 ## 🎨 UI/UX Improvements
