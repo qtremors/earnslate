@@ -22,9 +22,9 @@
 ## 🟡 Missing Features
 
 ### High Priority
-- [ ] Pagination for transactions list (performance issue with 1000+ items)
+- [x] Pagination for transactions list - 25 items per page with prev/next controls
 - [ ] Keyboard shortcuts for common actions (Ctrl+N for new transaction)
-- [ ] Date range presets (This Week, Last Month, Last 90 Days)
+- [x] Date range presets - All Time, Today, This Week, This Month, Last 30/90 Days, Custom
 
 ### Medium Priority
 - [ ] Subscription due reminders/notifications
@@ -93,8 +93,10 @@
 - [x] Fix BudgetForm icon defaults (consistent UtensilsCrossed)
 - [x] Remove unused ICON_OPTIONS (48 lines)
 - [x] Remove unused formatCycle function (8 lines)
+- [x] Add pagination to transactions (25 items/page)
+- [x] Add date range presets (7 quick options)
 
 ---
 
 *Deep review completed: 2025-12-16*
-*Lines removed: ~56 lines of dead code*
+*Total improvements: 17 items completed, ~100+ lines of new features*

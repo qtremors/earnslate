@@ -16,6 +16,9 @@ import styles from './page.module.css';
 type ViewMode = 'list' | 'chart';
 type TypeFilter = 'all' | 'income' | 'expense';
 type SortOption = 'date-desc' | 'date-asc' | 'amount-desc' | 'amount-asc' | 'category';
+type DatePreset = 'all' | 'today' | 'this-week' | 'this-month' | 'last-30' | 'last-90' | 'custom';
+
+const ITEMS_PER_PAGE = 25;
 
 export default function TransactionsPage() {
     const [isFormOpen, setIsFormOpen] = useState(false);
@@ -24,9 +27,11 @@ export default function TransactionsPage() {
     const [categoryFilter, setCategoryFilter] = useState<string>('all');
     const [searchQuery, setSearchQuery] = useState('');
     const [viewMode, setViewMode] = useState<ViewMode>('list');
+    const [datePreset, setDatePreset] = useState<DatePreset>('all');
     const [dateFrom, setDateFrom] = useState('');
     const [dateTo, setDateTo] = useState('');
     const [sortBy, setSortBy] = useState<SortOption>('date-desc');
+    const [currentPage, setCurrentPage] = useState(1);
 
     // Use shallow comparison to avoid re-renders when other store parts change
     const { transactions, deleteTransaction, settings } = useAppStore(
@@ -124,6 +129,60 @@ export default function TransactionsPage() {
         }
     };
 
+    // Apply date preset
+    const applyDatePreset = (preset: DatePreset) => {
+        setDatePreset(preset);
+        setCurrentPage(1); // Reset to first page when changing filters
+        const today = new Date();
+        const todayStr = today.toISOString().split('T')[0];
+
+        switch (preset) {
+            case 'today':
+                setDateFrom(todayStr);
+                setDateTo(todayStr);
+                break;
+            case 'this-week': {
+                const dayOfWeek = today.getDay();
+                const weekStart = new Date(today);
+                weekStart.setDate(today.getDate() - dayOfWeek);
+                setDateFrom(weekStart.toISOString().split('T')[0]);
+                setDateTo(todayStr);
+                break;
+            }
+            case 'this-month': {
+                const monthStart = new Date(today.getFullYear(), today.getMonth(), 1);
+                setDateFrom(monthStart.toISOString().split('T')[0]);
+                setDateTo(todayStr);
+                break;
+            }
+            case 'last-30': {
+                const last30 = new Date(today);
+                last30.setDate(today.getDate() - 30);
+                setDateFrom(last30.toISOString().split('T')[0]);
+                setDateTo(todayStr);
+                break;
+            }
+            case 'last-90': {
+                const last90 = new Date(today);
+                last90.setDate(today.getDate() - 90);
+                setDateFrom(last90.toISOString().split('T')[0]);
+                setDateTo(todayStr);
+                break;
+            }
+            case 'all':
+            default:
+                setDateFrom('');
+                setDateTo('');
+        }
+    };
+
+    // Pagination
+    const totalPages = Math.ceil(filteredTransactions.length / ITEMS_PER_PAGE);
+    const paginatedTransactions = useMemo(() => {
+        const start = (currentPage - 1) * ITEMS_PER_PAGE;
+        return filteredTransactions.slice(start, start + ITEMS_PER_PAGE);
+    }, [filteredTransactions, currentPage]);
+
     const handleExportCSV = () => {
         const headers = ['Date', 'Description', 'Category', 'Type', 'Amount'];
         const rows = filteredTransactions.map(t => [
@@ -184,20 +243,39 @@ export default function TransactionsPage() {
                             ))}
                         </select>
 
-                        <input
-                            type="date"
-                            value={dateFrom}
-                            onChange={(e) => setDateFrom(e.target.value)}
+                        <select
+                            value={datePreset}
+                            onChange={(e) => applyDatePreset(e.target.value as DatePreset)}
                             className={styles.filterSelect}
-                            title="From date"
-                        />
-                        <input
-                            type="date"
-                            value={dateTo}
-                            onChange={(e) => setDateTo(e.target.value)}
-                            className={styles.filterSelect}
-                            title="To date"
-                        />
+                            title="Date range"
+                        >
+                            <option value="all">All Time</option>
+                            <option value="today">Today</option>
+                            <option value="this-week">This Week</option>
+                            <option value="this-month">This Month</option>
+                            <option value="last-30">Last 30 Days</option>
+                            <option value="last-90">Last 90 Days</option>
+                            <option value="custom">Custom Range</option>
+                        </select>
+
+                        {datePreset === 'custom' && (
+                            <>
+                                <input
+                                    type="date"
+                                    value={dateFrom}
+                                    onChange={(e) => { setDateFrom(e.target.value); setCurrentPage(1); }}
+                                    className={styles.filterSelect}
+                                    title="From date"
+                                />
+                                <input
+                                    type="date"
+                                    value={dateTo}
+                                    onChange={(e) => { setDateTo(e.target.value); setCurrentPage(1); }}
+                                    className={styles.filterSelect}
+                                    title="To date"
+                                />
+                            </>
+                        )}
 
                         <select
                             value={sortBy}
@@ -330,41 +408,66 @@ export default function TransactionsPage() {
                                 </Button>
                             </div>
                         ) : (
-                            <div className={styles.tableContainer}>
-                                <table className={styles.table}>
-                                    <thead>
-                                        <tr>
-                                            <th>Description</th>
-                                            <th>Category</th>
-                                            <th>Date</th>
-                                            <th>Amount</th>
-                                            <th></th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {filteredTransactions.map((tx) => (
-                                            <tr key={tx.id} className={styles.tableRow}>
-                                                <td className={styles.description}>{tx.description}</td>
-                                                <td>
-                                                    <span className={styles.categoryBadge}>{tx.category}</span>
-                                                </td>
-                                                <td className={styles.date}>{formatDate(tx.date)}</td>
-                                                <td className={`${styles.amount} ${tx.amount > 0 ? styles.income : styles.expense}`}>
-                                                    {tx.amount > 0 ? '+' : '-'}{formatCurrency(tx.amount)}
-                                                </td>
-                                                <td className={styles.actions}>
-                                                    <button className={styles.actionButton} onClick={() => handleEdit(tx.id)} aria-label="Edit">
-                                                        <Pencil size={16} />
-                                                    </button>
-                                                    <button className={`${styles.actionButton} ${styles.deleteButton}`} onClick={() => handleDelete(tx.id)} aria-label="Delete">
-                                                        <Trash2 size={16} />
-                                                    </button>
-                                                </td>
+                            <>
+                                <div className={styles.tableContainer}>
+                                    <table className={styles.table}>
+                                        <thead>
+                                            <tr>
+                                                <th>Description</th>
+                                                <th>Category</th>
+                                                <th>Date</th>
+                                                <th>Amount</th>
+                                                <th></th>
                                             </tr>
-                                        ))}
-                                    </tbody>
-                                </table>
-                            </div>
+                                        </thead>
+                                        <tbody>
+                                            {paginatedTransactions.map((tx) => (
+                                                <tr key={tx.id} className={styles.tableRow}>
+                                                    <td className={styles.description}>{tx.description}</td>
+                                                    <td>
+                                                        <span className={styles.categoryBadge}>{tx.category}</span>
+                                                    </td>
+                                                    <td className={styles.date}>{formatDate(tx.date)}</td>
+                                                    <td className={`${styles.amount} ${tx.amount > 0 ? styles.income : styles.expense}`}>
+                                                        {tx.amount > 0 ? '+' : '-'}{formatCurrency(tx.amount)}
+                                                    </td>
+                                                    <td className={styles.actions}>
+                                                        <button className={styles.actionButton} onClick={() => handleEdit(tx.id)} aria-label="Edit">
+                                                            <Pencil size={16} />
+                                                        </button>
+                                                        <button className={`${styles.actionButton} ${styles.deleteButton}`} onClick={() => handleDelete(tx.id)} aria-label="Delete">
+                                                            <Trash2 size={16} />
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                                {/* Pagination Controls */}
+                                {totalPages > 1 && (
+                                    <div className={styles.pagination}>
+                                        <button
+                                            onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                                            disabled={currentPage === 1}
+                                            className={styles.pageButton}
+                                        >
+                                            Previous
+                                        </button>
+                                        <span className={styles.pageInfo}>
+                                            Page {currentPage} of {totalPages}
+                                        </span>
+                                        <button
+                                            onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+                                            disabled={currentPage === totalPages}
+                                            className={styles.pageButton}
+                                        >
+                                            Next
+                                        </button>
+                                    </div>
+                                )}
+                            </>
                         )}
                     </Card>
                 )}
