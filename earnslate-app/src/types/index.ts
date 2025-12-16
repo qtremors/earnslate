@@ -72,54 +72,6 @@ export const TIME_UNITS = [
     { value: 'year', label: 'Year(s)' },
 ] as const;
 
-// ===== Icon Library for Picker =====
-export const ICON_OPTIONS = [
-    // Services & Brands
-    { name: 'Tv', label: 'Streaming' },
-    { name: 'Music', label: 'Music' },
-    { name: 'Film', label: 'Movies' },
-    { name: 'Gamepad2', label: 'Gaming' },
-    { name: 'Cloud', label: 'Cloud Storage' },
-    { name: 'Smartphone', label: 'Phone' },
-    { name: 'Wifi', label: 'Internet' },
-    // Lifestyle
-    { name: 'Dumbbell', label: 'Fitness' },
-    { name: 'Heart', label: 'Health' },
-    { name: 'Pill', label: 'Medicine' },
-    { name: 'BookOpen', label: 'Education' },
-    { name: 'Newspaper', label: 'News' },
-    // Transport
-    { name: 'Car', label: 'Car' },
-    { name: 'Bike', label: 'Bike' },
-    { name: 'Bus', label: 'Transit' },
-    { name: 'Plane', label: 'Travel' },
-    // Home
-    { name: 'Home', label: 'Home' },
-    { name: 'Lightbulb', label: 'Utilities' },
-    { name: 'Flame', label: 'Gas' },
-    { name: 'Droplet', label: 'Water' },
-    // Food
-    { name: 'UtensilsCrossed', label: 'Food' },
-    { name: 'Coffee', label: 'Coffee' },
-    { name: 'Wine', label: 'Drinks' },
-    { name: 'ShoppingCart', label: 'Groceries' },
-    // Finance
-    { name: 'Wallet', label: 'Wallet' },
-    { name: 'CreditCard', label: 'Card' },
-    { name: 'Banknote', label: 'Cash' },
-    { name: 'PiggyBank', label: 'Savings' },
-    // Work
-    { name: 'Briefcase', label: 'Work' },
-    { name: 'Building', label: 'Office' },
-    { name: 'Laptop', label: 'Tech' },
-    { name: 'Headphones', label: 'Audio' },
-    // Other
-    { name: 'Gift', label: 'Gift' },
-    { name: 'Baby', label: 'Kids' },
-    { name: 'Dog', label: 'Pets' },
-    { name: 'Sparkles', label: 'Other' },
-] as const;
-
 // ===== Color Palette =====
 export const COLOR_OPTIONS = [
     '#E50914', // Netflix Red
@@ -161,14 +113,6 @@ export const DEFAULT_CATEGORIES: Category[] = [
 ];
 
 // ===== Helper Functions =====
-export const formatCycle = (cycle: BillingCycle): string => {
-    const unit = cycle.count === 1
-        ? cycle.unit.replace(/s$/, '')
-        : cycle.unit + 's';
-    return cycle.count === 1
-        ? `Every ${cycle.unit}`
-        : `Every ${cycle.count} ${unit}`;
-};
 
 export const calculateNextBilling = (lastBilling: Date, cycle: BillingCycle): Date => {
     const next = new Date(lastBilling);

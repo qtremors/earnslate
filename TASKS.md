@@ -5,15 +5,15 @@
 ### Bundle Size / Performance
 - [x] **Dashboard uses hardcoded CATEGORY_ICONS** - now uses DynamicIcon with settings lookup
 - [x] **budgets/page.tsx imports entire LucideIcons bundle** - now uses DynamicIcon
-- [ ] **DynamicIcon.tsx imports entire LucideIcons bundle** - consider lazy loading or direct imports (lower priority)
+- [ ] **DynamicIcon.tsx and IconPicker.tsx import entire LucideIcons bundle** - consider lazy loading (lower priority)
 
 ### Dead Code / Unused
 - [x] **store/index.ts: `DAYS_PER_MONTH` constant** - inlined into `getMonthlyEquivalent` function
-- [ ] **types/index.ts: `ICON_OPTIONS` partially redundant** with IconPicker's own list
-- [ ] **types/index.ts: `formatCycle` function** - similar to `formatCycleDisplay` in store (potential duplicate)
+- [x] **types/index.ts: `ICON_OPTIONS`** - removed (IconPicker has own LUCIDE_ICONS list)
+- [x] **types/index.ts: `formatCycle` function** - removed (formatCycleDisplay in store is used instead)
 
 ### Logic / Data
-- [ ] **BudgetForm icon defaults inconsistent** - line 25 uses 'Wallet', line 58 uses 'UtensilsCrossed'
+- [x] **BudgetForm icon defaults inconsistent** - now uses 'UtensilsCrossed' consistently
 - [ ] **No data validation on JSON import** - could import corrupted data beyond sanitization
 - [ ] **Budget period reset only checked on app load** - not real-time if app stays open
 
@@ -51,7 +51,7 @@
 - [ ] Chart tooltips for better data exploration
 
 ### Accessibility
-- [ ] Add ARIA labels to icon-only buttons consistently
+- [x] ARIA labels present on icon-only buttons (verified 12+ instances)
 - [ ] Add focus trap for modals
 - [ ] Ensure all interactive elements have focus styles
 
@@ -90,8 +90,11 @@
 - [x] Inline DAYS_PER_MONTH in getMonthlyEquivalent
 - [x] Replace hardcoded CATEGORY_ICONS with DynamicIcon
 - [x] Replace LucideIcons bundle import in budgets page
+- [x] Fix BudgetForm icon defaults (consistent UtensilsCrossed)
+- [x] Remove unused ICON_OPTIONS (48 lines)
+- [x] Remove unused formatCycle function (8 lines)
 
 ---
 
 *Deep review completed: 2025-12-16*
-*Scanned: store (411 lines), types (282 lines), 5 pages, 35 components, 2 hooks*
+*Lines removed: ~56 lines of dead code*

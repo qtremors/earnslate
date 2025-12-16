@@ -22,7 +22,7 @@ export default function BudgetForm({ isOpen, onClose, editId }: BudgetFormProps)
     const [name, setName] = useState('');
     const [limit, setLimit] = useState('');
     const [category, setCategory] = useState('Other');
-    const [icon, setIcon] = useState('Wallet');
+    const [icon, setIcon] = useState('UtensilsCrossed');
     const [color, setColor] = useState('#F59E0B');
     const [periodCount, setPeriodCount] = useState('1');
     const [periodUnit, setPeriodUnit] = useState<BillingCycle['unit']>('month');
