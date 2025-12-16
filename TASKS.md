@@ -1,56 +1,96 @@
 # Earnslate Tasks
 
-## 🔜 Future Enhancements
-- [ ] Add pagination for transactions list
+## � Bugs & Issues
+
+### Bundle Size / Performance
+- [ ] **Dashboard uses hardcoded CATEGORY_ICONS** - duplicates logic, should use DynamicIcon
+- [ ] **budgets/page.tsx imports entire LucideIcons bundle** (`import * as LucideIcons`) - use DynamicIcon instead
+- [ ] **DynamicIcon.tsx imports entire LucideIcons bundle** - consider lazy loading or direct imports
+
+### Dead Code / Unused
+- [ ] **SubscriptionForm: `iconType` state unused** (line 31) - always set but never read for rendering
+- [ ] **store/index.ts: `DAYS_PER_MONTH` constant unused** (line 49) - defined but never used
+- [ ] **types/index.ts: `ICON_OPTIONS` partially redundant** with IconPicker's own list
+- [ ] **types/index.ts: `formatCycle` function** - similar to `formatCycleDisplay` in store (potential duplicate)
+
+### Logic / Data
+- [ ] **BudgetForm icon defaults inconsistent** - line 25 uses 'Wallet', line 58 uses 'UtensilsCrossed'
+- [ ] **No data validation on JSON import** - could import corrupted data beyond sanitization
+- [ ] **Budget period reset only checked on app load** - not real-time if app stays open
+- [ ] **Category type filtering** - 'Other' is 'both' but some categories might need better defaults
+
+---
+
+## 🟡 Missing Features
+
+### High Priority
+- [ ] Pagination for transactions list (performance issue with 1000+ items)
+- [ ] Keyboard shortcuts for common actions (Ctrl+N for new transaction)
+- [ ] Date range presets (This Week, Last Month, Last 90 Days)
+
+### Medium Priority
 - [ ] Subscription due reminders/notifications
-- [ ] PWA/offline support
 - [ ] Recurring transactions (not just subscriptions)
-- [ ] Cloud sync (optional)
 - [ ] Undo/redo for deletions
 - [ ] Batch delete operations
-- [ ] Dashboard date range filter (beyond "this month")
 - [ ] Budget period reset notifications
-- [ ] Data validation on import
+
+### Low Priority / Future
+- [ ] PWA/offline support
+- [ ] Cloud sync (optional)
 - [ ] Multi-currency support
-- [ ] Add stricter TypeScript checks (`noUncheckedIndexedAccess`) - requires extensive refactoring
+- [ ] Data export to PDF/Excel
+- [ ] Dark/light mode transitions (currently instant, could animate)
 
 ---
 
-## ✅ Completed
+## 🟢 UI/UX Improvements
 
-### Critical Bugs
+### Polish
+- [ ] Empty states could be more engaging (add illustrations or suggestions)
+- [ ] Onboarding could collect user name
+- [ ] Add skeleton loaders for initial hydration
+- [ ] Chart tooltips for better data exploration
+
+### Accessibility
+- [ ] Add ARIA labels to icon-only buttons consistently
+- [ ] Add focus trap for modals
+- [ ] Ensure all interactive elements have focus styles
+
+---
+
+## ⚡ Optimization Opportunities
+
+- [ ] Memoize more expensive calculations (e.g., category totals)
+- [ ] Consider virtual scrolling for large transaction lists
+- [ ] Lazy load subscription treemap component
+- [ ] Add category-indexed lookup for O(1) budget matching
+
+---
+
+## 🧹 Code Quality
+
+- [ ] Add stricter TypeScript checks (`noUncheckedIndexedAccess`)
+- [ ] Add unit tests for store actions and utility functions
+- [ ] Consolidate duplicate icon handling patterns
+- [ ] Add JSDoc comments to utility functions
+- [ ] Consider extracting chart rendering logic to reusable components
+
+---
+
+## ✅ Recently Completed
+
 - [x] Fix `calculateNextBilling()` month boundary bug
-- [x] Remove unused `isFormOpen` state and `TransactionForm` import
-- [x] Fix React hook dependency warnings
-
-### Logic & Code
-- [x] Unify 4 different icon handling patterns (`DynamicIcon.tsx`)
-- [x] Fix `formatDate()` locale parameter (Intl.DateTimeFormat)
-- [x] Integrate `DynamicIcon.tsx` properly
-- [x] Standardize transaction amount sign convention (negative for expenses)
-- [x] Budget category matching uses case-insensitive comparison
-
-### Dead Code Cleanup
-- [x] Remove unused imports (TransactionForm, ArrowUpDown)
-- [x] Sync `APP_VERSION` with `package.json`
-
-### Performance
-- [x] Memoize chart SVG path calculations
-- [x] Migrate to Iconify (removed react-icons)
-- [x] `useShallow` selectors already optimized
-
-### UI/UX
-- [x] Fix pie chart legend (shows all categories)
-- [x] Mobile responsiveness (sidebar collapse)
-- [x] Add icon/color pickers to category editor
-- [x] Color contrast improved for WCAG AA compliance
-- [x] Delete operations have confirmation modal (loading state not needed for sync localStorage)
-- [x] Button placement standardized in modals (Cancel left, Action right)
-
-### Code Quality
-- [x] Centralize `formatCurrency()` via `useFormatters` hook
+- [x] Unify icon handling with `DynamicIcon.tsx`
+- [x] Centralize formatting with `useFormatters` hook
 - [x] Add input sanitization for data import
+- [x] Remove react-icons dependency
+- [x] Fix pie chart legend
+- [x] Improve color contrast (WCAG AA)
+- [x] Add icon/color pickers to category editor
+- [x] Mobile responsive sidebar
 
 ---
 
-*Last updated: 2025-12-16*
+*Deep review completed: 2025-12-16*
+*Scanned: store (411 lines), types (282 lines), 5 pages, 35 components, 2 hooks*
