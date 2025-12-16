@@ -222,7 +222,7 @@ export default function Dashboard() {
                   </svg>
                 </div>
                 <div className={styles.legend}>
-                  {spendingByCategory.slice(0, 5).map(d => (
+                  {spendingByCategory.map(d => (
                     <div key={d.category} className={styles.legendItem}>
                       <div className={styles.legendColor} style={{ backgroundColor: d.color }} />
                       <span className={styles.legendLabel}>{d.category}</span>
