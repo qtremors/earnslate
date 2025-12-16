@@ -31,7 +31,7 @@
 ## 🎨 UI/UX Improvements
 - [ ] Add loading states during delete operations
 - [x] Fix pie chart legend showing only 5 items while chart shows all
-- [ ] Improve mobile responsiveness (sidebar collapse, toolbar overflow)
+- [x] Improve mobile responsiveness (sidebar collapse, toolbar overflow)
 - [ ] Standardize button placement across modals and forms
 - [ ] Check color contrast for accessibility (WCAG)
 
