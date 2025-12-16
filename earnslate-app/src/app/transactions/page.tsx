@@ -265,34 +265,45 @@ export default function TransactionsPage() {
                             <div className={styles.chartContainer}>
                                 <div className={styles.pieChart}>
                                     <svg viewBox="0 0 100 100" className={styles.pie}>
-                                        {chartData.reduce((acc, d, i) => {
-                                            const startAngle = acc.angle;
-                                            const sliceAngle = (d.amount / totalExpenses) * 360;
-                                            const endAngle = startAngle + sliceAngle;
+                                        {chartData.length === 1 ? (
+                                            // Single category - draw a full circle
+                                            <circle
+                                                cx="50"
+                                                cy="50"
+                                                r="40"
+                                                fill={CHART_COLORS[0]}
+                                            />
+                                        ) : (
+                                            // Multiple categories - draw pie slices
+                                            chartData.reduce((acc, d, i) => {
+                                                const startAngle = acc.angle;
+                                                const sliceAngle = (d.amount / totalExpenses) * 360;
+                                                const endAngle = startAngle + sliceAngle;
 
-                                            const startRad = (startAngle - 90) * Math.PI / 180;
-                                            const endRad = (endAngle - 90) * Math.PI / 180;
+                                                const startRad = (startAngle - 90) * Math.PI / 180;
+                                                const endRad = (endAngle - 90) * Math.PI / 180;
 
-                                            const x1 = 50 + 40 * Math.cos(startRad);
-                                            const y1 = 50 + 40 * Math.sin(startRad);
-                                            const x2 = 50 + 40 * Math.cos(endRad);
-                                            const y2 = 50 + 40 * Math.sin(endRad);
+                                                const x1 = 50 + 40 * Math.cos(startRad);
+                                                const y1 = 50 + 40 * Math.sin(startRad);
+                                                const x2 = 50 + 40 * Math.cos(endRad);
+                                                const y2 = 50 + 40 * Math.sin(endRad);
 
-                                            const largeArc = sliceAngle > 180 ? 1 : 0;
+                                                const largeArc = sliceAngle > 180 ? 1 : 0;
 
-                                            acc.paths.push(
-                                                <path
-                                                    key={d.category}
-                                                    d={`M 50 50 L ${x1} ${y1} A 40 40 0 ${largeArc} 1 ${x2} ${y2} Z`}
-                                                    fill={CHART_COLORS[i % CHART_COLORS.length]}
-                                                    stroke="var(--bg-primary)"
-                                                    strokeWidth="0.5"
-                                                />
-                                            );
+                                                acc.paths.push(
+                                                    <path
+                                                        key={d.category}
+                                                        d={`M 50 50 L ${x1} ${y1} A 40 40 0 ${largeArc} 1 ${x2} ${y2} Z`}
+                                                        fill={CHART_COLORS[i % CHART_COLORS.length]}
+                                                        stroke="var(--bg-secondary)"
+                                                        strokeWidth="1"
+                                                    />
+                                                );
 
-                                            acc.angle = endAngle;
-                                            return acc;
-                                        }, { paths: [] as React.ReactElement[], angle: 0 }).paths}
+                                                acc.angle = endAngle;
+                                                return acc;
+                                            }, { paths: [] as React.ReactElement[], angle: 0 }).paths
+                                        )}
                                     </svg>
                                 </div>
 

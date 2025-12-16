@@ -2,29 +2,30 @@
 
 > A local-first personal finance tracker with god-tier customization.
 
-## Features
+## ✨ Features
 
-### Core
-- ✅ **Transactions** - Search, filter by type/category, pie chart view, CSV export
-- ✅ **Budgets** - Progress bars, donut chart, alert badges at 80%/90%
-- ✅ **Subscriptions** - 55+ service templates with brand icons, treemap view
-- ✅ **Dashboard** - Spending chart, budget alerts, 3-column layout
-- ✅ **Settings** - Category manager, data export/import
+### Core Modules
+- **Transactions** - Search, filter by type/category, pie chart view, CSV export
+- **Budgets** - Progress bars, donut chart, alert badges at 80%/90%
+- **Subscriptions** - 100+ service templates with brand icons, treemap view
+- **Dashboard** - Spending chart, budget alerts, 3-column layout
+- **Settings** - Category manager, data export/import, theme toggle
 
 ### God-Tier Customization
-- ✅ **ServicePicker** - Search 55+ services with brand icons (Netflix, Spotify, etc.)
-- ✅ **Treemap View** - Visual bento-box layout sized by cost percentage
-- ✅ **Flexible Billing** - Every N hours/days/weeks/months/years
-- ✅ **Icon Picker** - 100+ searchable Lucide icons for custom subscriptions
-- ✅ **Color Picker** - 12-color palette for personalization
-- ✅ **Custom Categories** - 8 built-in, user can add more
-- ✅ **Notes Field** - Add memos to subscriptions
+- **ServicePicker** - Search 100+ services with brand icons (Netflix, Spotify, etc.)
+- **Treemap View** - Visual bento-box layout sized by cost percentage
+- **Flexible Billing** - Every N hours/days/weeks/months/years
+- **Icon Picker** - 100+ searchable Lucide icons for custom subscriptions
+- **Color Picker** - 12-color palette for personalization
+- **Custom Categories** - 8 built-in, user can add more
+- **Dark/Light Theme** - Toggle between dark, light, or system preference
 
-### Data
-- ✅ **Local Storage** - Data persists in browser localStorage
-- ✅ **No Account Required** - Works offline, no sign-up needed
+### Data & Privacy
+- **Local Storage** - Data persists in browser localStorage
+- **No Account Required** - Works offline, no sign-up needed
+- **Export/Import** - Backup and restore your data as JSON
 
-## Tech Stack
+## 🛠️ Tech Stack
 
 | Layer | Technology |
 |-------|------------|
@@ -32,9 +33,9 @@
 | Language | TypeScript |
 | State | Zustand + localStorage |
 | Styling | CSS Modules |
-| Icons | Lucide React + react-icons/si |
+| Icons | Lucide React + Iconify |
 
-## Getting Started
+## 🚀 Getting Started
 
 ```bash
 cd earnslate-app
@@ -44,7 +45,7 @@ npm run dev
 
 Open [http://localhost:3000](http://localhost:3000)
 
-## Project Structure
+## 📁 Project Structure
 
 ```
 earnslate-app/
@@ -57,11 +58,17 @@ earnslate-app/
 └── public/           # Static assets
 ```
 
-## Roadmap
+## 📋 Roadmap
 
-- [ ] Custom icon uploads
-- [ ] Toast notifications
-- [ ] Data export (CSV/JSON)
-- [ ] Category management UI
-- [ ] Authentication (Supabase)
-- [ ] Cloud sync
+- [x] Toast notifications
+- [x] Data export (CSV/JSON)
+- [x] Category management UI
+- [x] Dark/Light theme toggle
+- [ ] PWA/offline support
+- [ ] Subscription reminders
+- [ ] Recurring transactions
+- [ ] Cloud sync (optional)
+
+## 📄 License
+
+MIT

@@ -202,8 +202,8 @@ export default function BudgetsPage() {
                                                 key={d.name}
                                                 d={`M ${x1o} ${y1o} A ${outerR} ${outerR} 0 ${largeArc} 1 ${x2o} ${y2o} L ${x1i} ${y1i} A ${innerR} ${innerR} 0 ${largeArc} 0 ${x2i} ${y2i} Z`}
                                                 fill={d.color}
-                                                stroke="var(--bg-primary)"
-                                                strokeWidth="1"
+                                                stroke="var(--bg-secondary)"
+                                                strokeWidth="2"
                                                 opacity={d.spent > 0 ? 1 : 0.3}
                                             />
                                         );

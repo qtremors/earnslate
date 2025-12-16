@@ -4,7 +4,7 @@ import { useMemo } from 'react';
 import { Subscription } from '@/types';
 import { getMonthlyEquivalent, formatCycleDisplay } from '@/store';
 import * as LucideIcons from 'lucide-react';
-import * as SimpleIcons from 'react-icons/si';
+import { Icon } from '@iconify/react';
 import styles from './SubscriptionTreemap.module.css';
 
 interface SubscriptionTreemapProps {
@@ -26,12 +26,32 @@ export default function SubscriptionTreemap({ subscriptions, currencySymbol }: S
     const totalMonthly = processedSubs.reduce((sum, s) => sum + s.monthlyEquiv, 0);
     const totalYearly = totalMonthly * 12;
 
-    const getIcon = (iconName: string) => {
-        if (iconName.startsWith('brand:')) {
-            const brandIcon = iconName.replace('brand:', '');
-            return (SimpleIcons as unknown as Record<string, React.ElementType>)[brandIcon] || LucideIcons.HelpCircle;
+    const getIcon = (iconName: string, color?: string) => {
+        // Handle double-prefixed format (brand:simple-icons:*)
+        if (iconName.startsWith('brand:simple-icons:')) {
+            const cleanIcon = iconName.replace('brand:', '');
+            return <Icon icon={cleanIcon} style={{ color: color || 'currentColor' }} />;
         }
-        return (LucideIcons as unknown as Record<string, React.ElementType>)[iconName] || LucideIcons.HelpCircle;
+        // Handle Iconify brand icons (simple-icons:*)
+        if (iconName.includes(':')) {
+            return <Icon icon={iconName} style={{ color: color || 'currentColor' }} />;
+        }
+        // Handle legacy brand: prefix
+        if (iconName.startsWith('brand:')) {
+            const brandIcon = iconName.replace('brand:', '').replace(/^Si/, '').toLowerCase();
+            return <Icon icon={`simple-icons:${brandIcon}`} style={{ color: color || 'currentColor' }} />;
+        }
+        // Handle legacy react-icons/si format (SiNetflix -> simple-icons:netflix)
+        if (iconName.startsWith('Si')) {
+            const brandIcon = iconName.replace(/^Si/, '').toLowerCase();
+            return <Icon icon={`simple-icons:${brandIcon}`} style={{ color: color || 'currentColor' }} />;
+        }
+        // Handle Lucide icons
+        const LucideIcon = (LucideIcons as unknown as Record<string, React.ElementType>)[iconName];
+        if (LucideIcon) {
+            return <LucideIcon style={{ color: color || 'currentColor' }} />;
+        }
+        return <LucideIcons.HelpCircle />;
     };
 
     const getItemSize = (monthlyEquiv: number): 'xl' | 'lg' | 'md' | 'sm' | 'xs' => {
@@ -66,7 +86,7 @@ export default function SubscriptionTreemap({ subscriptions, currencySymbol }: S
         <div className={styles.container}>
             <div className={styles.treemap}>
                 {processedSubs.map((sub) => {
-                    const Icon = getIcon(sub.icon);
+                    const iconElement = getIcon(sub.icon, sub.color || undefined);
                     const size = getItemSize(sub.monthlyEquiv);
                     const percentage = Math.round((sub.monthlyEquiv / totalMonthly) * 100);
 
@@ -82,8 +102,8 @@ export default function SubscriptionTreemap({ subscriptions, currencySymbol }: S
                             aria-label={`${sub.name}: ${formatAmount(sub.amount)} ${getCycleLabel(sub.cycle)}, ${percentage}% of total`}
                         >
                             <div className={styles.itemHeader}>
-                                <div className={styles.itemIcon} style={{ color: sub.color || '#666' }}>
-                                    <Icon />
+                                <div className={styles.itemIcon}>
+                                    {iconElement}
                                 </div>
                                 <span className={styles.itemPercentage}>{percentage}%</span>
                             </div>
@@ -107,22 +127,6 @@ export default function SubscriptionTreemap({ subscriptions, currencySymbol }: S
                         </div>
                     );
                 })}
-            </div>
-
-            <div className={styles.footer}>
-                <div className={styles.totalSection}>
-                    <span className={styles.totalLabel}>TOTAL / MONTH</span>
-                    <span className={styles.totalAmount}>{formatAmount(totalMonthly)}</span>
-                </div>
-                <div className={styles.totalSection}>
-                    <span className={styles.totalLabel}>YEARLY PROJECTION</span>
-                    <span className={styles.totalAmountSecondary}>{formatAmount(totalYearly)}</span>
-                </div>
-                {subscriptions.length > processedSubs.length && (
-                    <div className={styles.infoNote}>
-                        Showing {processedSubs.length} of {subscriptions.length} active
-                    </div>
-                )}
             </div>
         </div>
     );

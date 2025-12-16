@@ -9,9 +9,9 @@ import Card from '@/components/Card';
 import Button from '@/components/Button';
 import SubscriptionForm from '@/components/SubscriptionForm';
 import SubscriptionTreemap from '@/components/SubscriptionTreemap';
-import { Plus, Trash2, Pencil, Play, Pause, LayoutGrid, List, Download } from 'lucide-react';
+import { Plus, Trash2, Pencil, Play, Pause, LayoutGrid, List, Download, HelpCircle } from 'lucide-react';
 import * as LucideIcons from 'lucide-react';
-import * as SimpleIcons from 'react-icons/si';
+import { Icon } from '@iconify/react';
 import styles from './page.module.css';
 
 type ViewMode = 'list' | 'treemap';
@@ -65,13 +65,32 @@ export default function SubscriptionsPage() {
         showToast(currentActive ? 'Subscription paused' : 'Subscription resumed', 'info');
     };
 
-    const getSubscriptionIcon = (iconName: string) => {
-        if (iconName.startsWith('brand:')) {
-            const brandIcon = iconName.replace('brand:', '');
-            const Icon = (SimpleIcons as unknown as Record<string, React.ElementType>)[brandIcon];
-            return Icon || LucideIcons.HelpCircle;
+    const getSubscriptionIcon = (iconName: string, color?: string) => {
+        // Handle double-prefixed format (brand:simple-icons:*)
+        if (iconName.startsWith('brand:simple-icons:')) {
+            const cleanIcon = iconName.replace('brand:', '');
+            return <Icon icon={cleanIcon} style={{ color: color || 'currentColor' }} width={24} height={24} />;
         }
-        return (LucideIcons as unknown as Record<string, React.ElementType>)[iconName] || LucideIcons.HelpCircle;
+        // Handle Iconify brand icons (simple-icons:*)
+        if (iconName.includes(':')) {
+            return <Icon icon={iconName} style={{ color: color || 'currentColor' }} width={24} height={24} />;
+        }
+        // Handle legacy brand: prefix (convert to Iconify format)
+        if (iconName.startsWith('brand:')) {
+            const brandIcon = iconName.replace('brand:', '').replace(/^Si/, '').toLowerCase();
+            return <Icon icon={`simple-icons:${brandIcon}`} style={{ color: color || 'currentColor' }} width={24} height={24} />;
+        }
+        // Handle legacy react-icons/si format (SiNetflix -> simple-icons:netflix)
+        if (iconName.startsWith('Si')) {
+            const brandIcon = iconName.replace(/^Si/, '').toLowerCase();
+            return <Icon icon={`simple-icons:${brandIcon}`} style={{ color: color || 'currentColor' }} width={24} height={24} />;
+        }
+        // Handle Lucide icons
+        const LucideIcon = (LucideIcons as unknown as Record<string, React.ElementType>)[iconName];
+        if (LucideIcon) {
+            return <LucideIcon size={24} style={{ color: color || 'currentColor' }} />;
+        }
+        return <HelpCircle size={24} />;
     };
 
     const activeSubscriptions = subscriptions.filter(s => s.active);
@@ -167,7 +186,7 @@ export default function SubscriptionsPage() {
                 ) : (
                     <div className={styles.subscriptionList}>
                         {subscriptions.map((sub) => {
-                            const Icon = getSubscriptionIcon(sub.icon);
+                            const iconElement = getSubscriptionIcon(sub.icon, sub.color || undefined);
                             return (
                                 <Card
                                     key={sub.id}
@@ -176,8 +195,8 @@ export default function SubscriptionsPage() {
                                     style={sub.color ? { borderLeftColor: sub.color } : undefined}
                                 >
                                     <div className={styles.subscriptionMain}>
-                                        <div className={styles.subscriptionIcon} style={{ color: sub.color || 'var(--text-secondary)' }}>
-                                            <Icon size={22} />
+                                        <div className={styles.subscriptionIcon}>
+                                            {iconElement}
                                         </div>
                                         <div className={styles.subscriptionInfo}>
                                             <span className={styles.subscriptionName}>{sub.name}</span>

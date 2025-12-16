@@ -11,6 +11,12 @@
     transition: all var(--transition-fast);
 }
 
+/* Ensure icons are vertically centered with text */
+.button svg {
+    flex-shrink: 0;
+    vertical-align: middle;
+}
+
 .button:disabled {
     opacity: 0.5;
     cursor: not-allowed;

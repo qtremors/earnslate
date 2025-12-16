@@ -179,37 +179,51 @@ export default function Dashboard() {
               <div className={styles.chartContainer}>
                 <div className={styles.pieChart}>
                   <svg viewBox="0 0 100 100" className={styles.pie}>
-                    {spendingByCategory.reduce((acc, d) => {
-                      const startAngle = acc.angle;
-                      const sliceAngle = (d.amount / monthlyExpenses) * 360;
-                      const endAngle = startAngle + sliceAngle;
+                    {spendingByCategory.length === 1 ? (
+                      // Single category - draw a full circle
+                      <circle
+                        cx="50"
+                        cy="50"
+                        r="40"
+                        fill={spendingByCategory[0].color}
+                        className={styles.pieSlice}
+                      >
+                        <title>{spendingByCategory[0].category}: {formatCurrency(spendingByCategory[0].amount)} (100%)</title>
+                      </circle>
+                    ) : (
+                      // Multiple categories - draw pie slices
+                      spendingByCategory.reduce((acc, d) => {
+                        const startAngle = acc.angle;
+                        const sliceAngle = (d.amount / monthlyExpenses) * 360;
+                        const endAngle = startAngle + sliceAngle;
 
-                      const startRad = (startAngle - 90) * Math.PI / 180;
-                      const endRad = (endAngle - 90) * Math.PI / 180;
+                        const startRad = (startAngle - 90) * Math.PI / 180;
+                        const endRad = (endAngle - 90) * Math.PI / 180;
 
-                      const x1 = 50 + 40 * Math.cos(startRad);
-                      const y1 = 50 + 40 * Math.sin(startRad);
-                      const x2 = 50 + 40 * Math.cos(endRad);
-                      const y2 = 50 + 40 * Math.sin(endRad);
+                        const x1 = 50 + 40 * Math.cos(startRad);
+                        const y1 = 50 + 40 * Math.sin(startRad);
+                        const x2 = 50 + 40 * Math.cos(endRad);
+                        const y2 = 50 + 40 * Math.sin(endRad);
 
-                      const largeArc = sliceAngle > 180 ? 1 : 0;
-                      const pct = Math.round((d.amount / monthlyExpenses) * 100);
+                        const largeArc = sliceAngle > 180 ? 1 : 0;
+                        const pct = Math.round((d.amount / monthlyExpenses) * 100);
 
-                      acc.paths.push(
-                        <path
-                          key={d.category}
-                          d={`M 50 50 L ${x1} ${y1} A 40 40 0 ${largeArc} 1 ${x2} ${y2} Z`}
-                          fill={d.color}
-                          stroke="var(--bg-primary)"
-                          strokeWidth="0.5"
-                          className={styles.pieSlice}
-                        >
-                          <title>{d.category}: {formatCurrency(d.amount)} ({pct}%)</title>
-                        </path>
-                      );
-                      acc.angle = endAngle;
-                      return acc;
-                    }, { paths: [] as React.ReactElement[], angle: 0 }).paths}
+                        acc.paths.push(
+                          <path
+                            key={d.category}
+                            d={`M 50 50 L ${x1} ${y1} A 40 40 0 ${largeArc} 1 ${x2} ${y2} Z`}
+                            fill={d.color}
+                            stroke="var(--bg-secondary)"
+                            strokeWidth="1"
+                            className={styles.pieSlice}
+                          >
+                            <title>{d.category}: {formatCurrency(d.amount)} ({pct}%)</title>
+                          </path>
+                        );
+                        acc.angle = endAngle;
+                        return acc;
+                      }, { paths: [] as React.ReactElement[], angle: 0 }).paths
+                    )}
                   </svg>
                 </div>
                 <div className={styles.legend}>

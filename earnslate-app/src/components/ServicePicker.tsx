@@ -3,7 +3,7 @@
 import { useState, useMemo } from 'react';
 import { POPULAR_SERVICES, SERVICE_CATEGORIES, ServiceTemplate } from '@/data/services';
 import * as LucideIcons from 'lucide-react';
-import * as SimpleIcons from 'react-icons/si';
+import { Icon } from '@iconify/react';
 import styles from './ServicePicker.module.css';
 
 interface ServicePickerProps {
@@ -34,12 +34,22 @@ export default function ServicePicker({ onSelect, onCustom }: ServicePickerProps
     }, [search, selectedCategory]);
 
     const getIcon = (service: ServiceTemplate) => {
-        if (service.iconType === 'brand') {
-            const Icon = (SimpleIcons as unknown as Record<string, React.ElementType>)[service.icon];
-            return Icon ? <Icon size={20} /> : <LucideIcons.HelpCircle size={20} />;
+        const color = service.color;
+        // Handle Iconify brand icons (simple-icons:*)
+        if (service.icon.includes(':')) {
+            return <Icon icon={service.icon} style={{ color }} width={20} height={20} />;
         }
-        const Icon = (LucideIcons as unknown as Record<string, React.ElementType>)[service.icon];
-        return Icon ? <Icon size={20} /> : <LucideIcons.HelpCircle size={20} />;
+        // Handle legacy react-icons/si format (SiNetflix -> simple-icons:netflix)
+        if (service.icon.startsWith('Si')) {
+            const brandIcon = service.icon.replace(/^Si/, '').toLowerCase();
+            return <Icon icon={`simple-icons:${brandIcon}`} style={{ color }} width={20} height={20} />;
+        }
+        // Handle Lucide icons
+        const LucideIcon = (LucideIcons as unknown as Record<string, React.ElementType>)[service.icon];
+        if (LucideIcon) {
+            return <LucideIcon size={20} style={{ color }} />;
+        }
+        return <LucideIcons.HelpCircle size={20} />;
     };
 
     return (

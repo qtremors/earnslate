@@ -33,21 +33,24 @@
     gap: var(--space-md);
 }
 
-.avatar {
-    width: 40px;
-    height: 40px;
-    border-radius: var(--radius-full);
-    background: var(--bg-tertiary);
+.userInfo {
     display: flex;
     align-items: center;
-    justify-content: center;
-    font-size: var(--text-lg);
+    padding: var(--space-sm) var(--space-md);
+    background: var(--bg-tertiary);
+    border-radius: var(--radius-full);
     cursor: pointer;
     transition: background var(--transition-fast);
 }
 
-.avatar:hover {
+.userInfo:hover {
     background: var(--bg-hover);
+}
+
+.userName {
+    font-size: var(--text-sm);
+    font-weight: var(--font-medium);
+    color: var(--text-primary);
 }
 
 /* ===== Mobile ===== */

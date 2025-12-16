@@ -1,3 +1,31 @@
+## [0.7.0] - 2025-12-16
+
+### Added - Icon System Upgrade
+- **Iconify Integration**: Migrated from react-icons/si to @iconify/react
+- **100+ Service Icons**: Added HBO Max, Hulu, Apple TV+, Crunchyroll, Tidal, Deezer, 1Password, Bitwarden, Midjourney, GitHub Copilot, Perplexity, Gemini, DoorDash, Uber Eats, and many more
+- **Backwards Compatibility**: Legacy Si* and brand:* icon formats still work
+
+### Added - UI/UX Improvements
+- **Header Username**: Shows user's display name instead of profile icon
+- **Date Input Styling**: Calendar picker matches dark/light theme
+- **Button Alignment**: Fixed icon/text vertical alignment in buttons
+
+### Fixed - Critical Bugs
+- **Pie Chart Visibility**: Fixed invisible chart when only one category exists (360° arc bug)
+- **Double-Prefix Icons**: Fixed brand:simple-icons:* format causing icons not to display
+- **Duplicate Icons**: Removed duplicate Video and Bike entries in IconPicker
+- **Subscriptions Layout**: Fixed view toggle position (space-between actions)
+
+### Improved - Subscriptions
+- **Treemap Cleanup**: Removed redundant cost footer (uses main page summary)
+- **Next Billing Calculation**: Now supports hour/day/week/month/year cycles
+- **Form Reset**: New subscriptions default to +1 cycle from today
+
+### Known Issues
+- Next billing date may be incorrectly calculated for some cycle configurations
+
+---
+
 ## [0.6.0] - 2025-12-15
 
 ### Fixed - Critical Issues

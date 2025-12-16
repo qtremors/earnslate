@@ -12,7 +12,7 @@ import ColorPicker from './ColorPicker';
 import ServicePicker from './ServicePicker';
 import { POPULAR_SERVICES, ServiceTemplate } from '@/data/services';
 import * as LucideIcons from 'lucide-react';
-import * as SimpleIcons from 'react-icons/si';
+import { Icon } from '@iconify/react';
 import styles from './SubscriptionForm.module.css';
 
 interface SubscriptionFormProps {
@@ -70,7 +70,10 @@ export default function SubscriptionForm({ isOpen, onClose, editId }: Subscripti
         setAmount('');
         setCycleCount('1');
         setCycleUnit('month');
-        setNextBilling(new Date().toISOString().split('T')[0]);
+        // Set next billing to 1 month from today by default
+        const nextDate = new Date();
+        nextDate.setMonth(nextDate.getMonth() + 1);
+        setNextBilling(nextDate.toISOString().split('T')[0]);
         setIcon('Tv');
         setIconType('lucide');
         setColor('#E50914');
@@ -88,6 +91,35 @@ export default function SubscriptionForm({ isOpen, onClose, editId }: Subscripti
         if (service.suggestedCycle) {
             setCycleCount(String(service.suggestedCycle.count));
             setCycleUnit(service.suggestedCycle.unit);
+            // Calculate next billing date based on cycle
+            const nextDate = new Date();
+            const count = service.suggestedCycle.count;
+            const unit = service.suggestedCycle.unit as string;
+            switch (unit) {
+                case 'hour':
+                    nextDate.setHours(nextDate.getHours() + count);
+                    break;
+                case 'day':
+                    nextDate.setDate(nextDate.getDate() + count);
+                    break;
+                case 'week':
+                    nextDate.setDate(nextDate.getDate() + (count * 7));
+                    break;
+                case 'month':
+                    nextDate.setMonth(nextDate.getMonth() + count);
+                    break;
+                case 'year':
+                    nextDate.setFullYear(nextDate.getFullYear() + count);
+                    break;
+                default:
+                    nextDate.setMonth(nextDate.getMonth() + count);
+            }
+            setNextBilling(nextDate.toISOString().split('T')[0]);
+        } else {
+            // Default to 1 month if no cycle specified
+            const nextDate = new Date();
+            nextDate.setMonth(nextDate.getMonth() + 1);
+            setNextBilling(nextDate.toISOString().split('T')[0]);
         }
         setMode('custom'); // Switch to form to confirm/edit
     };
@@ -143,15 +175,13 @@ export default function SubscriptionForm({ isOpen, onClose, editId }: Subscripti
             unit: cycleUnit,
         };
 
-        // Store icon with type prefix for rendering
-        const iconValue = iconType === 'brand' ? `brand:${icon}` : icon;
-
+        // Store icon directly (already in correct Iconify format from ServicePicker)
         const subscriptionData = {
             name,
             amount: parseFloat(amount),
             cycle,
             nextBilling,
-            icon: iconValue,
+            icon,  // No prefix needed - Iconify format or Lucide name
             color,
             notes: notes || undefined,
             active: true,
@@ -179,12 +209,21 @@ export default function SubscriptionForm({ isOpen, onClose, editId }: Subscripti
 
     // Get icon component for preview
     const getPreviewIcon = () => {
-        if (iconType === 'brand') {
-            const Icon = (SimpleIcons as unknown as Record<string, React.ElementType>)[icon];
-            return Icon ? <Icon size={24} /> : <LucideIcons.HelpCircle size={24} />;
+        // Handle Iconify brand icons (simple-icons:*)
+        if (icon.includes(':')) {
+            return <Icon icon={icon} style={{ color: color || 'currentColor' }} width={24} height={24} />;
         }
-        const Icon = (LucideIcons as unknown as Record<string, React.ElementType>)[icon];
-        return Icon ? <Icon size={24} /> : <LucideIcons.HelpCircle size={24} />;
+        // Handle legacy react-icons/si format (SiNetflix -> simple-icons:netflix)
+        if (icon.startsWith('Si')) {
+            const brandIcon = icon.replace(/^Si/, '').toLowerCase();
+            return <Icon icon={`simple-icons:${brandIcon}`} style={{ color: color || 'currentColor' }} width={24} height={24} />;
+        }
+        // Handle Lucide icons
+        const LucideIcon = (LucideIcons as unknown as Record<string, React.ElementType>)[icon];
+        if (LucideIcon) {
+            return <LucideIcon size={24} style={{ color: color || 'currentColor' }} />;
+        }
+        return <LucideIcons.HelpCircle size={24} />;
     };
 
     return (

@@ -1,3 +1,6 @@
+'use client';
+
+import { useAppStore, useShallow } from '@/store';
 import styles from './Header.module.css';
 
 interface HeaderProps {
@@ -6,6 +9,8 @@ interface HeaderProps {
 }
 
 export default function Header({ title, subtitle }: HeaderProps) {
+    const displayName = useAppStore(useShallow((state) => state.settings.displayName));
+
     return (
         <header className={styles.header}>
             <div className={styles.titleSection}>
@@ -14,9 +19,8 @@ export default function Header({ title, subtitle }: HeaderProps) {
             </div>
 
             <div className={styles.actions}>
-                {/* User avatar placeholder */}
-                <div className={styles.avatar}>
-                    <span>👤</span>
+                <div className={styles.userInfo}>
+                    <span className={styles.userName}>{displayName}</span>
                 </div>
             </div>
         </header>

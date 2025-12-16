@@ -43,8 +43,7 @@ const LUCIDE_ICONS = [
     // Communication
     { name: 'Mail', label: 'Email' },
     { name: 'MessageCircle', label: 'Message' },
-    { name: 'Phone', label: 'Phone Call' },
-    { name: 'Video', label: 'Video Call' },
+    { name: 'PhoneCall', label: 'Phone Call' },
     // Shopping & Food
     { name: 'ShoppingCart', label: 'Shopping' },
     { name: 'ShoppingBag', label: 'Bag' },
@@ -76,7 +75,7 @@ const LUCIDE_ICONS = [
     { name: 'Heart', label: 'Health' },
     { name: 'HeartPulse', label: 'Heartbeat' },
     { name: 'Dumbbell', label: 'Gym' },
-    { name: 'Bike', label: 'Cycling' },
+    { name: 'PersonStanding', label: 'Exercise' },
     { name: 'Footprints', label: 'Walking' },
     { name: 'Pill', label: 'Medicine' },
     { name: 'Stethoscope', label: 'Doctor' },
