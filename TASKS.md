@@ -30,13 +30,13 @@
 
 ## 🎨 UI/UX Improvements
 - [ ] Add loading states during delete operations
-- [ ] Fix pie chart legend showing only 5 items while chart shows all
+- [x] Fix pie chart legend showing only 5 items while chart shows all
 - [ ] Improve mobile responsiveness (sidebar collapse, toolbar overflow)
 - [ ] Standardize button placement across modals and forms
 - [ ] Check color contrast for accessibility (WCAG)
 
 ## 📚 Code Quality
-- [ ] Centralize `formatCurrency()` - duplicated in 4+ files
+- [x] Centralize `formatCurrency()` - duplicated in 4+ files
 - [ ] Add stricter TypeScript checks (`noUncheckedIndexedAccess`)
 - [ ] Add input sanitization for form data
 

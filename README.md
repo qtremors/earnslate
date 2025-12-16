@@ -1,175 +1,66 @@
 # Earnslate - Personal Finance Manager
 
-<p align="center">
-  <strong>A beautiful, local-first personal finance tracker.</strong><br>
-  Track expenses, manage budgets, and control subscriptions — all without an account.
-</p>
-
----
+> A local-first personal finance tracker.
 
 ## ✨ Features
 
-### 📊 Dashboard
-- **At-a-glance overview** of your financial health
-- Balance, income, and expenses for the current month
-- Spending breakdown by category (pie chart)
-- Recent transactions with quick search
-- Budget alerts when you're over 80%
+### Core Modules
+- **Transactions** - Search, filter by type/category, pie chart view, CSV export
+- **Budgets** - Progress bars, donut chart, alert badges at 80%/90%
+- **Subscriptions** - 100+ service templates with brand icons, treemap view
+- **Dashboard** - Spending chart, budget alerts, 3-column layout
+- **Settings** - Category manager, data export/import, theme toggle
 
-### 💸 Transactions
-- Track income and expenses with categories
-- Filter by type (income/expense) and category
-- Sort by date, amount, or category
-- Visual spending analysis with chart view
-- Export to CSV for spreadsheets
+### God-Tier Customization
+- **ServicePicker** - Search 100+ services with brand icons (Netflix, Spotify, etc.)
+- **Treemap View** - Visual bento-box layout sized by cost percentage
+- **Flexible Billing** - Every N hours/days/weeks/months/years
+- **Icon Picker** - 100+ searchable Lucide icons for custom subscriptions
+- **Color Picker** - 12-color palette for personalization
+- **Custom Categories** - 8 built-in, user can add more
+- **Dark/Light Theme** - Toggle between dark, light, or system preference
 
-### 📈 Budgets
-- Set spending limits by category
-- Real-time progress tracking with visual progress bars
-- Alerts at 80% and 90% thresholds
-- Donut chart showing budget allocation
-- Flexible billing periods (weekly, monthly, yearly)
-
-### 🔄 Subscriptions
-- **100+ service templates** with brand icons (Netflix, Spotify, etc.)
-- Treemap visualization sized by cost
-- Flexible billing cycles (every N hours/days/weeks/months/years)
-- Track active vs. paused subscriptions
-- Monthly and yearly cost projections
-
-### ⚙️ Settings
-- Custom categories with icons and colors
-- Multiple currency support (₹, $, €, £, ¥)
-- Date format preferences
-- Theme toggle (dark/light/system)
-- Full data export/import (JSON)
-
----
-
-## 🔒 Privacy First
-
-| Feature | Description |
-|---------|-------------|
-| **Local Storage** | All data stays in your browser |
-| **No Account** | Works offline, zero sign-up |
-| **No Tracking** | No analytics, no telemetry |
-| **Export Anytime** | Full JSON backup/restore |
-
----
+### Data & Privacy
+- **Local Storage** - Data persists in browser localStorage
+- **No Account Required** - Works offline, no sign-up needed
+- **Export/Import** - Backup and restore your data as JSON
 
 ## 🛠️ Tech Stack
 
 | Layer | Technology |
 |-------|------------|
-| Framework | Next.js 16 |
+| Framework | Next.js 15 |
 | Language | TypeScript |
-| State | Zustand + localStorage persist |
+| State | Zustand + localStorage |
 | Styling | CSS Modules |
-| Icons | Lucide React + Iconify (brand icons) |
-
----
+| Icons | Lucide React + Iconify |
 
 ## 🚀 Getting Started
 
-### Prerequisites
-- Node.js 18+ 
-- npm or yarn
-
-### Installation
-
 ```bash
-# Clone the repository
-git clone https://github.com/yourusername/earnslate.git
-cd earnslate/earnslate-app
-
-# Install dependencies
+cd earnslate-app
 npm install
-
-# Start development server
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) in your browser.
-
-### Production Build
-
-```bash
-npm run build
-npm start
-```
-
----
+Open [http://localhost:3000](http://localhost:3000)
 
 ## 📁 Project Structure
 
 ```
-earnslate/
-├── earnslate-app/
-│   ├── src/
-│   │   ├── app/              # Next.js pages
-│   │   │   ├── page.tsx      # Dashboard
-│   │   │   ├── transactions/ # Transaction management
-│   │   │   ├── budgets/      # Budget tracking
-│   │   │   ├── subscriptions/# Subscription management
-│   │   │   ├── settings/     # User preferences
-│   │   │   └── onboarding/   # First-run setup
-│   │   ├── components/       # Reusable UI components
-│   │   ├── hooks/            # Custom React hooks
-│   │   ├── data/             # Service templates & constants
-│   │   ├── store/            # Zustand state management
-│   │   └── types/            # TypeScript definitions
-│   └── public/               # Static assets
-├── TASKS.md                  # Development roadmap
-├── AGENTS.md                 # AI agent guidelines
-└── README.md
+earnslate-app/
+├── src/
+│   ├── app/          # Pages (dashboard, transactions, budgets, etc.)
+│   ├── components/   # Reusable UI components
+│   ├── data/         # Service templates & constants
+│   ├── store/        # Zustand store
+│   └── types/        # TypeScript definitions
+└── public/           # Static assets
 ```
-
----
-
-## 🎨 Customization
-
-### Adding Custom Categories
-Navigate to **Settings → Categories** to add your own categories with custom icons and colors.
-
-### Changing Currency
-Go to **Settings → Preferences → Currency** to select from INR, USD, EUR, GBP, or JPY.
-
-### Theme
-Toggle between dark mode, light mode, or follow system preference in **Settings → Preferences**.
-
----
 
 ## 📋 Roadmap
 
-- [ ] PWA / Offline support
-- [ ] Subscription due reminders
+- [ ] PWA/offline support
+- [ ] Subscription reminders
 - [ ] Recurring transactions
 - [ ] Cloud sync (optional)
-- [ ] Data visualization improvements
-- [ ] Multi-currency tracking
-
-See [TASKS.md](TASKS.md) for detailed development tasks.
-
----
-
-## 🤝 Contributing
-
-Contributions are welcome! Please read [AGENTS.md](AGENTS.md) for development guidelines.
-
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
-
----
-
-## 📄 License
-
-This project is for personal use. See repository for license details.
-
----
-
-<p align="center">
-  Made with ❤️ for personal finance management
-</p>
