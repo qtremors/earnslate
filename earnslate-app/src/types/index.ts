@@ -235,13 +235,24 @@ export const formatCurrencyCompact = (amount: number, symbol: string = '₹', lo
  * Format a date string according to the specified format.
  * @param dateString - ISO date string or date string
  * @param format - 'DD/MM/YYYY', 'MM/DD/YYYY', or 'YYYY-MM-DD'
- * @param locale - Locale for month names (e.g., 'en-IN', 'en-US')
+ * @param locale - Locale for formatting (e.g., 'en-IN', 'en-US')
  */
 export const formatDate = (dateString: string, format: string = 'DD/MM/YYYY', locale: string = 'en-IN'): string => {
     const date = new Date(dateString);
-    const day = date.getDate().toString().padStart(2, '0');
-    const month = (date.getMonth() + 1).toString().padStart(2, '0');
-    const year = date.getFullYear();
+
+    // Use Intl.DateTimeFormat for locale-aware formatting
+    const options: Intl.DateTimeFormatOptions = {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric',
+    };
+
+    // Get locale-formatted parts
+    const formatter = new Intl.DateTimeFormat(locale, options);
+    const parts = formatter.formatToParts(date);
+    const day = parts.find(p => p.type === 'day')?.value || '';
+    const month = parts.find(p => p.type === 'month')?.value || '';
+    const year = parts.find(p => p.type === 'year')?.value || '';
 
     switch (format) {
         case 'MM/DD/YYYY':
