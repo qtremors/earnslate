@@ -22,8 +22,8 @@
   /* Text Colors */
   --text-primary: #ffffff;
   --text-secondary: #a0a0a0;
-  --text-muted: #666666;
-  --text-disabled: #444444;
+  --text-muted: #9a9a9a;
+  --text-disabled: #555555;
 
   /* Accent Colors - Inverted (Light) */
   --accent-primary: #ffffff;
@@ -119,9 +119,9 @@
 
   /* Text Colors */
   --text-primary: #111111;
-  --text-secondary: #555555;
-  --text-muted: #888888;
-  --text-disabled: #bbbbbb;
+  --text-secondary: #444444;
+  --text-muted: #666666;
+  --text-disabled: #aaaaaa;
 
   /* Accent Colors */
   --accent-primary: #111111;

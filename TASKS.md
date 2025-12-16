@@ -1,29 +1,6 @@
 # Earnslate Tasks
 
-## 🔜 Active Tasks
-
-### Logic Inconsistencies
-- [x] Standardize transaction amount sign convention (negative for expenses, already consistent)
-- [ ] Fix budget category matching (case-insensitive match, case-sensitive display)
-
-### Half-Baked Features
-- [x] Add icon/color pickers to category editor in settings
-
-### Performance
-- [ ] Optimize `useShallow` selectors for granular property access
-- [ ] Add category-indexed lookup for budget matching
-
-### UI/UX Improvements
-- [ ] Add loading states during delete operations
-- [ ] Standardize button placement across modals and forms
-- [ ] Check color contrast for accessibility (WCAG)
-
-### Code Quality
-- [ ] Add stricter TypeScript checks (`noUncheckedIndexedAccess`)
-
----
-
-## � Future Enhancements
+## 🔜 Future Enhancements
 - [ ] Add pagination for transactions list
 - [ ] Subscription due reminders/notifications
 - [ ] PWA/offline support
@@ -35,6 +12,7 @@
 - [ ] Budget period reset notifications
 - [ ] Data validation on import
 - [ ] Multi-currency support
+- [ ] Add stricter TypeScript checks (`noUncheckedIndexedAccess`) - requires extensive refactoring
 
 ---
 
@@ -49,6 +27,8 @@
 - [x] Unify 4 different icon handling patterns (`DynamicIcon.tsx`)
 - [x] Fix `formatDate()` locale parameter (Intl.DateTimeFormat)
 - [x] Integrate `DynamicIcon.tsx` properly
+- [x] Standardize transaction amount sign convention (negative for expenses)
+- [x] Budget category matching uses case-insensitive comparison
 
 ### Dead Code Cleanup
 - [x] Remove unused imports (TransactionForm, ArrowUpDown)
@@ -57,10 +37,15 @@
 ### Performance
 - [x] Memoize chart SVG path calculations
 - [x] Migrate to Iconify (removed react-icons)
+- [x] `useShallow` selectors already optimized
 
 ### UI/UX
 - [x] Fix pie chart legend (shows all categories)
 - [x] Mobile responsiveness (sidebar collapse)
+- [x] Add icon/color pickers to category editor
+- [x] Color contrast improved for WCAG AA compliance
+- [x] Delete operations have confirmation modal (loading state not needed for sync localStorage)
+- [x] Button placement standardized in modals (Cancel left, Action right)
 
 ### Code Quality
 - [x] Centralize `formatCurrency()` via `useFormatters` hook
