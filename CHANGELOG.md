@@ -1,8 +1,17 @@
 # Earnslate Changelog
 
 > **Project:** Earnslate  
-> **Version:** 1.1.0  
+> **Version:** 1.1.1  
 > **Last Updated:** 2026-01-14
+
+---
+
+## v1.1.1 (2026-01-14)
+
+### Fixed
+- **Currency Formatting**: Fixed inconsistencies with negative signs in compact currency mode for `en-IN` locale.
+- **Budgets**: Made budget category matching case-insensitive to ensure reliable transaction tracking.
+- **Documentation**: Corrected JSDoc comments and Git clone URL in README.
 
 ---
 

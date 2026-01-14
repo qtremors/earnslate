@@ -19,13 +19,14 @@ export function useFormatters() {
         const abs = Math.abs(amount);
         const symbol = settings.currencySymbol;
         const locale = settings.locale || 'en-IN';
+        const sign = amount < 0 ? '-' : '';
 
         // Use Indian numbering system for en-IN
         if (locale === 'en-IN') {
-            if (abs >= 10000000) return `${symbol}${(abs / 10000000).toFixed(1)}Cr`;
-            if (abs >= 100000) return `${symbol}${(abs / 100000).toFixed(1)}L`;
-            if (abs >= 1000) return `${symbol}${(abs / 1000).toFixed(1)}K`;
-            return `${symbol}${abs.toLocaleString(locale)}`;
+            if (abs >= 10000000) return `${sign}${symbol}${(abs / 10000000).toFixed(1)}Cr`;
+            if (abs >= 100000) return `${sign}${symbol}${(abs / 100000).toFixed(1)}L`;
+            if (abs >= 1000) return `${sign}${symbol}${(abs / 1000).toFixed(1)}K`;
+            return `${sign}${symbol}${abs.toLocaleString(locale)}`;
         }
 
         // Use International system for other locales
@@ -33,7 +34,8 @@ export function useFormatters() {
             style: 'currency',
             currency: settings.currency || 'USD',
             notation: 'compact',
-            maximumFractionDigits: 1
+            maximumFractionDigits: 1,
+            // Intl handles sign automatically
         }).format(amount);
     }, [settings.currencySymbol, settings.locale, settings.currency]);
 

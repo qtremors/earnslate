@@ -258,7 +258,7 @@ export const useAppStore = create<AppState>()(
                             const newSpent = state.transactions
                                 .filter(t =>
                                     t.type === 'expense' &&
-                                    t.category === budget.category &&
+                                    (t.category.toLowerCase() === budget.category.toLowerCase()) &&
                                     t.date >= newPeriodStartDate
                                 )
                                 .reduce((sum, t) => sum + Math.abs(t.amount), 0);

@@ -161,15 +161,16 @@ export const formatCurrency = (amount: number, symbol: string = '₹', locale: s
 };
 
 // Note: For strict correctness with international locales, we need the currency code.
-// Since this helper might not have access to it, we default to 'USD' if locale is not en-IN.
+// Since this helper might not have access to it, we default to 'INR' when locale is 'en-IN'.
 export const formatCurrencyCompact = (amount: number, symbol: string = '₹', locale: string = 'en-IN', currency: string = 'INR'): string => {
     const abs = Math.abs(amount);
+    const sign = amount < 0 ? '-' : '';
 
     if (locale === 'en-IN') {
-        if (abs >= 10000000) return `${symbol}${(abs / 10000000).toFixed(1)}Cr`;
-        if (abs >= 100000) return `${symbol}${(abs / 100000).toFixed(1)}L`;
-        if (abs >= 1000) return `${symbol}${(abs / 1000).toFixed(1)}K`;
-        return `${symbol}${abs.toLocaleString(locale)}`;
+        if (abs >= 10000000) return `${sign}${symbol}${(abs / 10000000).toFixed(1)}Cr`;
+        if (abs >= 100000) return `${sign}${symbol}${(abs / 100000).toFixed(1)}L`;
+        if (abs >= 1000) return `${sign}${symbol}${(abs / 1000).toFixed(1)}K`;
+        return `${sign}${symbol}${abs.toLocaleString(locale)}`;
     }
 
     return new Intl.NumberFormat(locale, {

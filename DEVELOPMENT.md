@@ -2,7 +2,7 @@
 
 > Comprehensive documentation for developers working on Earnslate.
 
-**Version:** 1.0.0 | **Last Updated:** 2026-01-12
+**Version:** 1.1.1 | **Last Updated:** 2026-01-14
 
 ---
 
