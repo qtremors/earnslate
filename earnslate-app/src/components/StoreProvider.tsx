@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState, ReactNode } from 'react';
+import { usePathname, useRouter } from 'next/navigation';
 import { useAppStore } from '@/store';
 import styles from './StoreProvider.module.css';
 
@@ -15,11 +16,34 @@ interface StoreProviderProps {
  */
 export default function StoreProvider({ children }: StoreProviderProps) {
     const [isClient, setIsClient] = useState(false);
+    const pathname = usePathname();
+    const router = useRouter();
     const theme = useAppStore((state) => state.settings.theme);
 
     useEffect(() => {
         setIsClient(true);
     }, []);
+
+    // Check onboarding status
+    useEffect(() => {
+        if (!isClient) return;
+
+        // Give a small grace period for hydration to settle
+        const checkOnboarding = () => {
+            const hasCompleted = useAppStore.getState().settings.hasCompletedOnboarding;
+
+            // Allow access to onboarding page regardless of status
+            if (pathname === '/onboarding') {
+                return;
+            }
+
+            if (!hasCompleted) {
+                router.replace('/onboarding');
+            }
+        };
+
+        checkOnboarding();
+    }, [isClient, pathname, router]);
 
     // Apply theme
     useEffect(() => {

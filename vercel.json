@@ -1,6 +1,0 @@
-{
-    "buildCommand": "cd earnslate-app && npm run build",
-    "outputDirectory": "earnslate-app/.next",
-    "installCommand": "cd earnslate-app && npm install",
-    "framework": "nextjs"
-}

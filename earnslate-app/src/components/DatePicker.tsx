@@ -12,6 +12,7 @@ interface DatePickerProps {
     required?: boolean;
     min?: string;
     max?: string;
+    locale?: string;
 }
 
 const DAYS = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'];
@@ -27,7 +28,8 @@ export default function DatePicker({
     id,
     required,
     min,
-    max
+    max,
+    locale = 'en-IN'
 }: DatePickerProps) {
     const [isOpen, setIsOpen] = useState(false);
     const [viewDate, setViewDate] = useState(() => {
@@ -149,7 +151,7 @@ export default function DatePicker({
     // Format display value
     const formatDisplayDate = () => {
         if (!selectedDate) return '';
-        return selectedDate.toLocaleDateString('en-IN', {
+        return selectedDate.toLocaleDateString(locale, {
             day: '2-digit',
             month: '2-digit',
             year: 'numeric'

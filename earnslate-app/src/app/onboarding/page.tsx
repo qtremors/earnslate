@@ -5,12 +5,13 @@ import { useRouter } from 'next/navigation';
 import { useAppStore } from '@/store';
 import Card from '@/components/Card';
 import Button from '@/components/Button';
+import { Hand, Coins, Rocket, Wallet, LayoutDashboard, ArrowRightLeft, ClipboardList, RefreshCw } from 'lucide-react';
 import styles from './page.module.css';
 
 const steps = [
-    { id: 1, title: 'Welcome', icon: '👋' },
-    { id: 2, title: 'Currency', icon: '💱' },
-    { id: 3, title: 'Get Started', icon: '🚀' },
+    { id: 1, title: 'Welcome', icon: Hand },
+    { id: 2, title: 'Currency', icon: Coins },
+    { id: 3, title: 'Get Started', icon: Rocket },
 ];
 
 const currencies = [
@@ -65,7 +66,10 @@ export default function OnboardingPage() {
                         className={`${styles.progressStep} ${step.id <= currentStep ? styles.active : ''}`}
                     >
                         <span className={styles.progressDot}>{step.id < currentStep ? '✓' : step.id}</span>
-                        <span className={styles.progressLabel}>{step.title}</span>
+                        <span className={styles.progressLabel}>
+                            <step.icon size={16} className={styles.stepIconInline} />
+                            {step.title}
+                        </span>
                     </div>
                 ))}
             </div>
@@ -75,7 +79,7 @@ export default function OnboardingPage() {
                 {/* Step 1: Welcome */}
                 {currentStep === 1 && (
                     <div className={styles.stepContent}>
-                        <span className={styles.stepIcon}>💰</span>
+                        <Wallet size={48} className={styles.stepIcon} />
                         <h1 className={styles.stepTitle}>Welcome to Earnslate</h1>
                         <p className={styles.stepDescription}>
                             Your personal finance manager. Track income, expenses, budgets,
@@ -87,7 +91,7 @@ export default function OnboardingPage() {
                 {/* Step 2: Currency Selection */}
                 {currentStep === 2 && (
                     <div className={styles.stepContent}>
-                        <span className={styles.stepIcon}>💱</span>
+                        <Coins size={48} className={styles.stepIcon} />
                         <h1 className={styles.stepTitle}>Choose Your Currency</h1>
                         <p className={styles.stepDescription}>
                             Select your primary currency for displaying amounts.
@@ -110,7 +114,7 @@ export default function OnboardingPage() {
                 {/* Step 3: Get Started */}
                 {currentStep === 3 && (
                     <div className={styles.stepContent}>
-                        <span className={styles.stepIcon}>🚀</span>
+                        <Rocket size={48} className={styles.stepIcon} />
                         <h1 className={styles.stepTitle}>You&apos;re All Set!</h1>
                         <p className={styles.stepDescription}>
                             Your account is ready. Start by adding your first transaction or
@@ -118,16 +122,16 @@ export default function OnboardingPage() {
                         </p>
                         <div className={styles.features}>
                             <div className={styles.feature}>
-                                <span>📊</span> Dashboard overview
+                                <LayoutDashboard size={20} /> Dashboard overview
                             </div>
                             <div className={styles.feature}>
-                                <span>💸</span> Track transactions
+                                <ArrowRightLeft size={20} /> Track transactions
                             </div>
                             <div className={styles.feature}>
-                                <span>📋</span> Manage budgets
+                                <ClipboardList size={20} /> Manage budgets
                             </div>
                             <div className={styles.feature}>
-                                <span>🔄</span> Monitor subscriptions
+                                <RefreshCw size={20} /> Monitor subscriptions
                             </div>
                         </div>
                     </div>
@@ -137,6 +141,14 @@ export default function OnboardingPage() {
                 <div className={styles.navigation}>
                     {currentStep > 1 && (
                         <Button variant="ghost" onClick={handleBack}>Back</Button>
+                    )}
+                    {currentStep === 1 && (
+                        <Button variant="ghost" onClick={() => {
+                            completeOnboarding();
+                            router.push('/');
+                        }}>
+                            Skip
+                        </Button>
                     )}
                     <div className={styles.spacer} />
                     <Button variant="primary" onClick={handleNext}>

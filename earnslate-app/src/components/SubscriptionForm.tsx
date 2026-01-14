@@ -29,7 +29,6 @@ export default function SubscriptionForm({ isOpen, onClose, editId }: Subscripti
     const [cycleUnit, setCycleUnit] = useState<BillingCycle['unit']>('month');
     const [startDate, setStartDate] = useState(new Date().toISOString().split('T')[0]);
     const [icon, setIcon] = useState('CreditCard');
-    const [iconType, setIconType] = useState<'brand' | 'lucide'>('lucide');
     const [color, setColor] = useState('#E50914');
     const [notes, setNotes] = useState('');
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -75,7 +74,6 @@ export default function SubscriptionForm({ isOpen, onClose, editId }: Subscripti
         // Default start date to today
         setStartDate(new Date().toISOString().split('T')[0]);
         setIcon('Tv');
-        setIconType('lucide');
         setColor('#E50914');
         setNotes('');
     };
@@ -83,7 +81,6 @@ export default function SubscriptionForm({ isOpen, onClose, editId }: Subscripti
     const handleServiceSelect = (service: ServiceTemplate) => {
         setName(service.name);
         setIcon(service.icon);
-        setIconType(service.iconType);
         setColor(service.color);
         // User enters their own amount and cycle
         setAmount('');
@@ -199,7 +196,6 @@ export default function SubscriptionForm({ isOpen, onClose, editId }: Subscripti
 
     const handleIconChange = (newIcon: string) => {
         setIcon(newIcon);
-        setIconType('lucide'); // When user manually picks, it's always Lucide
         setIsIconPickerOpen(false);
     };
 
