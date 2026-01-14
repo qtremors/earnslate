@@ -12,6 +12,7 @@ import SubscriptionForm from '@/components/SubscriptionForm';
 import SubscriptionTreemap from '@/components/SubscriptionTreemap';
 import { DynamicIcon } from '@/components/DynamicIcon';
 import { Plus, Trash2, Pencil, Play, Pause, LayoutGrid, List, Download } from 'lucide-react';
+import { generateCSV, downloadCSV } from '@/utils/csv';
 import styles from './page.module.css';
 
 type ViewMode = 'list' | 'treemap';
@@ -77,14 +78,8 @@ export default function SubscriptionsPage() {
             Math.round(getMonthlyEquivalent(s.amount, s.cycle)).toString()
         ]);
 
-        const csv = [headers, ...rows].map(row => row.join(',')).join('\n');
-        const blob = new Blob([csv], { type: 'text/csv' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `subscriptions_${new Date().toISOString().split('T')[0]}.csv`;
-        a.click();
-        URL.revokeObjectURL(url);
+        const csv = generateCSV(headers, rows);
+        downloadCSV(csv, `subscriptions_${new Date().toISOString().split('T')[0]}.csv`);
     };
 
     return (

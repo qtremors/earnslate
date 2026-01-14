@@ -12,6 +12,7 @@ import Button from '@/components/Button';
 import BudgetForm from '@/components/BudgetForm';
 import ProgressBar from '@/components/ProgressBar';
 import { Plus, Trash2, Pencil, PieChart, LayoutGrid, AlertTriangle, Download } from 'lucide-react';
+import { generateCSV, downloadCSV } from '@/utils/csv';
 import { DynamicIcon } from '@/components/DynamicIcon';
 import styles from './page.module.css';
 
@@ -23,11 +24,10 @@ export default function BudgetsPage() {
     const [viewMode, setViewMode] = useState<ViewMode>('grid');
 
     // Use shallow comparison to avoid re-renders when other store parts change
-    const { budgets, deleteBudget, settings } = useAppStore(
+    const { budgets, deleteBudget } = useAppStore(
         useShallow((state) => ({
             budgets: state.budgets,
             deleteBudget: state.deleteBudget,
-            settings: state.settings,
         }))
     );
     const { confirm, ConfirmDialog } = useConfirm();
@@ -85,14 +85,8 @@ export default function BudgetsPage() {
             formatCycleDisplay(b.period)
         ]);
 
-        const csv = [headers, ...rows].map(row => row.join(',')).join('\n');
-        const blob = new Blob([csv], { type: 'text/csv' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `budgets_${new Date().toISOString().split('T')[0]}.csv`;
-        a.click();
-        URL.revokeObjectURL(url);
+        const csv = generateCSV(headers, rows);
+        downloadCSV(csv, `budgets_${new Date().toISOString().split('T')[0]}.csv`);
     };
 
     // Chart data for donut

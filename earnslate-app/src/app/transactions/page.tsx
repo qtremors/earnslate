@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { useAppStore, useShallow } from '@/store';
 import { useFormatters } from '@/hooks/useFormatters';
 import { useKeyboardShortcuts } from '@/hooks/useKeyboardShortcuts';
@@ -10,8 +10,10 @@ import { useToast } from '@/components/Toast';
 import Header from '@/components/Header';
 import Card, { CardHeader } from '@/components/Card';
 import Button from '@/components/Button';
+import DatePicker from '@/components/DatePicker';
 import TransactionForm from '@/components/TransactionForm';
 import { Plus, Trash2, Pencil, Search, Download, PieChart, List } from 'lucide-react';
+import { generateCSV, downloadCSV } from '@/utils/csv';
 import styles from './page.module.css';
 
 type ViewMode = 'list' | 'chart';
@@ -99,6 +101,11 @@ export default function TransactionsPage() {
 
         return result;
     }, [transactions, typeFilter, categoryFilter, searchQuery, dateFrom, dateTo, sortBy]);
+
+    // Clear selection when filters change
+    useEffect(() => {
+        setSelectedIds(new Set());
+    }, [typeFilter, categoryFilter, searchQuery, dateFrom, dateTo]);
 
     // Calculate totals for chart
     const chartData = useMemo(() => {
@@ -227,17 +234,11 @@ export default function TransactionsPage() {
             t.description,
             t.category,
             t.type,
-            t.amount.toString()
+            t.amount
         ]);
 
-        const csv = [headers, ...rows].map(row => row.join(',')).join('\n');
-        const blob = new Blob([csv], { type: 'text/csv' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `transactions_${new Date().toISOString().split('T')[0]}.csv`;
-        a.click();
-        URL.revokeObjectURL(url);
+        const csv = generateCSV(headers, rows);
+        downloadCSV(csv, `transactions_${new Date().toISOString().split('T')[0]}.csv`);
     };
 
     return (
@@ -297,19 +298,19 @@ export default function TransactionsPage() {
 
                         {datePreset === 'custom' && (
                             <>
-                                <input
-                                    type="date"
+                                <DatePicker
                                     value={dateFrom}
-                                    onChange={(e) => { setDateFrom(e.target.value); setCurrentPage(1); }}
-                                    className={styles.filterSelect}
-                                    title="From date"
+                                    onChange={(date) => { setDateFrom(date); setCurrentPage(1); }}
+                                    max={dateTo}
+                                    locale={settings.locale}
+                                    label="From"
                                 />
-                                <input
-                                    type="date"
+                                <DatePicker
                                     value={dateTo}
-                                    onChange={(e) => { setDateTo(e.target.value); setCurrentPage(1); }}
-                                    className={styles.filterSelect}
-                                    title="To date"
+                                    onChange={(date) => { setDateTo(date); setCurrentPage(1); }}
+                                    min={dateFrom}
+                                    locale={settings.locale}
+                                    label="To"
                                 />
                             </>
                         )}

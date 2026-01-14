@@ -53,6 +53,7 @@ export default function Modal({
                 role="dialog"
                 aria-modal="true"
                 aria-labelledby="modal-title"
+                data-modal-open="true"
             >
                 <div className={styles.header}>
                     <h2 id="modal-title" className={styles.title}>{title}</h2>

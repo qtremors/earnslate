@@ -251,10 +251,22 @@ export const useAppStore = create<AppState>()(
 
                         // If current date is past the next period start, reset the budget
                         if (now >= nextPeriodStart) {
+                            const newPeriodStartDate = now.toISOString().split('T')[0];
+
+                            // Calculate spent for the NEW period based on existing transactions
+                            // This ensures transactions made today (after reset) are counted
+                            const newSpent = state.transactions
+                                .filter(t =>
+                                    t.type === 'expense' &&
+                                    (t.category.toLowerCase() === budget.category.toLowerCase()) &&
+                                    t.date >= newPeriodStartDate
+                                )
+                                .reduce((sum, t) => sum + Math.abs(t.amount), 0);
+
                             return {
                                 ...budget,
-                                spent: 0,
-                                periodStartDate: now.toISOString().split('T')[0],
+                                spent: newSpent,
+                                periodStartDate: newPeriodStartDate,
                             };
                         }
                         return budget;
