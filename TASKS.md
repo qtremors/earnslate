@@ -11,15 +11,15 @@
 
 ### Critical Priority
 
-- [ ] **Data Loss on Import — No Merge Strategy**: `importData()` in store uses `set()` which replaces all state. If a user imports a partial backup (e.g., only transactions), it will **wipe** budgets, subscriptions, and settings to their defaults.
+- [x] **Data Loss on Import — No Merge Strategy**: `importData()` in store uses `set()` which replaces all state. If a user imports a partial backup (e.g., only transactions), it will **wipe** budgets, subscriptions, and settings to their defaults.
   - **File:** `src/store/index.ts` → `importData` action
   - **Impact:** Silent, irreversible data loss
 
-- [ ] **XSS via Imported Data**: `importData()` performs no sanitization on imported JSON values. Malicious `description`, `notes`, or `name` fields containing HTML/script payloads are rendered directly into the DOM via JSX. While React escapes by default, `dangerouslySetInnerHTML` isn't used — but SVG `style` attributes in treemap, pie charts, and inline styles apply attacker-controlled `color` values directly, allowing CSS injection.
+- [x] **XSS via Imported Data**: `importData()` performs no sanitization on imported JSON values. Malicious `description`, `notes`, or `name` fields containing HTML/script payloads are rendered directly into the DOM via JSX. While React escapes by default, `dangerouslySetInnerHTML` isn't used — but SVG `style` attributes in treemap, pie charts, and inline styles apply attacker-controlled `color` values directly, allowing CSS injection.
   - **File:** `src/store/index.ts` → `importData`, multiple rendering components
   - **Impact:** CSS injection, UI breakage, potential phishing via crafted color/gradient values
 
-- [ ] **Race Condition in Store Rehydration**: Store rehydrates at module level (`useAppStore.persist.rehydrate()`) and then runs `checkAndResetBudgets()` / `updateSubscriptionBillingDates()` after a 100ms `setTimeout`. If Next.js renders before rehydration completes, the app briefly shows default state. The `StoreProvider` also reads `state.settings.theme` before confirming hydration is complete.
+- [x] **Race Condition in Store Rehydration**: Store rehydrates at module level (`useAppStore.persist.rehydrate()`) and then runs `checkAndResetBudgets()` / `updateSubscriptionBillingDates()` after a 100ms `setTimeout`. If Next.js renders before rehydration completes, the app briefly shows default state. The `StoreProvider` also reads `state.settings.theme` before confirming hydration is complete.
   - **File:** `src/store/index.ts` (bottom), `src/components/StoreProvider.tsx`
   - **Impact:** Flash of default content, potential incorrect routing during hydration
 

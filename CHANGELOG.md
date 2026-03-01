@@ -6,6 +6,17 @@
 
 ---
 
+## v1.1.2 (2026-03-01)
+
+### Security
+- **XSS via Imported Data**: Added strict sanitization of imported colors and custom categories to prevent CSS injection vulnerabilities.
+
+### Fixed
+- **Data Loss on Import**: Implemented a merge strategy for imported data, preventing existing budgets, subscriptions, and settings from being overwritten when importing partial backups.
+- **Race Condition in Store Rehydration**: Moved store hydration logic entirely client-side inside `StoreProvider.tsx` to prevent hydration mismatches and the flash of default content during Next.js SSR.
+
+---
+
 ## v1.1.1 (2026-01-14)
 
 ### Fixed

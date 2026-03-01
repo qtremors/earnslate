@@ -365,10 +365,20 @@ export const useAppStore = create<AppState>()(
                 const sanitizeString = (str: string | undefined): string => {
                     if (typeof str !== 'string') return '';
                     return str
+                        .replace(/&/g, '&amp;')
                         .replace(/</g, '&lt;')
                         .replace(/>/g, '&gt;')
                         .replace(/"/g, '&quot;')
+                        .replace(/'/g, '&#x27;')
                         .slice(0, 500); // Limit string length
+                };
+
+                // Strict color sanitization (hex or specific predefined lengths, block CSS injection chars)
+                const sanitizeColor = (color: string | undefined): string => {
+                  if (typeof color !== 'string') return '#888888';
+                  const stripped = color.replace(/[^a-zA-Z0-9#]/g, '').slice(0, 20);
+                  // Ensure basic safety, allow hex, rgb basic names, but no parens/brackets
+                  return stripped || '#888888';
                 };
 
                 // Validate transaction type
@@ -406,18 +416,40 @@ export const useAppStore = create<AppState>()(
                     nextBilling: isValidDate(s.nextBilling) ? s.nextBilling : new Date().toISOString().split('T')[0],
                 })).filter(s => s.id && s.name) || undefined;
 
-                // Sanitize settings
+                // Sanitize settings, including nested objects like customCategories
                 const currentSettings = get().settings;
+                
+                let sanitizedCustomCategories = currentSettings.customCategories;
+                if (data.settings?.customCategories && Array.isArray(data.settings.customCategories)) {
+                    sanitizedCustomCategories = data.settings.customCategories.map((c: any) => ({
+                        id: typeof c.id === 'string' ? sanitizeString(c.id) : generateId(),
+                        name: sanitizeString(c.name),
+                        color: sanitizeColor(c.color),
+                        type: isValidTransactionType(c.type) ? c.type : 'expense',
+                        icon: sanitizeString(c.icon),
+                        isCustom: true
+                    })).filter((c: any) => c.name);
+                }
+
                 const sanitizedSettings = data.settings ? {
                     ...data.settings,
                     displayName: data.settings.displayName ? sanitizeString(data.settings.displayName) : currentSettings.displayName,
+                    customCategories: sanitizedCustomCategories
                 } : undefined;
+
+                // Merge strategy helper func
+                const mergeItems = <T extends { id: string }>(existing: T[], imported: T[] | undefined): T[] => {
+                    if (!imported || imported.length === 0) return existing;
+                    const existingMap = new Map(existing.map(item => [item.id, item]));
+                    imported.forEach(item => existingMap.set(item.id, item));
+                    return Array.from(existingMap.values());
+                };
 
                 set((state) => ({
                     settings: sanitizedSettings ? { ...state.settings, ...sanitizedSettings } : state.settings,
-                    transactions: sanitizedTransactions || state.transactions,
-                    budgets: sanitizedBudgets || state.budgets,
-                    subscriptions: sanitizedSubscriptions || state.subscriptions,
+                    transactions: mergeItems(state.transactions, sanitizedTransactions),
+                    budgets: mergeItems(state.budgets, sanitizedBudgets),
+                    subscriptions: mergeItems(state.subscriptions, sanitizedSubscriptions),
                 }));
             },
         }),
@@ -427,24 +459,6 @@ export const useAppStore = create<AppState>()(
         }
     )
 );
-
-// Manual rehydration on client side + auto-run maintenance tasks
-if (typeof window !== 'undefined') {
-    useAppStore.persist.rehydrate();
-    // Run maintenance tasks after rehydration
-    setTimeout(() => {
-        useAppStore.getState().checkAndResetBudgets();
-        useAppStore.getState().updateSubscriptionBillingDates();
-    }, 100);
-
-    // Re-check budgets when user returns to the app (after being away)
-    document.addEventListener('visibilitychange', () => {
-        if (document.visibilityState === 'visible') {
-            useAppStore.getState().checkAndResetBudgets();
-            useAppStore.getState().updateSubscriptionBillingDates();
-        }
-    });
-}
 
 // ===== Helper to format cycle for display =====
 export const formatCycleDisplay = (cycle: BillingCycle): string => {

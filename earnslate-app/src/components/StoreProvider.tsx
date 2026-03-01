@@ -21,7 +21,30 @@ export default function StoreProvider({ children }: StoreProviderProps) {
     const theme = useAppStore((state) => state.settings.theme);
 
     useEffect(() => {
-        setIsClient(true);
+        const initStore = async () => {
+            await useAppStore.persist.rehydrate();
+            
+            // Run maintenance tasks safely after rehydration
+            useAppStore.getState().checkAndResetBudgets();
+            useAppStore.getState().updateSubscriptionBillingDates();
+            
+            setIsClient(true);
+        };
+        
+        initStore();
+
+        // Optional: Listen to visibility change for subsequent re-checks
+        const handleVisibilityChange = () => {
+            if (document.visibilityState === 'visible') {
+                useAppStore.getState().checkAndResetBudgets();
+                useAppStore.getState().updateSubscriptionBillingDates();
+            }
+        };
+        document.addEventListener('visibilitychange', handleVisibilityChange);
+        
+        return () => {
+            document.removeEventListener('visibilitychange', handleVisibilityChange);
+        };
     }, []);
 
     // Check onboarding status
