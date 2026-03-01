@@ -85,13 +85,13 @@ export const useAppStore = create<AppState>()(
                     transactions: [newTransaction, ...state.transactions],
                 }));
 
-                // Update budget spent if it's an expense
+                // Update budget spent if it's an expense and falls within budget period
                 if (transaction.type === 'expense') {
                     const budgets = get().budgets;
                     const matchingBudget = budgets.find(b =>
                         b.category.toLowerCase() === transaction.category.toLowerCase()
                     );
-                    if (matchingBudget) {
+                    if (matchingBudget && (!matchingBudget.periodStartDate || new Date(transaction.date!).getTime() >= new Date(matchingBudget.periodStartDate).getTime())) {
                         set((state) => ({
                             budgets: state.budgets.map(b =>
                                 b.id === matchingBudget.id
@@ -137,9 +137,13 @@ export const useAppStore = create<AppState>()(
                                 spent = Math.max(0, spent - Math.abs(oldTransaction.amount));
                             }
 
-                            // Add new amount to new budget (if still expense)
+                            // Add new amount to new budget (if still expense and falls into period)
                             if (newType === 'expense' && b.id === newBudgetId) {
-                                spent = spent + Math.abs(newAmount);
+                                if (b.periodStartDate && new Date(updates.date || oldTransaction.date).getTime() >= new Date(b.periodStartDate).getTime()) {
+                                    spent = spent + Math.abs(newAmount);
+                                } else if (!b.periodStartDate) { // legacy compatibility
+                                    spent = spent + Math.abs(newAmount);
+                                }
                             }
 
                             return spent !== b.spent ? { ...b, spent } : b;
@@ -163,11 +167,15 @@ export const useAppStore = create<AppState>()(
                         )?.id;
 
                         if (matchingBudgetId) {
-                            newBudgets = state.budgets.map(b =>
-                                b.id === matchingBudgetId
-                                    ? { ...b, spent: Math.max(0, b.spent - Math.abs(transaction.amount)) }
-                                    : b
-                            );
+                            newBudgets = state.budgets.map(b => {
+                                if (b.id === matchingBudgetId) {
+                                    // only deduct if the transaction fell in the current period
+                                   if (!b.periodStartDate || new Date(transaction.date).getTime() >= new Date(b.periodStartDate).getTime()) {
+                                       return { ...b, spent: Math.max(0, b.spent - Math.abs(transaction.amount)) };
+                                   }
+                                }
+                                return b;
+                            });
                         }
                     }
 
@@ -190,20 +198,20 @@ export const useAppStore = create<AppState>()(
                             const matchingBudget = state.budgets.find(b =>
                                 b.category.toLowerCase() === tx.category.toLowerCase()
                             );
-                            if (matchingBudget) {
+                            if (matchingBudget && (!matchingBudget.periodStartDate || new Date(tx.date).getTime() >= new Date(matchingBudget.periodStartDate).getTime())) {
                                 budgetAdjustments[matchingBudget.id] =
                                     (budgetAdjustments[matchingBudget.id] || 0) + Math.abs(tx.amount);
                             }
                         }
                     });
 
-                    if (Object.keys(budgetAdjustments).length > 0) {
-                        newBudgets = state.budgets.map(b =>
-                            budgetAdjustments[b.id]
-                                ? { ...b, spent: Math.max(0, b.spent - budgetAdjustments[b.id]) }
-                                : b
-                        );
-                    }
+                        newBudgets = state.budgets.map(b => {
+                            if (budgetAdjustments[b.id]) {
+                                // this correctly decreases spent if the transaction is within the period
+                                return { ...b, spent: Math.max(0, b.spent - budgetAdjustments[b.id]) };
+                            }
+                            return b;
+                        });
 
                     return { transactions: newTransactions, budgets: newBudgets };
                 });
@@ -259,7 +267,7 @@ export const useAppStore = create<AppState>()(
                                 .filter(t =>
                                     t.type === 'expense' &&
                                     (t.category.toLowerCase() === budget.category.toLowerCase()) &&
-                                    t.date >= newPeriodStartDate
+                                    new Date(t.date).getTime() >= new Date(newPeriodStartDate).getTime()
                                 )
                                 .reduce((sum, t) => sum + Math.abs(t.amount), 0);
 

@@ -26,7 +26,7 @@ export default function BudgetForm({ isOpen, onClose, editId }: BudgetFormProps)
     const [color, setColor] = useState('#F59E0B');
     const [periodCount, setPeriodCount] = useState('1');
     const [periodUnit, setPeriodUnit] = useState<BillingCycle['unit']>('month');
-    const [isSubmitting, setIsSubmitting] = useState(false);
+
 
     // Use shallow comparison to avoid re-renders when other store parts change
     const { budgets, addBudget, updateBudget, settings } = useAppStore(
@@ -125,12 +125,7 @@ export default function BudgetForm({ isOpen, onClose, editId }: BudgetFormProps)
             showToast('Budget created successfully', 'success');
         }
 
-        setIsSubmitting(true);
-        // Short delay for visual feedback before closing
-        setTimeout(() => {
-            setIsSubmitting(false);
-            onClose();
-        }, 300);
+        onClose();
     };
 
     // Get categories from settings
@@ -219,7 +214,7 @@ export default function BudgetForm({ isOpen, onClose, editId }: BudgetFormProps)
                     <Button type="button" variant="ghost" onClick={onClose}>
                         Cancel
                     </Button>
-                    <Button type="submit" variant="primary" loading={isSubmitting}>
+                    <Button type="submit" variant="primary">
                         {isEditing ? 'Save Changes' : 'Create Budget'}
                     </Button>
                 </div>

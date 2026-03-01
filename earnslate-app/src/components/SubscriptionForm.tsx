@@ -31,7 +31,6 @@ export default function SubscriptionForm({ isOpen, onClose, editId }: Subscripti
     const [icon, setIcon] = useState('CreditCard');
     const [color, setColor] = useState('#E50914');
     const [notes, setNotes] = useState('');
-    const [isSubmitting, setIsSubmitting] = useState(false);
     const [isIconPickerOpen, setIsIconPickerOpen] = useState(false);
 
     // Use shallow comparison to avoid re-renders when other store parts change
@@ -182,12 +181,7 @@ export default function SubscriptionForm({ isOpen, onClose, editId }: Subscripti
             showToast('Subscription added successfully', 'success');
         }
 
-        setIsSubmitting(true);
-        // Short delay for visual feedback before closing
-        setTimeout(() => {
-            setIsSubmitting(false);
-            onClose();
-        }, 300);
+        onClose();
     };
 
     const handleBack = () => {
@@ -312,7 +306,7 @@ export default function SubscriptionForm({ isOpen, onClose, editId }: Subscripti
                         <Button type="button" variant="ghost" onClick={onClose}>
                             Cancel
                         </Button>
-                        <Button type="submit" variant="primary" loading={isSubmitting}>
+                        <Button type="submit" variant="primary">
                             {isEditing ? 'Save Changes' : 'Add Subscription'}
                         </Button>
                     </div>

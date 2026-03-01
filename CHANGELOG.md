@@ -6,6 +6,15 @@
 
 ---
 
+## v1.1.3 (2026-03-01)
+
+### Fixed
+- **Fake Loading State Elimination**: Removed the artificial `isSubmitting` delay on form closures (`TransactionForm`, `SubscriptionForm`, `BudgetForm`) which fixed React unmounted component warnings.
+- **Budget Spending Calculation Date Bug**: Ensured that `getSpentInPeriod` logic correctly processes numerical epoch time rather than raw ISO string dates to accurately compute budget spending near period boundaries.
+- **CSV Export Formatting Standardization**: Updated the CSV export logic on the Transactions page to enforce matching visual formats with table views (signing & formatting currency).
+
+---
+
 ## v1.1.2 (2026-03-01)
 
 ### Security

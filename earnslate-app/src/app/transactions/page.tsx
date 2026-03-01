@@ -230,11 +230,11 @@ export default function TransactionsPage() {
     const handleExportCSV = () => {
         const headers = ['Date', 'Description', 'Category', 'Type', 'Amount'];
         const rows = filteredTransactions.map(t => [
-            t.date,
+            formatDate(t.date),
             t.description,
             t.category,
             t.type,
-            t.amount
+            `${t.amount > 0 ? '+' : '-'}${formatCurrency(t.amount)}`
         ]);
 
         const csv = generateCSV(headers, rows);

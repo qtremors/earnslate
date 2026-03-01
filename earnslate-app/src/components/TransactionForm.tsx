@@ -38,7 +38,6 @@ export default function TransactionForm({ isOpen, onClose, editId }: Transaction
         date: new Date().toISOString().split('T')[0],
         notes: '',
     });
-    const [isSubmitting, setIsSubmitting] = useState(false);
 
     // Populate form when editing
     useEffect(() => {
@@ -139,12 +138,7 @@ export default function TransactionForm({ isOpen, onClose, editId }: Transaction
             showToast('Transaction added successfully', 'success');
         }
 
-        setIsSubmitting(true);
-        // Short delay for visual feedback before closing
-        setTimeout(() => {
-            setIsSubmitting(false);
-            onClose();
-        }, 300);
+        onClose();
     };
 
     return (
@@ -226,7 +220,7 @@ export default function TransactionForm({ isOpen, onClose, editId }: Transaction
                     <Button type="button" variant="ghost" onClick={onClose}>
                         Cancel
                     </Button>
-                    <Button type="submit" variant="primary" loading={isSubmitting}>
+                    <Button type="submit" variant="primary">
                         {editId ? 'Save Changes' : 'Add Transaction'}
                     </Button>
                 </div>

@@ -25,17 +25,17 @@
 
 ### High Priority
 
-- [ ] **isSubmitting Set After Mutation — Fake Loading State**: In `TransactionForm`, `SubscriptionForm`, and `BudgetForm`, `setIsSubmitting(true)` is called **after** the store mutation has already completed. The data is saved instantly, but the button shows a loading spinner for 300ms purely as fake feedback. If the user navigates away during this 300ms, `onClose()` fires on an unmounted component.
+- [x] **isSubmitting Set After Mutation — Fake Loading State**: In `TransactionForm`, `SubscriptionForm`, and `BudgetForm`, `setIsSubmitting(true)` is called **after** the store mutation has already completed. The data is saved instantly, but the button shows a loading spinner for 300ms purely as fake feedback. If the user navigates away during this 300ms, `onClose()` fires on an unmounted component.
   - **Files:** `TransactionForm.tsx:142-147`, `SubscriptionForm.tsx:185-190`, `BudgetForm.tsx:128-133`
   - **Impact:** React state update on unmounted component warning, misleading UX
 
-- [ ] **Budget Spending Calculation Ignores Period**: `getSpentInPeriod()` always calculates from the `lastReset` date forward, but dates are compared as strings (`t.date >= lastReset`). Since `t.date` may be in `YYYY-MM-DD` format while `lastReset` is ISO with timezone info, string comparison can produce incorrect results.
+- [x] **Budget Spending Calculation Ignores Period**: `getSpentInPeriod()` always calculates from the `lastReset` date forward, but dates are compared as strings (`t.date >= lastReset`). Since `t.date` may be in `YYYY-MM-DD` format while `lastReset` is ISO with timezone info, string comparison can produce incorrect results.
   - **File:** `src/store/index.ts` → `getSpentInPeriod`
-  - **Impact:** Incorrect budget progress tracking
+  - **Impact:** Budgets may incorrectly include or exclude transactions near the boundary dateline
 
-- [ ] **CSV Export — No Currency/Date Format Consistency**: `exportToCSV()` in transactions page exports raw `t.amount` and `t.date` values from the store, not the formatted values the user sees. Users exporting to CSV get different representations than their display settings.
-  - **File:** `src/app/transactions/page.tsx` → `handleExportCSV`
-  - **Impact:** Confusing CSV output
+- [x] **CSV Export Bypasses Display Formatting**: The export logic writes raw values directly correctly mapped (`t.amount` instead of `formatCurrency(t.amount)`, `t.date` instead of `formatDate(t.date)`). This results in CSV files omitting currency symbols, signs (`+`/`-`), and using raw database ISO strings.
+  - **File:** `src/app/transactions/page.tsx` → `exportToCSV` block
+  - **Impact:** Hard to read exports, mismatched visual format compared to web app display
 
 ### Medium Priority
 
