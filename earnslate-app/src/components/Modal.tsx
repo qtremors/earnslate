@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, ReactNode } from 'react';
+import { useEffect, useRef, ReactNode, useId } from 'react';
 import { X } from 'lucide-react';
 import styles from './Modal.module.css';
 
@@ -20,6 +20,7 @@ export default function Modal({
     size = 'md'
 }: ModalProps) {
     const modalRef = useRef<HTMLDivElement>(null);
+    const titleId = useId();
 
     // Close on Escape key
     useEffect(() => {
@@ -52,11 +53,11 @@ export default function Modal({
                 className={`${styles.modal} ${styles[size]}`}
                 role="dialog"
                 aria-modal="true"
-                aria-labelledby="modal-title"
+                aria-labelledby={titleId}
                 data-modal-open="true"
             >
                 <div className={styles.header}>
-                    <h2 id="modal-title" className={styles.title}>{title}</h2>
+                    <h2 id={titleId} className={styles.title}>{title}</h2>
                     <button
                         className={styles.closeButton}
                         onClick={onClose}

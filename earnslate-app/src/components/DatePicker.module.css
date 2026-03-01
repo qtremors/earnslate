@@ -53,7 +53,9 @@
 
 /* ===== Dropdown ===== */
 .dropdown {
-    position: fixed;
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 0;
     z-index: 9999;
     width: 260px;
     padding: var(--space-md);

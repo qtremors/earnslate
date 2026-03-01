@@ -142,6 +142,8 @@ export default function SubscriptionForm({ isOpen, onClose, editId }: Subscripti
 
         // Calculate next billing date from start date + cycle
         const start = new Date(startDate);
+        const targetDate = start.getDate();
+
         switch (cycle.unit) {
             case 'hour':
                 start.setHours(start.getHours() + cycle.count);
@@ -152,12 +154,24 @@ export default function SubscriptionForm({ isOpen, onClose, editId }: Subscripti
             case 'week':
                 start.setDate(start.getDate() + (cycle.count * 7));
                 break;
-            case 'month':
+            case 'month': {
                 start.setMonth(start.getMonth() + cycle.count);
+                // Clamp when exceeding max days of the resulting month
+                // e.g. Jan 31 + 1 month -> Mar 3 -> Feb 28
+                if (start.getDate() !== targetDate) {
+                    start.setDate(0); 
+                }
                 break;
-            case 'year':
+            }
+            case 'year': {
                 start.setFullYear(start.getFullYear() + cycle.count);
+                // Clamp for Leap Year
+                // e.g. Feb 29 + 1 year -> Mar 1 -> Feb 28
+                if (start.getDate() !== targetDate) {
+                    start.setDate(0);
+                }
                 break;
+            }
         }
         const nextBilling = start.toISOString().split('T')[0];
 

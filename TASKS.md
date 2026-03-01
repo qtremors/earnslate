@@ -39,19 +39,19 @@
 
 ### Medium Priority
 
-- [ ] **Modal `aria-labelledby` Uses Hardcoded ID**: Every `<Modal>` uses `id="modal-title"`, meaning when multiple modals are open simultaneously (e.g., confirm modal over a form modal), there are duplicate IDs in the DOM.
+- [x] **Modal `aria-labelledby` Uses Hardcoded ID**: Every `<Modal>` uses `id="modal-title"`, meaning when multiple modals are open simultaneously (e.g., confirm modal over a form modal), there are duplicate IDs in the DOM.
   - **File:** `src/components/Modal.tsx:55,59`
   - **Impact:** Invalid HTML, accessibility tree confusion
 
-- [ ] **DatePicker Positioning Uses Fixed Coordinates**: `DatePicker` calculates dropdown position via `getBoundingClientRect()` and applies it as fixed `top`/`left` style. This breaks on scroll, inside scrollable containers, or when the viewport is resized while open.
+- [x] **DatePicker Positioning Uses Fixed Coordinates**: `DatePicker` calculates dropdown position via `getBoundingClientRect()` and applies it as fixed `top`/`left` style. This breaks on scroll, inside scrollable containers, or when the viewport is resized while open.
   - **File:** `src/components/DatePicker.tsx:47-54, 223`
   - **Impact:** Calendar dropdown appears in wrong position after scroll
 
-- [ ] **Subscription Next Billing Date Mutation**: In `SubscriptionForm.handleSubmit`, the `start` Date object is mutated in-place via `setHours`/`setDate`/`setMonth`/`setFullYear` to calculate next billing. This is the same object parsed from `startDate`, so side effects are possible.
+- [x] **Subscription Next Billing Date Mutation**: In `SubscriptionForm.handleSubmit`, the `start` Date object is mutated in-place via `setHours`/`setDate`/`setMonth`/`setFullYear` to calculate next billing. This is the same object parsed from `startDate`, so side effects are possible.
   - **File:** `src/components/SubscriptionForm.tsx:145-162`
   - **Impact:** Potential date calculation errors for edge cases (month overflow)
 
-- [ ] **useEffect Missing Dependencies**: Several `useEffect` hooks have incomplete dependency arrays:
+- [x] **useEffect Missing Dependencies**: Several `useEffect` hooks have incomplete dependency arrays:
   - `TransactionForm.tsx:106` — Missing `errors.description` dep
   - `TransactionForm.tsx:113` — Missing `errors.amount` dep
   - `SubscriptionForm.tsx:67` — Missing `isOpen` dependency inconsistently

@@ -36,23 +36,11 @@ export default function DatePicker({
         const date = value ? new Date(value) : new Date();
         return { year: date.getFullYear(), month: date.getMonth() };
     });
-    const [dropdownPosition, setDropdownPosition] = useState({ top: 0, left: 0 });
     const containerRef = useRef<HTMLDivElement>(null);
     const triggerRef = useRef<HTMLButtonElement>(null);
 
     // Parse the current value
     const selectedDate = value ? new Date(value) : null;
-
-    // Calculate dropdown position when opening
-    useEffect(() => {
-        if (isOpen && triggerRef.current) {
-            const rect = triggerRef.current.getBoundingClientRect();
-            setDropdownPosition({
-                top: rect.bottom + 8,
-                left: rect.left
-            });
-        }
-    }, [isOpen]);
 
     // Close on outside click
     useEffect(() => {
@@ -220,7 +208,6 @@ export default function DatePicker({
                     className={styles.dropdown}
                     role="dialog"
                     aria-label="Choose date"
-                    style={{ top: dropdownPosition.top, left: dropdownPosition.left }}
                 >
                     <div className={styles.header}>
                         <button

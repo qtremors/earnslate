@@ -6,6 +6,16 @@
 
 ---
 
+## v1.1.4 (2026-03-01)
+
+### Fixed
+- **Modal ID Duplication**: Replaced hardcoded `modal-title` IDs with React 18 `useId()` hooks for safe multiple simultaneous structural renderings.
+- **DatePicker scroll desync**: Migrated dropdown mapping strategy from javascript bounds calculations to pure structural DOM positioning binding the picker to its trigger parent dynamically.
+- **Subscription overflow cycle bug**: Intercepted `Date.setMonth()` behavior incrementations where overlapping out-of-bounds target months failed.
+- **React Stale Closures**: Added variables to their missing Form hook dependency arrays to satisfy strict reactivity standards.
+
+---
+
 ## v1.1.3 (2026-03-01)
 
 ### Fixed

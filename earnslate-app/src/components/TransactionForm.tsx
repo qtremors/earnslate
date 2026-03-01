@@ -76,7 +76,7 @@ export default function TransactionForm({ isOpen, onClose, editId }: Transaction
         if (!validCategories.includes(formData.category) && validCategories.length > 0) {
             setFormData(prev => ({ ...prev, category: validCategories[0] }));
         }
-    }, [formData.type, settings.customCategories]);
+    }, [formData.type, formData.category, settings.customCategories]);
 
     // Validation state
     const [errors, setErrors] = useState<{ description?: string; amount?: string }>({});
@@ -102,14 +102,14 @@ export default function TransactionForm({ isOpen, onClose, editId }: Transaction
         if (formData.description.trim() && errors.description) {
             setErrors(prev => ({ ...prev, description: undefined }));
         }
-    }, [formData.description]);
+    }, [formData.description, errors.description]);
 
     useEffect(() => {
         const amount = parseFloat(formData.amount);
         if (formData.amount && !isNaN(amount) && amount > 0 && errors.amount) {
             setErrors(prev => ({ ...prev, amount: undefined }));
         }
-    }, [formData.amount]);
+    }, [formData.amount, errors.amount]);
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
