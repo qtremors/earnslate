@@ -1,0 +1,176 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+    position: relative;
+}
+
+.label {
+    font-size: var(--text-sm);
+    font-weight: var(--font-medium);
+    color: var(--text-secondary);
+}
+
+.required {
+    color: var(--error);
+    margin-left: 2px;
+}
+
+.trigger {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: var(--space-md);
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border-primary);
+    border-radius: var(--radius-md);
+    font-family: var(--font-sans);
+    font-size: var(--text-base);
+    color: var(--text-primary);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.trigger:hover {
+    border-color: var(--border-secondary);
+}
+
+.trigger:focus {
+    outline: none;
+    border-color: var(--accent-primary);
+    box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.1);
+}
+
+.value {
+    text-align: left;
+}
+
+.icon {
+    color: var(--text-muted);
+    flex-shrink: 0;
+}
+
+/* ===== Dropdown ===== */
+.dropdown {
+    position: fixed;
+    z-index: 9999;
+    width: 260px;
+    padding: var(--space-md);
+    background: #1a1a1a;
+    border: 1px solid #333;
+    border-radius: var(--radius-lg);
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
+    animation: fadeIn 0.15s ease;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-4px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ===== Header ===== */
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: var(--space-md);
+}
+
+.monthYear {
+    font-size: var(--text-sm);
+    font-weight: var(--font-semibold);
+    color: #ffffff;
+}
+
+.navButton {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    padding: 0;
+    background: transparent;
+    border: none;
+    border-radius: var(--radius-md);
+    color: #a0a0a0;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.navButton:hover {
+    background: #333;
+    color: #ffffff;
+}
+
+/* ===== Weekdays ===== */
+.weekdays {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 2px;
+    margin-bottom: var(--space-xs);
+}
+
+.weekday {
+    font-size: 11px;
+    font-weight: var(--font-medium);
+    color: #666;
+    text-align: center;
+    padding: 4px 0;
+}
+
+/* ===== Calendar Grid ===== */
+.grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 2px;
+}
+
+.emptyDay {
+    width: 32px;
+    height: 32px;
+}
+
+.day {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: var(--text-sm);
+    font-weight: var(--font-medium);
+    color: #e0e0e0;
+    background: transparent;
+    border: none;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.day:hover:not(.disabled):not(.selected) {
+    background: #333;
+}
+
+.day.today:not(.selected) {
+    color: #ffffff;
+    font-weight: var(--font-bold);
+    box-shadow: inset 0 0 0 1px #555;
+}
+
+.day.selected {
+    background: #ffffff;
+    color: #0a0a0a;
+    font-weight: var(--font-bold);
+}
+
+.day.disabled {
+    color: #444;
+    cursor: not-allowed;
+}

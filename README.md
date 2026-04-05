@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="./earnslate-app/public/earnslate.png" alt="Earnslate Logo" width="120"/>
+  <img src="./earnslate-web/public/earnslate.png" alt="Earnslate Logo" width="120"/>
 </p>
 
 <h1 align="center"><a href="https://earnslate.vercel.app">Earnslate</a></h1>
@@ -45,7 +45,7 @@ git clone https://github.com/qtremors/earnslate.git
 cd earnslate
 
 # Install dependencies
-cd earnslate-app
+cd earnslate-web
 npm install
 
 # Run the project
@@ -72,15 +72,18 @@ Visit **http://localhost:3000**
 
 ```
 earnslate/
-├── earnslate-app/            # Application source code
+├── earnslate-web/            # Web application source code (Next.js)
 │   ├── src/                  # Source files
 │   ├── public/               # Static assets
 │   ├── package.json          # Dependency manifest
 │   └── next.config.ts        # Next.js configuration
+├── earnslate-android/        # Android app (Planned/Placeholder - currently no active development)
+├── README.md                 # User-facing documentation
 ├── DEVELOPMENT.md            # Developer documentation
 ├── CHANGELOG.md              # Version history
 ├── LICENSE.md                # License terms
-└── README.md
+├── PLAN.md                   # Android app development plan
+└── TASKS.md                  # Roadmap and tasks
 ```
 
 ## 📊 System Resource usage and impact
@@ -95,7 +98,7 @@ disk: ~200MB (Dependencies included)
 
 ```bash
 # Currently manual testing is described in TASKS.md
-cd earnslate-app
+cd earnslate-web
 npm run dev
 ```
 
@@ -108,6 +111,8 @@ npm run dev
 | [DEVELOPMENT.md](DEVELOPMENT.md) | Architecture, setup, API reference |
 | [CHANGELOG.md](CHANGELOG.md) | Version history and release notes |
 | [LICENSE.md](LICENSE.md) | License terms and attribution |
+| [TASKS.md](TASKS.md) | Project roadmap and active tasks |
+| [PLAN.md](PLAN.md) | Android app development plan |
 
 ---
 

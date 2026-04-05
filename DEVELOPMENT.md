@@ -2,7 +2,7 @@
 
 > Comprehensive documentation for developers working on Earnslate.
 
-**Version:** 1.1.1 | **Last Updated:** 2026-01-14
+**Version:** 1.2.0 | **Last Updated:** 2026-04-05
 
 ---
 
@@ -56,7 +56,7 @@ Earnslate follows a **Client-Side SPA (Single Page Application)** architecture b
 
 ```
 earnslate/
-├── earnslate-app/            # Main Application
+├── earnslate-web/            # Main Web Application (Next.js)
 │   ├── src/
 │   │   ├── app/              # Next.js App Router pages
 │   │   ├── components/       # Reusable UI components
@@ -65,10 +65,12 @@ earnslate/
 │   │   ├── types/            # TypeScript type definitions
 │   │   └── data/             # Static data (templates)
 │   └── public/               # Static assets
+├── earnslate-android/        # Android App (Placeholder for future development)
 ├── README.md                 # User-facing documentation
 ├── DEVELOPMENT.md            # This file
 ├── CHANGELOG.md              # Version history
 ├── LICENSE.md                # License terms
+├── PLAN.md                   # Android app development plan
 └── TASKS.md                  # Roadmap and tasks
 ```
 

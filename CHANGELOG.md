@@ -1,8 +1,15 @@
 # Earnslate Changelog
 
 > **Project:** Earnslate  
-> **Version:** 1.1.1  
-> **Last Updated:** 2026-01-14
+> **Version:** 1.2.0  
+> **Last Updated:** 2026-04-05
+
+---
+
+## v1.2.0 (2026-03-01)
+
+### Changed
+- **Repository Structure**: Split repository into `earnslate-web` (containing the Next.js web app) and `earnslate-android` (an empty Activity project placeholder for future development). Currently, there is no active work being done on the Android version.
 
 ---
 
