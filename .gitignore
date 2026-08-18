@@ -1,16 +1,14 @@
-# Dependencies
-node_modules/
-.pnp/
-.pnp.js
+# IDE
+.idea/
+.vscode/
+*.iml
+*.swp
+*.swo
 
-# Build outputs
-.next/
-out/
-build/
-dist/
-
-# Testing
-coverage/
+# OS
+.DS_Store
+Thumbs.db
+Desktop.ini
 
 # Environment
 .env
@@ -18,29 +16,25 @@ coverage/
 .env.development.local
 .env.test.local
 .env.production.local
+!.env.example
+!.env.*.example
 
 # Debug logs
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+pnpm-debug.log*
+*.log
 
-# IDE
-.idea/
-.vscode/
-*.swp
-*.swo
-
-# OS
-.DS_Store
-Thumbs.db
-
-# TypeScript
-*.tsbuildinfo
-next-env.d.ts
+# Local artifacts and secrets
+*.tmp
+*.hprof
+*.apk
+*.aab
+*.jks
+*.keystore
+signing.properties
+keystore.properties
 
 # Misc
-*.pem
-.vercel
-
-# Templates (keep for reference, don't track)
 temp/

@@ -1,0 +1,355 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#070a11">
+  <meta name="description" content="EarnSlate is a private, offline personal finance and subscription tracker for Android. Track income, expenses, and recurring bills with zero cloud tracking.">
+  <meta property="og:title" content="EarnSlate: Private Android Finance & Subscription Tracker">
+  <meta property="og:description" content="Track income, expenses, budgets, and recurring subscriptions on Android with zero telemetry, zero ads, and zero internet permission.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://qtremors.github.io/earnslate/">
+  <title>EarnSlate: Private Android Finance &amp; Subscription Tracker</title>
+  <link rel="icon" type="image/png" href="assets/Earnslate.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&amp;family=Manrope:wght@500;600;700;800&amp;display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <script src="scripts.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <!-- Header / Navigation -->
+  <header class="site-header" data-header>
+    <nav class="nav shell" aria-label="Main navigation">
+      <a class="brand" href="#top" aria-label="EarnSlate home">
+        <span class="brand-mark"><img src="assets/Earnslate.png" alt="EarnSlate Logo"></span>
+        <span>EarnSlate</span>
+      </a>
+
+      <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="nav-links" aria-label="Open navigation" data-nav-toggle>
+        <span></span><span></span>
+      </button>
+
+      <div class="nav-links" id="nav-links" data-nav-links>
+        <a href="#features">Features</a>
+        <a href="#experience">Design</a>
+        <a href="#privacy">Privacy</a>
+        <a href="#faq">FAQ</a>
+        <a href="https://discord.gg/QgUjuNj9U8" target="_blank" rel="noopener">Discord</a>
+        <a class="nav-cta" href="https://github.com/qtremors/earnslate/releases/latest" data-latest-release-link>Get App <span aria-hidden="true">↓</span></a>
+      </div>
+    </nav>
+  </header>
+
+  <main id="main">
+    <!-- Hero Section -->
+    <section class="hero" id="top">
+      <div class="hero-orb orb-one" aria-hidden="true"></div>
+      <div class="hero-orb orb-two" aria-hidden="true"></div>
+      <div class="shell hero-layout">
+        <div class="hero-copy reveal">
+          <div class="eyebrow"><span></span> Android 7.0+ · Offline by Design</div>
+          <h1>Money tracked.<br><em>Privacy kept.</em></h1>
+          <p>Track your spending, stay on top of recurring subscriptions, and manage monthly budgets. EarnSlate runs completely offline on your device with no accounts, no ads, and zero internet permission.</p>
+          <div class="actions">
+            <a class="button primary" href="https://github.com/qtremors/earnslate/releases/latest" data-latest-release-link><span data-download-label>Download APK</span> <span aria-hidden="true">↓</span></a>
+            <a class="button tonal" href="https://github.com/qtremors/earnslate" target="_blank" rel="noopener">Explore Source <span aria-hidden="true">↗</span></a>
+          </div>
+          <div class="trust-row" aria-label="EarnSlate guarantees">
+            <span>No internet permission</span><i></i><span>No account required</span><i></i><span>100% Offline storage</span><i></i><span>Free &amp; Open source</span>
+          </div>
+        </div>
+
+        <div class="hero-visual reveal" aria-label="EarnSlate dashboard overview">
+          <div class="logo-stage">
+            <div class="logo-halo" aria-hidden="true"></div>
+            <img src="assets/Earnslate.png" alt="EarnSlate logo">
+          </div>
+          <div class="float-card card-balance">
+            <span class="float-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2.5" fill="none"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline><polyline points="17 6 23 6 23 12"></polyline></svg>
+            </span>
+            <span><small>Monthly Balance</small><strong>₹55,583 saved</strong></span>
+          </div>
+          <div class="float-card card-saved">
+            <span class="float-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2.5" fill="none"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            </span>
+            <span><small>Bills &amp; Renewals</small><strong>On track</strong></span>
+          </div>
+          <div class="format-chip">Material 3 Expressive</div>
+          <div class="format-chip offline">Air-Gapped Offline</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3-Step User Flow Strip -->
+    <section class="flow-strip" aria-label="How EarnSlate simplifies your finances">
+      <div class="shell flow-grid reveal">
+        <div><b>01</b><span>Log daily spending</span></div>
+        <div class="flow-arrow" aria-hidden="true">→</div>
+        <div><b>02</b><span>Auto-manage bills &amp; budgets</span></div>
+        <div class="flow-arrow" aria-hidden="true">→</div>
+        <div><b>03</b><span>Keep full control on device</span></div>
+      </div>
+    </section>
+
+    <!-- Bento Grid Features Section -->
+    <section class="section features" id="features">
+      <div class="shell">
+        <div class="section-heading reveal">
+          <div>
+            <span class="kicker">Everything you need</span>
+            <h2>Simple where it counts.<br>Powerful all around.</h2>
+          </div>
+          <p>Get a crystal-clear picture of your money without connecting your bank account or sharing private records.</p>
+        </div>
+
+        <div class="bento-grid">
+          <!-- Card 1: Dashboard & Visuals -->
+          <article class="feature-card col-8 reveal">
+            <div class="card-icon-wrap" aria-hidden="true">
+              <svg viewBox="0 0 24 24" width="22" height="22" stroke="currentColor" stroke-width="2" fill="none"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+            </div>
+            <div class="card-copy">
+              <span>Clarity at a glance</span>
+              <h3>Interactive Cash Flow &amp; Trends</h3>
+              <p>See your live balance, monthly income, and category expense breakdown in seconds. Explore interactive charts (7 days, 30 days, 6 months, or 1 year) with smooth spring-physics animations.</p>
+            </div>
+            <div class="card-pill-row">
+              <span class="card-pill">Real-time balance</span>
+              <span class="card-pill">Spending breakdown</span>
+              <span class="card-pill">Cash flow graphs</span>
+            </div>
+          </article>
+
+          <!-- Card 2: Smart SMS Parser -->
+          <article class="feature-card col-4 reveal">
+            <div class="card-icon-wrap" aria-hidden="true">
+              <svg viewBox="0 0 24 24" width="22" height="22" stroke="currentColor" stroke-width="2" fill="none"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path><line x1="9" y1="9" x2="15" y2="9"></line><line x1="9" y1="13" x2="13" y2="13"></line></svg>
+            </div>
+            <div class="card-copy">
+              <span>Zero cloud processing</span>
+              <h3>Smart SMS Parser</h3>
+              <p>Detect financial SMS alerts locally across 300+ banks and services. Extracts amounts, account/card endings, and merchants 100% on-device.</p>
+            </div>
+            <div class="card-pill-row">
+              <span class="card-pill">300+ Merchants</span>
+              <span class="card-pill">100% Offline heuristics</span>
+            </div>
+          </article>
+
+          <!-- Card 3: Subscriptions & Recurring Bills -->
+          <article class="feature-card col-4 reveal">
+            <div class="card-icon-wrap" aria-hidden="true">
+              <svg viewBox="0 0 24 24" width="22" height="22" stroke="currentColor" stroke-width="2" fill="none"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>
+            </div>
+            <div class="card-copy">
+              <span>Never miss a renewal</span>
+              <h3>Subscription Tracker</h3>
+              <p>Pick from 80+ bundled service templates. Track custom cycles (daily to annual), variable expenses, pause/resume active services, and auto-advance renewal dates.</p>
+            </div>
+            <div class="card-pill-row">
+              <span class="card-pill">80+ Service presets</span>
+              <span class="card-pill">Treemap view</span>
+            </div>
+          </article>
+
+          <!-- Card 4: Budgets -->
+          <article class="feature-card col-4 reveal">
+            <div class="card-icon-wrap" aria-hidden="true">
+              <svg viewBox="0 0 24 24" width="22" height="22" stroke="currentColor" stroke-width="2" fill="none"><circle cx="12" cy="12" r="10"></circle><path d="M16 12l-4-4-4 4M12 16V8"></path></svg>
+            </div>
+            <div class="card-copy">
+              <span>Spend with confidence</span>
+              <h3>Budget Guardian</h3>
+              <p>Set spending caps for Food, Shopping, Travel, or Bills. Get clear utilization alerts and automatic monthly period resets.</p>
+            </div>
+            <div class="card-pill-row">
+              <span class="card-pill">Category limits</span>
+              <span class="card-pill">Period auto-reset</span>
+            </div>
+          </article>
+
+          <!-- Card 5: True Offline Privacy -->
+          <article class="feature-card col-4 reveal">
+            <div class="card-icon-wrap" aria-hidden="true">
+              <svg viewBox="0 0 24 24" width="22" height="22" stroke="currentColor" stroke-width="2" fill="none"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+            </div>
+            <div class="card-copy">
+              <span>Zero network permissions</span>
+              <h3>Air-Gapped &amp; Private</h3>
+              <p>The app does not declare `android.permission.INTERNET`. All financial records remain encrypted in local private storage on your phone.</p>
+            </div>
+            <div class="card-pill-row">
+              <span class="card-pill">Zero internet access</span>
+              <span class="card-pill">Room database</span>
+            </div>
+          </article>
+
+          <!-- Card 6: Portable Backups & CSV -->
+          <article class="feature-card col-8 reveal">
+            <div class="card-icon-wrap" aria-hidden="true">
+              <svg viewBox="0 0 24 24" width="22" height="22" stroke="currentColor" stroke-width="2" fill="none"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+            </div>
+            <div class="card-copy">
+              <span>Your data is yours</span>
+              <h3>One-Tap Backups &amp; CSV Portability</h3>
+              <p>Export your records to validated JSON backups with embedded custom subscription icons or standard UTF-8 CSV reports anytime. Move or restore your data securely with transactional rollback safety.</p>
+            </div>
+            <div class="card-pill-row">
+              <span class="card-pill">Atomic JSON backups</span>
+              <span class="card-pill">CSV export</span>
+              <span class="card-pill">Custom icons bundling</span>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- Native Android Experience Section -->
+    <section class="section experience" id="experience">
+      <div class="shell">
+        <div class="section-heading reveal">
+          <div>
+            <span class="kicker">Crafted for Android</span>
+            <h2>Native Material 3 Design</h2>
+          </div>
+          <p>Built with modern Android engineering for a fluid, tactile, and battery-friendly experience.</p>
+        </div>
+
+        <div class="bento-grid reveal">
+          <article class="feature-card col-4">
+            <div class="card-icon-wrap" aria-hidden="true">
+              <svg viewBox="0 0 24 24" width="22" height="22" stroke="currentColor" stroke-width="2" fill="none"><circle cx="12" cy="12" r="10"></circle><path d="M12 2a10 10 0 0 1 10 10c0 5.52-4.48 10-10 10"></path></svg>
+            </div>
+            <div class="card-copy">
+              <span>Dynamic Appearance</span>
+              <h3>Material You &amp; OLED Dark</h3>
+              <p>Adapts to your wallpaper colors dynamically on Android 12+, with full support for pure black OLED, custom seeded palettes, and monochrome themes.</p>
+            </div>
+          </article>
+
+          <article class="feature-card col-4">
+            <div class="card-icon-wrap" aria-hidden="true">
+              <svg viewBox="0 0 24 24" width="22" height="22" stroke="currentColor" stroke-width="2" fill="none"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
+            </div>
+            <div class="card-copy">
+              <span>Fluid Interaction</span>
+              <h3>Expressive Motion &amp; Haptics</h3>
+              <p>Physics-based spring animations, floating pill navigation, tactile haptic cues on actions, and system-level predictive back gesture support.</p>
+            </div>
+          </article>
+
+          <article class="feature-card col-4">
+            <div class="card-icon-wrap" aria-hidden="true">
+              <svg viewBox="0 0 24 24" width="22" height="22" stroke="currentColor" stroke-width="2" fill="none"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg>
+            </div>
+            <div class="card-copy">
+              <span>Adaptive Layouts</span>
+              <h3>Phones, Foldables &amp; Tablets</h3>
+              <p>Adaptive navigation shells that seamlessly adjust between compact phone layouts and multi-pane expanded views on foldables and tablets.</p>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- Privacy Section -->
+    <section class="section privacy" id="privacy">
+      <div class="shell privacy-panel reveal">
+        <div class="privacy-copy">
+          <span class="kicker">Guaranteed Privacy</span>
+          <h2>Your financial records never leave your phone.</h2>
+          <p>Unlike other finance apps that sell your spending habits or connect to third-party data aggregators, EarnSlate is built from the ground up to be air-gapped.</p>
+          <a class="button tonal" href="https://github.com/qtremors/earnslate/blob/main/PRIVACY.md" target="_blank" rel="noopener" style="margin-top: 24px;">Read Privacy Policy <span aria-hidden="true">→</span></a>
+        </div>
+        <div class="privacy-points">
+          <article><span aria-hidden="true">01</span><div><h3>No Network Permission</h3><p>The app literally has no internet permission and cannot transmit records anywhere.</p></div></article>
+          <article><span aria-hidden="true">02</span><div><h3>No Ads or Tracking</h3><p>No telemetry, marketing SDKs, or background analytics exist in the codebase.</p></div></article>
+          <article><span aria-hidden="true">03</span><div><h3>You Own Your Data</h3><p>Your records leave your device only when you explicitly export a backup or CSV file.</p></div></article>
+        </div>
+      </div>
+    </section>
+
+    <!-- User FAQ Section -->
+    <section class="section faq" id="faq">
+      <div class="shell faq-layout">
+        <div class="faq-intro reveal">
+          <span class="kicker">Got questions?</span>
+          <h2>Frequently Asked Questions</h2>
+          <p>Everything you need to know about EarnSlate.</p>
+        </div>
+        <div class="faq-list reveal">
+          <article>
+            <button type="button" aria-expanded="true" aria-controls="faq-one" id="q-one"><span>Do I need to create an account?</span></button>
+            <div class="faq-answer" id="faq-one" role="region" aria-labelledby="q-one">
+              <p>No. You can start using EarnSlate immediately after installing. There are no sign-ups, passwords, email verification, or phone numbers required.</p>
+            </div>
+          </article>
+          <article>
+            <button type="button" aria-expanded="false" aria-controls="faq-two" id="q-two"><span>Where is my data stored?</span></button>
+            <div class="faq-answer" id="faq-two" role="region" aria-labelledby="q-two" hidden>
+              <p>Everything is stored exclusively on your own device in an isolated private SQLite database. No data is ever sent to cloud servers.</p>
+            </div>
+          </article>
+          <article>
+            <button type="button" aria-expanded="false" aria-controls="faq-three" id="q-three"><span>Can I back up or transfer my data?</span></button>
+            <div class="faq-answer" id="faq-three" role="region" aria-labelledby="q-three" hidden>
+              <p>Yes. You can create a validated JSON backup file with one tap in Settings or export your full transaction and budget history as a standard CSV report.</p>
+            </div>
+          </article>
+          <article>
+            <button type="button" aria-expanded="false" aria-controls="faq-four" id="q-four"><span>Is EarnSlate completely free?</span></button>
+            <div class="faq-answer" id="faq-four" role="region" aria-labelledby="q-four" hidden>
+              <p>Yes. EarnSlate is free, open source, and has no paywalls, subscriptions, ads, or hidden in-app purchases.</p>
+            </div>
+          </article>
+          <article>
+            <button type="button" aria-expanded="false" aria-controls="faq-five" id="q-five"><span>Can the app connect to my bank?</span></button>
+            <div class="faq-answer" id="faq-five" role="region" aria-labelledby="q-five" hidden>
+              <p>No. EarnSlate intentionally does not request internet access (`android.permission.INTERNET`) to guarantee that your financial data cannot be sent over the network.</p>
+            </div>
+          </article>
+          <article>
+            <button type="button" aria-expanded="false" aria-controls="faq-six" id="q-six"><span>How does the offline Smart SMS Parser work?</span></button>
+            <div class="faq-answer" id="faq-six" role="region" aria-labelledby="q-six" hidden>
+              <p>When you enable SMS Detection and open EarnSlate, the app runs a fast on-device scan of recent SMS messages to detect bank debits, credit card purchases, and UPI transfers. No data ever leaves your device, and you have full control to approve or discard every detected transaction.</p>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- Download Section -->
+    <section class="section download-cta" style="padding-top: 0;">
+      <div class="shell download-card reveal">
+        <h2>Take Control of Your Finances</h2>
+        <p>Private, offline, and completely free forever.</p>
+        <div class="actions" style="justify-content: center;">
+          <a class="button primary" href="https://github.com/qtremors/earnslate/releases/latest" data-latest-release-link><span data-download-label>Download Android APK</span> <span aria-hidden="true">↓</span></a>
+          <a class="button tonal" href="https://github.com/qtremors/earnslate" target="_blank" rel="noopener">Explore Source <span aria-hidden="true">↗</span></a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer>
+    <div class="shell">
+      <p>
+        <strong>EarnSlate</strong> · Version 2.0.0 · Licensed under the 
+        <a href="https://github.com/qtremors/earnslate/blob/main/LICENSE.md" target="_blank" rel="noopener">Tremors Source License (TSL)</a>.
+      </p>
+      <p style="margin-top: 8px;">
+        Made by <a href="https://github.com/qtremors" target="_blank" rel="noopener">Tremors</a> · 
+        <a href="https://discord.gg/QgUjuNj9U8" target="_blank" rel="noopener">Discord Community</a> · 
+        <a href="https://github.com/qtremors/earnslate" target="_blank" rel="noopener">Source Code</a> · 
+        <a href="https://github.com/qtremors/earnslate/issues" target="_blank" rel="noopener">Feedback &amp; Issues</a>
+      </p>
+    </div>
+  </footer>
+</body>
+</html>

@@ -1,137 +1,22 @@
 # Earnslate Changelog
 
-> **Project:** Earnslate  
-> **Version:** 1.1.1  
-> **Last Updated:** 2026-01-14
+> **Project:** Earnslate
+> **Version:** 2.0.0
+> **Last Updated:** 2026-08-18
 
 ---
 
-## v1.1.1 (2026-01-14)
+## [2.0.0] - 2026-08-18
 
-### Fixed
-- **Currency Formatting**: Fixed inconsistencies with negative signs in compact currency mode for `en-IN` locale.
-- **Budgets**: Made budget category matching case-insensitive to ensure reliable transaction tracking.
-- **Documentation**: Corrected JSDoc comments and Git clone URL in README.
-
----
-
-## v1.1.0 (2026-01-14)
-
-### Fixed
-- **Missing Onboarding Redirect**: Added logic to force redirect new users to the onboarding page.
-- **Transaction Selection**: Fixed an issue where selected transactions persisted after filter changes, preventing accidental deletions.
-- **CSV Export**: Fixed CSV export to properly escape special characters (commas, quotes, newlines) across all modules.
-- **Budget Reset**: Fixed budget reset logic to correctly recalculate spent amount from transactions falling within the new period.
-- **Currency Formatting**: Fixed compact currency formatting (e.g. 10k, 1M) to respect user locale (International vs Indian system).
-- **Date Pickers**: Standardized date pickers across the app and ensured they respect user's date format settings.
-
-### Added
-- **Skip Onboarding**: Added a "Skip" button to the onboarding flow for quick access.
-- **CSV Utility**: Centralized CSV generation logic for consistent behavior.
-
-### Refactor
-- **Icons**: Replaced emojis in onboarding flow with proper Lucide icons for a more premium feel.
-- **Cleanup**: Removed unused variables (`iconType`, `settings`) and redundant fields (`iconType` in `ServiceTemplate`) to improve code quality.
-- **Accessibility**: Added missing `data-modal-open` attribute to Modal to ensure keyboard shortcuts (Escape to close) work reliably.
-
----
-
-## v1.0.0 (2026-01-12)
-
-### Added
-- **Dashboard**: Real-time balance, spending pie chart, budget alerts
-- **Transactions**: Full CRUD, search, filters, date presets, pagination, batch delete
-- **Budgets**: Progress tracking, donut charts, auto-reset on period expiry
-- **Subscriptions**: 100+ service templates, treemap visualization, flexible billing
-- **Settings**: Custom categories, theme toggle, JSON export/import
-
-### Changed
-- **UX**: Premium keyboard shortcuts (Ctrl+N, Ctrl+D/T/B, Escape)
-- **Theme**: Dark/Light mode toggle and 12-color system palette
-
-### Fixed
-- **Race Condition**: Budget-Transaction sync issues resolved
-- **Import**: Data safety improvements during import operations
-
-### Security
-- **Privacy**: LocalStorage only, no external server data transmission
-
----
-
-## [0.8.0] - 2025-12-16
-
-### Added
-- Date range presets and pagination
-- Batch delete for transactions
-
-### Changed
-- Bundle size optimization with Iconify
-- Removed 56+ lines of dead code
-
----
-
-## [0.7.0] - 2025-12-16
-
-### Added
-- Iconify integration (100+ brand icons)
-- Header username display
-
-### Fixed
-- Pie chart visibility bug
-
----
-
-## [0.6.0] - 2025-12-15
-
-### Fixed
-- Race condition fixes for budget-transaction sync
-- Form validation for budgets and subscriptions
-- Data import safety improvements
-
----
-
-## [0.5.0] - 2025-12-15
-
-### Added
-- Toast notification system
-- Budget period auto-reset
-- Subscription billing auto-update
-- Mobile hamburger menu
-
----
-
-## [0.4.0] - 2025-12-15
-
-### Added
-- Transaction filters and search
-- Budget donut chart overview
-- Category manager in settings
-- JSON export/import
-
----
-
-## [0.3.0] - 2025-12-15
-
-### Added
-- ServicePicker with 55+ templates
-- Treemap subscription visualization
-- Icon and color pickers
-
----
-
-## [0.2.0] - 2025-12-15
-
-### Added
-- Core CRUD for all modules
-
-### Fixed
-- Zustand hydration fixes
-
----
-
-## [0.1.0] - 2025-12-15
-
-### Added
-- Initial project setup
-- Monochrome design system
-- Zustand + localStorage persistence
+- **Native Android Launch**: Rebuilt Earnslate from the ground up as a private, offline native Android application using Kotlin, Jetpack Compose, Material 3, and Room.
+- **Smart SMS Parser**: Added a 100% offline, on-device heuristic engine that detects bank and transaction SMS messages across 300+ financial brands and merchants, extracting amounts, debit/credit transaction types, account/card endings, UPI reference numbers, and auto-suggesting categories with zero cloud connectivity.
+- **SMS Inbox Sheet**: Added an interactive bottom sheet to scan device SMS inbox messages, preview parsed transactions with confidence indicators, and quickly approve them into transaction records.
+- **Financial Dashboard**: Implemented real-time tracking of net balance, total income, total expenses, recent activity timelines, active subscriptions, and visual budget health meters.
+- **Transaction Management**: Added full CRUD operations for income and expense transactions, search, category filters, date presets (Today, This Week, This Month, Custom Range), sorting controls, multi-select mode, and batch deletion.
+- **Subscriptions & Recurring Bills**: Added recurring income and expense tracking with flexible billing cycles (daily, weekly, monthly, yearly, custom counts), next billing countdowns, variable expense toggles, 80+ pre-packaged service templates, and expense distribution treemaps.
+- **Custom Icon Storage**: Added support for custom SVG, PNG, JPEG, and WebP icons with automatic SVG sanitization, raster normalization, and dedicated local storage.
+- **Category Budgets**: Added monthly and custom billing cycle budget limits with real-time spending calculations, period auto-resets, visual progress bars, and over-budget warnings.
+- **Dynamic Theming & Expressive Design**: Added Material 3 Expressive UI, OLED pure-black, Dark, and Light themes, dynamic MaterialKolor accent palettes (Dynamic, Purple, Blue, Cyan, Teal, Green, Orange, Pink, Red, Monochrome), responsive tablet navigation rails, and floating pill navigation.
+- **Atomic JSON Backup & Restore**: Implemented versioned (`v2.0.0`) JSON backup and restore with embedded base64 custom icon assets, strict input validation, and transactional database rollback.
+- **CSV Data Export**: Added standard CSV export for transactions with proper escaping and formatting.
+- **Offline & Privacy Guarantee**: Built with zero internet permissions (`android.permission.INTERNET` omitted), zero ads, zero trackers, and zero third-party telemetry.
